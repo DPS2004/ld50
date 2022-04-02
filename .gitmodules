@@ -1,0 +1,16 @@
+[submodule "lib/baton"]
+	path = lib/baton
+	url = https://github.com/tesselode/baton
+[submodule "lib/deeper"]
+	path = lib/deeper
+	url = https://github.com/DPS2004/deeper
+[submodule "lib/lovebird"]
+	path = lib/lovebird
+	url = https://github.com/rxi/lovebird
+
+[submodule "lib/flux"]
+	path = lib/flux
+	url = https://github.com/DPS2004/flux
+[submodule "lib/middleclass"]
+	path = lib/middleclass
+	url = https://github.com/kikito/middleclass
