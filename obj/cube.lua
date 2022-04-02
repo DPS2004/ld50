@@ -150,13 +150,11 @@ function Cube:draw()
     end
   end
   
-  if math.max(math.abs(self.r.z),math.abs(self.r.y)) > 45 then
-    self:drawface('c')
-    drawlrdu()
-  else
-    drawlrdu()
-    self:drawface('c')
-  end
+
+  drawlrdu()
+  self:drawface('c')
+  
+
   
   
   --[[

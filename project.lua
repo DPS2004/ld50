@@ -15,10 +15,14 @@ project.res.s = 3
 
 
 project.ctrls = {
-  left = {"key:a",  "axis:rightx-", "button:dpleft"},
-  right = {"key:d",  "axis:rightx+", "button:dpright"},
-  up = {"key:w", "axis:righty-", "button:dpup"},
-  down = {"key:s", "axis:righty+", "button:dpdown"},
+  left = {"key:a",  "axis:leftx-", "button:dpleft"},
+  right = {"key:d",  "axis:leftx+", "button:dpright"},
+  up = {"key:w", "axis:lefty-", "button:dpup"},
+  down = {"key:s", "axis:lefty+", "button:dpdown"},
+  shootleft = {"key:left",  "axis:rightx-", "button:dpleft"},
+  shootright = {"key:right",  "axis:rightx+", "button:dpright"},
+  shootup = {"key:up", "axis:righty-", "button:dpup"},
+  shootdown = {"key:down", "axis:righty+", "button:dpdown"},
   accept = {"key:space", "key:return", "button:a"},
   back = {"key:escape", "button:b"},
   f5 = {"key:f5"},

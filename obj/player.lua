@@ -13,6 +13,13 @@ function Player:initialize(params)
   self.dy = 0
   self.flip = false
   
+  self.gunx = 10
+  self.guny = 0
+  self.gunaimx = 10
+  self.gunaimy = 0
+  
+  self.gunspr = sprites.gun
+  
   self.speed = 1
   
   self.canmove = true
@@ -48,7 +55,37 @@ function Player:update(dt)
     self.cdy = (self.dy*friction +self.cdy)/(friction+1)
     self.x = self.x + self.cdx
     self.y = self.y + self.cdy
-      
+    
+    
+    self.gunaimx = 0
+    self.gunaimy = 0
+    if maininput:down('shootleft') and (not maininput:down('shootright')) then
+      self.flip = true
+      self.gunaimx = -10
+    end
+    if maininput:down('shootright') and (not maininput:down('shootleft')) then
+      self.flip = false
+      self.gunaimx = 10
+    end
+    
+    if maininput:down('shootup') and (not maininput:down('shootdown')) then
+      self.gunaimy = -10
+    end
+    if maininput:down('shootdown') and (not maininput:down('shootup')) then
+      self.gunaimy = 10
+    end
+    
+    if self.gunaimx == 0 and self.gunaimy == 0 then
+      if self.flip then 
+        self.gunaimx = -10
+      else
+        self.gunaimx = 10
+      end
+    end
+    self.gunx = (self.gunx + self.gunaimx)/2
+    self.guny = (self.guny + self.gunaimy)/2
+    
+    
   end
   
   cs.cube.r.y = (self.x - 64)*-0.5
@@ -64,7 +101,14 @@ function Player:draw()
     flipscale = -1
   end
   
-  ez.drawframe(self.spr,0,self.x,self.y,0,1*flipscale,1,9,18)
+  local gunflip = 1
+  if self.gunx <=0 then
+    gunflip = -1
+  end
+  helpers.drawbordered(function(dfx,dfy)
+    ez.drawframe(self.spr,0,self.x+dfx,self.y+dfy,0,1*flipscale,1,9,18)
+    love.graphics.draw(self.gunspr,self.x+self.gunx+dfx,self.y+self.guny+dfy-5,0,gunflip,1,3,3)
+  end,'white',true)
 end
 
 return Player
