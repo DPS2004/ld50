@@ -20,12 +20,12 @@ end
 
 function Exampleentity:update(dt)
   self.sinetimer = self.sinetimer + dt/60
-  --self.r = math.rad(math.sin(self.sinetimer)*20)
+  --self.r = math.sin(self.sinetimer)*20
 end
 
 function Exampleentity:draw()
   color('white')
-  love.graphics.draw(self.spr,self.x,self.y,self.r,1,1,45,45)
+  love.graphics.draw(self.spr,self.x,self.y,math.rad(self.r),1,1,45,45)
 end
 
 return Exampleentity

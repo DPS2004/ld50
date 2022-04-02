@@ -4,7 +4,7 @@ project.release = false
 
 project.name = 'DPS2004 love2d template'
 
-project.initstate = 'cubetest'
+project.initstate = 'game'
 
 
 project.res = {}

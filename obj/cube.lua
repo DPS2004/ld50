@@ -6,6 +6,7 @@ function Cube:initialize(params)
   self.uplayer = 0 --lower uplayer updates first
   self.x = 0
   self.y = 0
+  self.i = 0
   self.fov = 150
   self.r = {x=0,y=0,z=0}
   self.scale = {x=1,y=1,z=1,g=48}
@@ -19,15 +20,19 @@ function Cube:initialize(params)
   self.faces = {}
   
   self.faces.c = {4,3,1,2}
+  self.faces.l = {8,4,2,6}
+  self.faces.r = {3,7,5,1}
+  self.faces.u = {8,7,3,4}
+  self.faces.d = {2,1,5,6}
   
   
   self.canvas = {}
   
   self.canvas.c = love.graphics.newCanvas(128,128)
-  
-  self.mesh = {}
-  
-  self.mesh.c = love.graphics.newMesh(defaultvert,'fan')
+  self.canvas.l = love.graphics.newCanvas(128,128)
+  self.canvas.r = love.graphics.newCanvas(128,128)
+  self.canvas.u = love.graphics.newCanvas(128,128)
+  self.canvas.d = love.graphics.newCanvas(128,128)
   
     
   
@@ -97,39 +102,62 @@ function Cube:project()
 end
 
 function Cube:update(dt)
+  local amp = 90
+  self.i = self.i + dt
   --self.r.x = self.r.x + dt
-  self.r.y = self.r.y + dt
-  --self.r.z = self.r.y + dt
+  --self.r.y = math.sin(self.i/60)*amp
+  --self.r.z = math.cos(self.i/60)*amp
   --
+end
+
+function Cube:drawface(k)
+  local p = self.points
+  local v = self.faces[k]
+  persp.quad(self.canvas[k],
+    {p[v[1]].px+self.x,p[v[1]].py+self.y},
+    {p[v[2]].px+self.x,p[v[2]].py+self.y},
+    {p[v[3]].px+self.x,p[v[3]].py+self.y},
+    {p[v[4]].px+self.x,p[v[4]].py+self.y}
+  )
 end
 
 function Cube:draw()
   self:project()
   color('white')
-  local p = self.points
-  for k,v in pairs(self.faces) do
-    persp.quad(self.canvas[k],
-      {p[v[1]].px+self.x,p[v[1]].py+self.y},
-      {p[v[2]].px+self.x,p[v[2]].py+self.y},
-      {p[v[3]].px+self.x,p[v[3]].py+self.y},
-      {p[v[4]].px+self.x,p[v[4]].py+self.y}
-    )
---    self.mesh[k]:setVertex(1,p[v[1]].px+self.x,p[v[1]].py+self.y,0,0)
---    self.mesh[k]:setVertex(2,(p[v[1]].px + p[v[2]].px)*0.5 +self.x,(p[v[1]].py + p[v[2]].py)*0.5 +self.y,0.5,0)
-
---    self.mesh[k]:setVertex(3,p[v[2]].px+self.x,p[v[2]].py+self.y,1,0)
---    self.mesh[k]:setVertex(4,(p[v[2]].px + p[v[3]].px)*0.5 +self.x,(p[v[2]].py + p[v[3]].py)*0.5 +self.y,1,0.5)
-    
---    self.mesh[k]:setVertex(5,p[v[3]].px+self.x,p[v[3]].py+self.y,1,1)
---    self.mesh[k]:setVertex(6,(p[v[3]].px + p[v[4]].px)*0.5 +self.x,(p[v[3]].py + p[v[4]].py)*0.5 +self.y,0.5,1)
-    
---    self.mesh[k]:setVertex(7,p[v[4]].px+self.x,p[v[4]].py+self.y,0,1)
---    self.mesh[k]:setVertex(8,(p[v[4]].px + p[v[1]].px)*0.5 +self.x,(p[v[4]].py + p[v[1]].py)*0.5 +self.y,0,0.5)
-    
---    self.mesh[k]:setTexture(self.canvas[k])
---    love.graphics.draw(self.mesh[k])
-    
+  local drawlr = function()
+    if self.r.y > 0 then
+      self:drawface('l')
+    else
+      self:drawface('r')
+    end
   end
+  
+  local drawdu = function()
+    if self.r.z > 0 then
+      self:drawface('d')
+    else
+      self:drawface('u')
+    end
+  end
+  
+  local drawlrdu = function()
+    if math.abs(self.r.z) > math.abs(self.r.y) then
+      drawlr()
+      drawdu()
+    else
+      drawdu()
+      drawlr()
+    end
+  end
+  
+  if math.max(math.abs(self.r.z),math.abs(self.r.y)) > 45 then
+    self:drawface('c')
+    drawlrdu()
+  else
+    drawlrdu()
+    self:drawface('c')
+  end
+  
   
   --[[
   for pi,p in ipairs(self.points) do
