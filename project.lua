@@ -15,10 +15,10 @@ project.res.s = 3
 
 
 project.ctrls = {
-  left = {"key:left",  "axis:rightx-", "button:dpleft"},
-  right = {"key:right",  "axis:rightx+", "button:dpright"},
-  up = {"key:up", "axis:righty-", "button:dpup"},
-  down = {"key:down", "axis:righty+", "button:dpdown"},
+  left = {"key:a",  "axis:rightx-", "button:dpleft"},
+  right = {"key:d",  "axis:rightx+", "button:dpright"},
+  up = {"key:w", "axis:righty-", "button:dpup"},
+  down = {"key:s", "axis:righty+", "button:dpdown"},
   accept = {"key:space", "key:return", "button:a"},
   back = {"key:escape", "button:b"},
   f5 = {"key:f5"},
@@ -26,13 +26,6 @@ project.ctrls = {
   k2 = {"key:2"},
   k3 = {"key:3"},
   k4 = {"key:4"},
-  l = {"key:l"},
-  v = {"key:v"},
-  q = {"key:q"},
-  e = {"key:e"},
-  ctrl = {"key:lctrl"},
-  s = {"key:s"},
-  c = {"key:c"},
   
   
   mouse1 = {"mouse:1"},

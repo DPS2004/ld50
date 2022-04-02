@@ -7,6 +7,8 @@ st:setinit(function(self)
   em.init('floortile',{canv='r'})
   em.init('floortile',{canv='u'})
   em.init('floortile',{canv='d'})
+  
+  self.player = em.init('player',{x=64,y=64,canv='c'})
 end)
 
 
@@ -20,9 +22,7 @@ st:setbgdraw(function(self)
 end)
 --entities are drawn here
 st:setfgdraw(function(self)
-  
-  color('red')
-  love.graphics.print(loc.get('helloworld'),10,10)
+
   
 end)
 
