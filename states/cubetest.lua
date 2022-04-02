@@ -1,7 +1,8 @@
 local st = Gamestate:new('cubetest')
 
 st:setinit(function(self)
-  em.init('cube',{x=project.res.cx,y=project.res.cy})
+  self.cube = em.init('cube',{x=project.res.cx,y=project.res.cy})
+  self.templateobj = em.init('templateobj',{x=64,y=64,canv='c'})
 end)
 
 

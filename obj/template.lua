@@ -20,7 +20,7 @@ end
 
 function Exampleentity:update(dt)
   self.sinetimer = self.sinetimer + dt/60
-  self.r = math.rad(math.sin(self.sinetimer)*20)
+  --self.r = math.rad(math.sin(self.sinetimer)*20)
 end
 
 function Exampleentity:draw()

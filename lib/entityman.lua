@@ -44,7 +44,15 @@ function em.draw()
   
   for i, v in ipairs(entities) do
     if not v.skiprender then
-      em.deep.queue(v.layer, function() v:draw() end)
+
+      em.deep.queue(v.layer, function() 
+        if v.canv then
+          love.graphics.setCanvas(cs.cube.canvas[v.canv])
+        else
+          love.graphics.setCanvas(shuv.canvas)
+        end
+        v:draw() 
+      end)
       
     end
   end

@@ -38,7 +38,8 @@ function love.load()
   loc = require "lib.loc"
   loc.load("data/localization.json")
 
-  
+  --from https://www.love2d.org/forums/viewtopic.php?f=5&t=12483&start=130
+  persp = require "lib.Perspective"
 
   -- manages gamestates
   bs = require "lib.basestate"

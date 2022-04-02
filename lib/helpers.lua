@@ -90,8 +90,8 @@ function helpers.updatemouse()
     mouse.altpress = 0
   end
   
-  mouse.x = helpers.round(((love.mouse.getX()/love.graphics.getWidth())*160),true)
-  mouse.y = helpers.round(((love.mouse.getY()/love.graphics.getHeight())*90),true)
+  mouse.x = helpers.round(((love.mouse.getX()/love.graphics.getWidth())*project.res.x),true)
+  mouse.y = helpers.round(((love.mouse.getY()/love.graphics.getHeight())*project.res.y),true)
 end
 
 
@@ -290,14 +290,27 @@ end
 function helpers.iscursorinellipse(x1,x2,y1,y2,cursorx,cursory)
 end
 
-function helpers.copy(t)
-  local t2 = {}
-  for k,v in pairs(t) do
-    t2[k] = v
+function helpers.copy(orig, copies)
+  copies = copies or {}
+  local orig_type = type(orig)
+  local copy
+  if orig_type == 'table' then
+    if copies[orig] then
+      copy = copies[orig]
+    else
+      copy = {}
+      copies[orig] = copy
+      for orig_key, orig_value in next, orig, nil do
+        copy[helpers.copy(orig_key, copies)] = helpers.copy(orig_value, copies)
+      end
+      setmetatable(copy, helpers.copy(getmetatable(orig), copies))
+    end
+  else -- number, string, boolean, etc
+    copy = orig
   end
-  return t2
-
+  return copy
 end
+
 
 function helpers.drawbordered(df,bcol,lightborder)
   bcol = bcol or 'black'

@@ -11,7 +11,7 @@ project.res = {}
 
 project.res.x = 352
 project.res.y = 198
-project.res.s = 1
+project.res.s = 3
 
 
 project.ctrls = {
