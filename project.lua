@@ -6,6 +6,7 @@ project.name = 'DPS2004 love2d template'
 
 project.initstate = 'game'
 
+--project.frameadvance = true
 
 project.res = {}
 

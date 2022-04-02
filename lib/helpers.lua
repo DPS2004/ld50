@@ -10,6 +10,11 @@ function helpers.collide( a, b )
    return overlap
 end
 
+function helpers.collidexy( a, b )
+  if not( a.x + a.width < b.x  or b.x + b.width < a.x)  and not(a.y + a.height < b.y or b.y + b.height < a.y ) then
+    return not(a.x + a.width < b.x  or b.x + b.width < a.x), not(a.y + a.height < b.y or b.y + b.height < a.y)
+  else return false,false end
+end
 
 function helpers.rotate(rad, angle, x, y)
   return({

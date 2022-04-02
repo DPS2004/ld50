@@ -23,7 +23,9 @@ function Player:initialize(params)
   self.speed = 1
   
   self.canmove = true
-  
+  self.hitbox = {x=self.x,y=self.y,width=5,height=6}
+  self.oldhitboxx = {x=self.x,y=self.y,width=5,height=6}
+  self.oldhitboxy = {x=self.x,y=self.y,width=5,height=6}
   self.spr = ez.newanim(templates.player.base)
   
   Entity.initialize(self,params)
@@ -33,6 +35,10 @@ end
 
 function Player:update(dt)
   if self.canmove then
+    
+    self.oldx = self.x 
+    self.oldy = self.y
+    
     self.dx = 0
     self.dy = 0
     if maininput:down('left') and (not maininput:down('right')) then
@@ -53,8 +59,33 @@ function Player:update(dt)
     local friction = 0.5
     self.cdx = (self.dx*friction +self.cdx)/(friction+1)
     self.cdy = (self.dy*friction +self.cdy)/(friction+1)
-    self.x = self.x + self.cdx
-    self.y = self.y + self.cdy
+    
+    
+    local newx = self.x + self.cdx
+    local newy = self.y + self.cdy
+    
+    self.hitbox.x = newx - 3
+    self.hitbox.y = newy - 6
+    
+    self.oldhitboxx.x = self.x-3
+    self.oldhitboxx.y = newy - 6
+    
+    self.oldhitboxy.x = newx - 3
+    self.oldhitboxy.y = self.y-6
+    
+    local xok = true
+    local yok = true
+    for i,v in ipairs(cs.rooms.c.level.tiles) do
+      local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
+      if helpers.collide(self.hitbox,blockhitbox) then
+        if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
+        if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
+      end
+    end
+    
+    
+    if xok then self.x = newx else self.cdx = 0 end
+    if yok then self.y = newy else self.cdy = 0 end
     
     
     self.gunaimx = 0
