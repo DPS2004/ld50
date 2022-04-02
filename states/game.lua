@@ -275,6 +275,14 @@ function st:levelgen(floor)
       
       
     end
+    
+    if room.roomtype == 'start' then
+      room.cleared = true
+      
+    else
+      room.cleared = false
+    end
+    
   end
   return map
 end

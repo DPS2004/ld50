@@ -35,7 +35,9 @@ function Room:draw()
     love.graphics.setCanvas(shuv.canvas)
   end
   color()
+  love.graphics.setShader(wallshader)
   love.graphics.draw(self.wallcanvas,0,0)
+  love.graphics.setShader()
   --love.graphics.print('test',1,1)
 end
 
