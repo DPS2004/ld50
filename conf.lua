@@ -1,5 +1,5 @@
 function love.conf(t)
-  project = dofile('project.lua')
+  project = require('project')
   project.res.cx = project.res.x / 2
   project.res.cy = project.res.y / 2
   t.externalstorage = true

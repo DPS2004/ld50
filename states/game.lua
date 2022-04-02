@@ -2,14 +2,25 @@ local st = Gamestate:new('cubetest')
 
 st:setinit(function(self)
   self.cube = em.init('cube',{x=project.res.cx,y=project.res.cy})
-  em.init('floortile',{canv='c'})
-  em.init('floortile',{canv='l'})
-  em.init('floortile',{canv='r'})
-  em.init('floortile',{canv='u'})
-  em.init('floortile',{canv='d'})
+  local dirs = {'c','l','r','u','d'}
+  
+  self.rooms = {}
+  self.floors = {}
+  
+  for i,v in ipairs(dirs) do
+    self.floors[v] = em.init('floortile',{canv=v})
+    self.rooms[v] = em.init('room',{canv=v})
+  end
+  
+
   
   self.player = em.init('player',{x=64,y=64,canv='c'})
   self.map = self:levelgen(0)
+  
+  self.croom = 1
+  
+  self:updaterooms()
+  
 end)
 
 
@@ -113,6 +124,9 @@ function st:levelgen(floor)
       if room.roomtype then
         print('  type: '..room.roomtype)
       end
+      if room.rotate then
+        print('  rotate: '..room.rotate)
+      end
       print('  unlinked: ' .. string.upper(table.concat(room.unlinked)))
       local exitstr = '  exits: '
       for k,v in pairs(room.exits) do
@@ -168,12 +182,113 @@ function st:levelgen(floor)
     end
   end
   
+  for roomi,room in ipairs(map) do
+    local numexits = 0
+    local exdirs = {}
+    local hasexit = {}
+    for k,v in pairs(room.exits) do
+      numexits = numexits + 1
+      table.insert(exdirs,k)
+      hasexit[k] = true
+    end
+    if not room.roomtype then
+      if numexits == 1 then
+        room.roomtype = 'deadend'
+        for k,v in pairs(room.exits) do
+          if v == 'u' then
+            room.rotate = 0
+          elseif v == 'r' then
+            room.rotate = 1
+          elseif v =='d' then
+            room.rotate = 2
+          else
+            room.rotate = 3
+          end
+        end
+      elseif numexits == 2 then
+        if exdirs[1] == oppositedir[exdirs[2]] then
+          room.roomtype = 'straight'
+          if hasexit['u'] then
+            room.rotate = 0
+          else
+            room.rotate = 1
+          end
+        else
+          room.roomtype = 'corner'
+          if hasexit['u'] and hasexit['l'] then
+            room.rotate = 0
+          elseif hasexit['l'] and hasexit['d'] then
+            room.rotate = 1
+          elseif hasexit['d'] and hasexit['r'] then
+            room.rotate = 2
+          else
+            room.rotate = 3
+          end
+        end
+      elseif numexits == 3 then
+        room.roomtype = 't'
+        if not hasexit['d'] then
+          room.rotate = 0
+        elseif not hasexit['r'] then
+          room.rotate = 1
+        elseif not hasexit['u'] then
+          room.rotate = 2
+        else
+          room.rotate = 3
+        end
+      else
+        room.roomtype = 'cross'
+        room.rotate = math.random(0,3)
+      end
+    else
+      if room.roomtype == 'start' then
+        if not hasexit['d'] then
+          room.rotate = 0
+        elseif not hasexit['r'] then
+          room.rotate = 1
+        elseif not hasexit['u'] then
+          room.rotate = 2
+        else
+          room.rotate = 3
+        end
+      elseif room.roomtype == 'boss' then
+        room.rotate = 0
+      end
+    end
+  end
   inspectrooms()
+  
+  for roomi,room in ipairs(map) do
+    if levels.groups[room.roomtype] then
+      room.tiles = helpers.copy(levels.groups[room.roomtype][math.random(1,#levels.groups[room.roomtype])])
+      print(room.roomtype,room.rotate)
+      
+      for i=1,room.rotate do
+        for tilei,tile in ipairs(room.tiles) do
+          local oldx = tile.x
+          local oldy = tile.y
+          tile.x = oldy
+          tile.y = 15-oldx
+          
+        end
+      end
+      
+      
+    end
+  end
   return map
 end
 
 
-
+function st:updaterooms()
+  local mainroom = self.map[self.croom]
+  self.rooms['c'].level = mainroom
+  self.rooms['u'].level = self.map[mainroom.exits.u]
+  self.rooms['d'].level = self.map[mainroom.exits.d]
+  self.rooms['l'].level = self.map[mainroom.exits.l]
+  self.rooms['r'].level = self.map[mainroom.exits.r]
+  
+end
 
 st:setupdate(function(self,dt)
   

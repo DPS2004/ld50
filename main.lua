@@ -1,5 +1,5 @@
 function love.load()
-  
+  dofile = function(fname) love.filesystem.load(fname)() end
   dt = 1
   
   freeze = 0
@@ -253,6 +253,30 @@ function love.load()
   -- load states
 
   dofile('preload/states.lua')
+  
+  
+  -- load levels
+  levels = dpf.loadjson('data/levels.json',{})
+  
+  for groupname, group in pairs(levels.groups) do
+    if groupname ~= 'boss' then
+      for i=1,#group do
+        local v = group[i]
+        local flipped = helpers.copy(v)
+        for tilei,tile in ipairs(flipped) do
+          tile.x = 15-tile.x
+          if groupname == 'corner' then
+            local oldx = tile.x
+            local oldy = tile.y
+            tile.x = oldy
+            tile.y = 15-oldx
+          end
+        end
+        table.insert(group,flipped)
+      end
+    
+    end
+  end
   
   toswap = nil
   newswap = false
