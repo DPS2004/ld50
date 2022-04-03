@@ -18,6 +18,9 @@ end
 
 function Room:draw()
   color()
+  if not cs.map[cs.croom].cleared then
+    love.graphics.draw(sprites.doors,0,0)
+  end
   love.graphics.setCanvas(self.wallcanvas)
   love.graphics.clear()
   if self.level then

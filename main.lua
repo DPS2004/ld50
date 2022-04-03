@@ -216,7 +216,7 @@ function love.load()
       }
       return vec4(0,0,0,1);
     } else {
-      return vec4(0,0,0,0.5);
+      return vec4(0,0,0,0);
     }
   }
     

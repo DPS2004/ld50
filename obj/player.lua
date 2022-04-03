@@ -13,6 +13,7 @@ function Player:initialize(params)
   self.dy = 0
   self.flip = false
   
+  self.shootcooldown = 0
   self.gunx = 10
   self.guny = 0
   self.gunaimx = 10
@@ -26,6 +27,14 @@ function Player:initialize(params)
   self.hitbox = {x=self.x,y=self.y,width=5,height=6}
   self.oldhitboxx = {x=self.x,y=self.y,width=5,height=6}
   self.oldhitboxy = {x=self.x,y=self.y,width=5,height=6}
+  
+  self.doortiles = {
+    {x=6,y=0},{x=7,y=0},{x=8,y=0},{x=9,y=0},
+    {x=6,y=15},{x=7,y=15},{x=8,y=15},{x=9,y=15},
+    {x=0,y=6},{x=0,y=7},{x=0,y=8},{x=0,y=9},
+    {x=15,y=6},{x=15,y=7},{x=15,y=8},{x=15,y=9},
+  }
+  
   self.spr = ez.newanim(templates.player.base)
   
   Entity.initialize(self,params)
@@ -34,6 +43,10 @@ end
 
 
 function Player:update(dt)
+  if self.shootcooldown > 0 then
+    self.shootcooldown = self.shootcooldown - dt
+  end
+  
   if self.canmove then
     
     self.oldx = self.x 
@@ -73,6 +86,8 @@ function Player:update(dt)
     self.oldhitboxy.x = newx - 3
     self.oldhitboxy.y = self.y-6
     
+    
+    
     local xok = true
     local yok = true
     for i,v in ipairs(cs.rooms.c.level.tiles) do
@@ -84,6 +99,19 @@ function Player:update(dt)
         end
       end
     end
+    
+    if not cs.map[cs.croom].cleared then
+      for i,v in ipairs(self.doortiles) do
+        local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
+        if helpers.collide(self.hitbox,blockhitbox) then
+          if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
+          if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
+        end
+      end
+    end
+    
+    
+   
     
     
     if xok then self.x = newx else self.cdx = 0 end
@@ -108,69 +136,82 @@ function Player:update(dt)
       self.gunaimy = 10
     end
     
+    local doshoot = false
     if self.gunaimx == 0 and self.gunaimy == 0 then
       if self.flip then 
         self.gunaimx = -10
       else
         self.gunaimx = 10
       end
+    else
+      doshoot = true
     end
     self.gunx = (self.gunx + self.gunaimx)/2
     self.guny = (self.guny + self.gunaimy)/2
     
+    if doshoot then
+      if self.shootcooldown <= 0 then
+        self.shootcooldown = 8
+        em.init('playerbullet',{x=self.x+self.gunx,y=self.y+self.guny-5,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
+      end
+    end
+    
     ---room transitions
+    local movedistance = 12
+    local cuberot = 65
+    
     if self.x < 8 then
       self.canmove = false
-      flux.to(self, 30, {x=-9,y=64}):oncomplete(function() 
-        self.x = 119 
+      flux.to(self, 30, {x=(0-movedistance),y=64}):oncomplete(function() 
+        self.x = 128-movedistance
         self.canmove = true 
         if cs.map[cs.croom].exits.l then
           cs.croom = cs.map[cs.croom].exits.l
           cs:updaterooms()
         end
       end)
-      flux.to(cs.cube.r, 30, {y=63.5,z=0}):ease('outSine')
+      flux.to(cs.cube.r, 30, {y=cuberot,z=0}):ease('outSine')
       
     end
     
     if self.x > 120 then
       self.canmove = false
-      flux.to(self, 30, {x=128+9,y=64}):oncomplete(function() 
-        self.x = 9
+      flux.to(self, 30, {x=128+movedistance,y=64}):oncomplete(function() 
+        self.x = movedistance
         self.canmove = true 
         if cs.map[cs.croom].exits.r then
           cs.croom = cs.map[cs.croom].exits.r
           cs:updaterooms()
         end
       end)
-      flux.to(cs.cube.r, 30, {y=-63.5,z=0}):ease('outSine')
+      flux.to(cs.cube.r, 30, {y=(0-cuberot),z=0}):ease('outSine')
     end
     
     if self.y < 8 then
       self.canmove = false
-      flux.to(self, 30, {x=64,y=-9}):oncomplete(function() 
-        self.y = 119 
+      flux.to(self, 30, {x=64,y=(0-movedistance)}):oncomplete(function() 
+        self.y = 128-movedistance
         self.canmove = true 
         if cs.map[cs.croom].exits.u then
           cs.croom = cs.map[cs.croom].exits.u
           cs:updaterooms()
         end
       end)
-      flux.to(cs.cube.r, 30, {y=0,z=-63.5}):ease('outSine')
+      flux.to(cs.cube.r, 30, {y=0,z=(0-cuberot)}):ease('outSine')
       
     end
     
     if self.y > 120 then
       self.canmove = false
-      flux.to(self, 30, {x=64,y=128+9}):oncomplete(function() 
-        self.y = 9
+      flux.to(self, 30, {x=64,y=128+movedistance}):oncomplete(function() 
+        self.y = movedistance
         self.canmove = true 
         if cs.map[cs.croom].exits.d then
           cs.croom = cs.map[cs.croom].exits.d
           cs:updaterooms()
         end
       end)
-      flux.to(cs.cube.r, 30, {y=0,z=63.5}):ease('outSine')
+      flux.to(cs.cube.r, 30, {y=0,z=cuberot}):ease('outSine')
     end
     
     
