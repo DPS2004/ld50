@@ -1,7 +1,8 @@
 Cube = class('Cube',Entity)
 
+local outline_shader = love.graphics.newShader('assets/outline.glsl')
 function Cube:initialize(params)
-  
+  self.c_canvas = love.graphics.newCanvas(project.res.x, project.res.y)
   self.layer = 100 -- lower layers draw first
   self.uplayer = 0 --lower uplayer updates first
   self.x = 0
@@ -122,6 +123,9 @@ function Cube:drawface(k)
 end
 
 function Cube:draw()
+  love.graphics.push('all')
+  love.graphics.setCanvas(self.c_canvas)
+  love.graphics.clear()
   self:project()
   color('white')
   local drawlr = function()
@@ -154,17 +158,10 @@ function Cube:draw()
   drawlrdu()
   self:drawface('c')
   
-
-  
-  
-  --[[
-  for pi,p in ipairs(self.points) do
-    love.graphics.setColor(1,p.pd,p.pd,1)
-    love.graphics.circle('fill',p.px+self.x,p.py+self.y,0.5+p.pd*4)
-  end
-  --]]
-  
-  
+  love.graphics.pop()
+  love.graphics.setShader(outline_shader)
+  love.graphics.draw(self.c_canvas)
+  love.graphics.setShader()
 end
 
 return Cube
