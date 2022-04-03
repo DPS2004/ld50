@@ -9,7 +9,7 @@ function Enemy:initialize(params)
   self.dx = 0
   self.dy = 0
   self.size = 5
-  self.hp = 10
+  self.hp = 5
   self.spr = sprites.enemyface
   
   self.isenemy = true

@@ -27,7 +27,7 @@ function Spawner:initialize(params)
   rw:ease(0.75,0.5,'outSine',0,self,'size')
   rw:func(1.25,function() em.init(self.tospawn,{x=self.x,y=self.y-1,canv=self.canv}) self.delete = true end)
   
-  rw:play()
+  rw:play({bpm=100})
 end
 
 
