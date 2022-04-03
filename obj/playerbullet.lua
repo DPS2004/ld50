@@ -22,8 +22,8 @@ function Playerbullet:update(dt)
   self.x = self.x + self.dx
   self.y = self.y + self.dy
   
-  self.hitbox.x = self.x
-  self.hitbox.y = self.y
+  self.hitbox.x = self.x - 2
+  self.hitbox.y = self.y - 2
   
   for i,v in ipairs(cs.rooms.c.level.tiles) do
     if v.t == 0 then

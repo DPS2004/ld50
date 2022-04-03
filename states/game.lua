@@ -296,6 +296,16 @@ function st:updaterooms()
   self.rooms['l'].level = self.map[mainroom.exits.l]
   self.rooms['r'].level = self.map[mainroom.exits.r]
   
+  if not mainroom.cleared then
+    print('spawning enemies')
+  end
+  for tilei,tile in ipairs(mainroom.tiles) do
+    if tile.t == 16 then
+      em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
+    end
+    
+  end
+  
 end
 
 st:setupdate(function(self,dt)

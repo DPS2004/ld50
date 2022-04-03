@@ -157,8 +157,8 @@ function Player:update(dt)
     end
     
     ---room transitions
-    local movedistance = 12
-    local cuberot = 65
+    local movedistance = 14
+    local cuberot = 66
     
     if self.x < 8 then
       self.canmove = false
