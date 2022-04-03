@@ -101,7 +101,7 @@ function Player:update(dt)
     end
     
     if not cs.map[cs.croom].cleared then
-      for i,v in ipairs(self.doortiles) do
+      for i,v in ipairs(cs.doortiles) do
         local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
         if helpers.collide(self.hitbox,blockhitbox) then
           if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end

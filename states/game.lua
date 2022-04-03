@@ -19,6 +19,13 @@ st:setinit(function(self)
   
   self.croom = 1
   
+  self.doortiles = {
+    {x=6,y=0},{x=7,y=0},{x=8,y=0},{x=9,y=0},
+    {x=6,y=15},{x=7,y=15},{x=8,y=15},{x=9,y=15},
+    {x=0,y=6},{x=0,y=7},{x=0,y=8},{x=0,y=9},
+    {x=15,y=6},{x=15,y=7},{x=15,y=8},{x=15,y=9},
+  }
+  
   self:updaterooms()
   
 end)
@@ -298,18 +305,31 @@ function st:updaterooms()
   
   if not mainroom.cleared then
     print('spawning enemies')
-  end
-  for tilei,tile in ipairs(mainroom.tiles) do
-    if tile.t == 16 then
-      em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
+    for tilei,tile in ipairs(mainroom.tiles) do
+      if tile.t == 16 then
+        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
+      end
+      
     end
-    
   end
+  
   
 end
 
 st:setupdate(function(self,dt)
-  
+  if not self.map[self.croom].cleared then
+    local enemiesleft = false
+    for i,v in ipairs(entities) do
+      if v.isenemy then
+        enemiesleft = true
+      end
+    end
+    
+    if not enemiesleft then
+      self.map[self.croom].cleared = true
+    end
+    
+  end
 end)
 
 st:setbgdraw(function(self)

@@ -9,6 +9,8 @@ function Spawner:initialize(params)
   self.size = 0
   self.tospawn = 'shooter'
   
+  self.isenemy = true
+  
   self.enemyy = 0
   self.enemysize = 0
   

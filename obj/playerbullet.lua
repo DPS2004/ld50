@@ -3,11 +3,12 @@ Playerbullet = class('Playerbullet',Entity)
 function Playerbullet:initialize(params)
   
   self.layer = 11 -- lower layers draw first
-  self.uplayer = 0 --lower uplayer updates first
+  self.uplayer = 1 --lower uplayer updates first
   self.x = 0
   self.y = 0
   self.dx = 0
   self.dy = 0
+  self.name = 'playerbullet'
   
   self.spr = sprites.bullet
   

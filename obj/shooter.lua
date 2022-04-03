@@ -8,7 +8,9 @@ end
 
 
 function Shooter:update(dt)
-  
+  self:bulletcheck()
+  self:move()
+  self:deathcheck()
 end
 
 function Shooter:draw()
