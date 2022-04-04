@@ -4,7 +4,7 @@ DPS2004
 
 --Programming--
 DPS2004
-pipes
+pipelinks
 
 --Art--
 
@@ -47,7 +47,6 @@ Web port made possible with love.js by Davidobot
 huantian
 megaminerzero
 ThatOneGuy
-pipelinks
 saladplainzone
 DeadlySprinklez
 Squidly
