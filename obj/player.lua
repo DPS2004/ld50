@@ -87,15 +87,16 @@ function Player:update(dt)
     self.oldhitboxy.y = self.y-6
     
     
-    
     local xok = true
     local yok = true
+    local function sign(a) return a > 0 and 1 or -1 end
+
     for i,v in ipairs(cs.rooms.c.level.tiles) do
       if v.t == 0 then
         local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
         if helpers.collide(self.hitbox,blockhitbox) then
-          if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
-          if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
+          if helpers.collide(self.oldhitboxx,blockhitbox) and sign(self.hitbox.y - blockhitbox.y) ~= sign(self.cdy)  then yok = false end
+          if helpers.collide(self.oldhitboxy,blockhitbox) and sign(self.hitbox.x - blockhitbox.x) ~= sign(self.cdx) then xok = false end
         end
       end
     end
