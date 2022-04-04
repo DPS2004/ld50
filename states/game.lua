@@ -277,6 +277,12 @@ function st:levelgen(floor)
           tile.x = oldy
           tile.y = 15-oldx
           
+          if tile.t == 21 then --flip bouncer enemies
+            tile.t = 19
+          elseif tile.t == 19 then
+            tile.t = 21
+          end
+          
         end
       end
       
@@ -316,6 +322,14 @@ function st:updaterooms()
       
       if tile.t == 18 then
         em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walkshoot',canv='c'})
+      end
+      
+      if tile.t == 19 then
+        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=90}})
+      end
+      
+      if tile.t == 21 then
+        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=0}})
       end
       
     end

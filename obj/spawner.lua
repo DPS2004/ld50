@@ -25,7 +25,13 @@ function Spawner:initialize(params)
   
   rw:ease(0.75,0.5,'outSine',5,self,'enemysize')
   rw:ease(0.75,0.5,'outSine',0,self,'size')
-  rw:func(1.25,function() em.init(self.tospawn,{x=self.x,y=self.y-1,canv=self.canv}) self.delete = true end)
+  
+  local newparams = {x=self.x,y=self.y-1,canv=self.canv}
+  params.eparams = params.eparams or {}
+  for k,v in pairs(params.eparams) do
+    newparams[k] = v
+  end
+  rw:func(1.25,function() em.init(self.tospawn,newparams) self.delete = true end)
   
   rw:play({bpm=100})
 end

@@ -9,5 +9,6 @@ sprites.bullet = love.graphics.newImage('assets/enemybullet.png')
 sprites.enemyface = love.graphics.newImage('assets/enemy_face.png')
 sprites.walker = love.graphics.newImage('assets/walker.png')
 sprites.walkshoot = love.graphics.newImage('assets/walkshoot.png')
+sprites.bouncer = love.graphics.newImage('assets/bouncer.png')
 
 return sprites

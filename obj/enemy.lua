@@ -65,7 +65,9 @@ function Enemy:bulletcheck()
   
 end
 
-function Enemy:move()
+function Enemy:move(params)
+  params = params or {}
+  params.knockback = params.knockback or 1
   
   self.oldx = self.x 
   self.oldy = self.y
@@ -74,8 +76,8 @@ function Enemy:move()
   local newy = self.y + self.dy
   
   if self.hx then
-    newx = newx + self.hx
-    newy = newy + self.hy
+    newx = newx + self.hx*params.knockback
+    newy = newy + self.hy*params.knockback
   end
   
   self.hitbox.x = newx - 3
@@ -93,6 +95,10 @@ function Enemy:move()
     if v.t == 0 then
       local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
       if helpers.collide(self.hitbox,blockhitbox) then
+        if params.bounce then
+          self.angle = (self.angle + 180)%360
+        end
+        
         if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
         if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
       end
