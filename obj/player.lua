@@ -153,6 +153,7 @@ function Player:update(dt)
       if self.shootcooldown <= 0 then
         self.shootcooldown = 8
         em.init('playerbullet',{x=self.x+self.gunx,y=self.y+self.guny-5,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
+        te.play('assets/sfx/player_shoot.ogg','static',{'player_shoot','sfx'},0.7)
       end
     end
     
@@ -171,6 +172,7 @@ function Player:update(dt)
         end
       end)
       flux.to(cs.cube.r, 30, {y=cuberot,z=0}):ease('outSine')
+      te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
       
     end
     
@@ -185,6 +187,7 @@ function Player:update(dt)
         end
       end)
       flux.to(cs.cube.r, 30, {y=(0-cuberot),z=0}):ease('outSine')
+      te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
     end
     
     if self.y < 8 then
@@ -198,6 +201,7 @@ function Player:update(dt)
         end
       end)
       flux.to(cs.cube.r, 30, {y=0,z=(0-cuberot)}):ease('outSine')
+      te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
       
     end
     
@@ -212,6 +216,7 @@ function Player:update(dt)
         end
       end)
       flux.to(cs.cube.r, 30, {y=0,z=cuberot}):ease('outSine')
+      te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
     end
     
     

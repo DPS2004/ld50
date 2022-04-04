@@ -49,6 +49,11 @@ function Enemy:bulletcheck()
         self.hp = self.hp - 1
         self.hx = v.dx * 0.5
         self.hy = v.dy * 0.5
+        if self.hp > 0 then 
+          te.play('assets/sfx/enemy_hit.ogg','static',{'enemy_hit','sfx'},0.9)
+        else
+          te.play('assets/sfx/enemy_die.ogg','static',{'enemy_hit','sfx'},1)
+        end
       end
     end
   end
