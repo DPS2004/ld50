@@ -19,5 +19,8 @@ sprites.scorecounter = love.graphics.newImage('assets/scorecounter.png')
 sprites.numbers = love.graphics.newImage('assets/numbers.png')
 
 sprites.stadium = love.graphics.newImage('assets/bg/stadium.png')
+sprites.stage = love.graphics.newImage('assets/bg/stage.png')
+
+sprites.logo = love.graphics.newImage('assets/logo.png')
 
 return sprites

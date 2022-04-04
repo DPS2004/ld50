@@ -9,14 +9,20 @@ function Spinner:initialize(params)
   
   self.extend = 0
   
-  self.hp = 20
+  self.hp = 30
   
   self.size = 8
   self.layer = 12
   
+  self.shotcooldown = 0
+  
+  self.rotatespeed = 0
+  
   self.orbiternum = 4
   
-  
+  self.state = 0
+  self.statetimer = 9999
+  self.endingstate = false
   
   self.orbiters = {}
   
@@ -25,27 +31,110 @@ function Spinner:initialize(params)
   end
   
   
+  
   rw:ease(0,1,'outExpo',16,self,'extend')
+  rw:ease(0,1,'linear',6,self,'rotatespeed')
+  rw:func(1,function() self:changestate(1) end)
+    
   rw:play()
   
 end
 
 
+function Spinner:changestate(forced)
+  
+  print('changing state')
+  self.statetimer = math.random(300,500)
+  
+  local numstates = 2
+  
+  self.state = (((self.state - 1) + math.random(1,numstates -1))%(numstates))+1
+  if forced then
+    self.state = forced
+  end
+  
+  --self.state = 2
+  
+  if self.state == 1 then
+    self.chargespeed = 0.25
+    rw:ease(0,1,'linear',6,self,'rotatespeed')
+    rw:ease(0,4,'linear',0.75,self,'chargespeed')
+    rw:play()
+  elseif self.state == 2 then
+    self.statetimer = 499
+    local dir = math.random(0,1)*3-1.5
+    rw:ease(0,0.5,'linear',dir,self,'rotatespeed')
+    rw:play()
+  end
+  self.endingstate = false
+end
+
 function Spinner:update(dt)
   
-  self.pulsei = self.pulsei + dt/20
-  self.angle = self.angle + dt*3
   
-  for i,v in ipairs(self.orbiters) do
-    local ang = helpers.rotate(self.extend,(i-0)*(360/self.orbiternum)+ self.angle,self.x,self.y)
-    v.x = ang[1]
-    v.y = ang[2]
-    v:update(dt)
-    if v.delete then
-      table.remove(self.orbiters,i)
+  if self.shotcooldown > 0 then
+    self.shotcooldown = self.shotcooldown - dt
+  else
+    self.shotcooldown = 0
+  end
+  
+  if self.state ~= 0 then
+    self.statetimer = self.statetimer - dt
+  end
+  if self.statetimer <= 0 and self.state ~= 0 and self.endingstate == false then
+    self.endingstate = true
+    
+    --end of each state
+    if self.state == 1 then
+      print('ending state 1')
+      rw:ease(0,1,'linear',0,self,'dx')
+      rw:ease(0,1,'linear',0,self,'dy')
+      rw:func(1,function() self:changestate() end)
+      rw:play()
+    elseif self.state == 2 then
+      print('ending state 2')
+      rw:ease(0,1,'linear',0,self,'rotatespeed')
+      rw:func(1,function() self:changestate() end)
+      rw:play()
     end
   end
   
+  
+  if self.state == 1 then
+    if not self.endingstate then
+      local ang = helpers.rotate(0.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3),0,0)
+      self.dx = ang[1]
+      self.dy = ang[2]
+    end
+  end
+  
+  
+  self.pulsei = self.pulsei + dt/20
+  self.angle = self.angle + dt*self.rotatespeed
+  local fired = false
+  for i,v in ipairs(self.orbiters) do
+    local ang = helpers.rotate(self.extend,(i-0)*(360/self.orbiternum)+ self.angle,0,0)
+    v.x = ang[1] + self.x
+    v.y = ang[2] + self.y
+    v:update(dt)
+    if v.delete then
+      table.remove(self.orbiters,i)
+    else
+      if self.state == 2 then
+        if self.shotcooldown == 0 then
+          if math.floor(self.statetimer/50)%2 == 0 then
+            fired = true
+            em.init('enemybullet',{x=v.x,y=v.y,dx=ang[1]/10,dy=ang[2]/10,canv=self.canv})
+          end
+        end
+      end
+    end
+  end
+  
+  if fired then
+    self.shotcooldown = 6
+    te.play('assets/sfx/enemy_fire.ogg','static',{'enemy_fire','sfx'},0.5)
+  end
   self:bulletcheck()
   self:move(dt)
   self:deathcheck()

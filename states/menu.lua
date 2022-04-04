@@ -46,7 +46,8 @@ function st:drawTitle()
 
   love.graphics.print('S - quit', 64 - font:getWidth('W - quit') / 2, 128 - 12)
 
-  love.graphics.printf('HYPERCUBE\nWARRIOR', 1, 48, 64, 'center', 0, 2, 2)
+    love.graphics.draw(sprites.logo,64,64,0,0.45+math.sin(love.timer.getTime()/2)*0.05,0.5+math.cos(love.timer.getTime()/2)*0.05,109,52)
+    
   love.graphics.pop()
 
 end
@@ -220,6 +221,7 @@ st:setbgdraw(function(self)
   color('black')
   love.graphics.rectangle('fill',0,0,project.res.x,project.res.y)
   color()
+  love.graphics.draw(sprites.stadium)
 end)
 
 --entities are drawn here

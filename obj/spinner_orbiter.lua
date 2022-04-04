@@ -4,7 +4,7 @@ function SpinnerOrbiter:initialize(params)
   
   Enemy.initialize(self,params)
   
-  self.hp = 10
+  self.hp = 20
   
   self.size = 4
   

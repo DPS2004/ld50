@@ -437,7 +437,7 @@ st:setbgdraw(function(self)
   color('black')
   love.graphics.rectangle('fill',0,0,project.res.x,project.res.y)
   color('white')
-  love.graphics.draw(sprites.stadium,0,0)
+  love.graphics.draw(sprites.stage,0,0)
 end)
 
 --entities are drawn here

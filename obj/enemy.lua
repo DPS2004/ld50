@@ -39,6 +39,7 @@ end
 function Enemy:shoot()
   local ang = helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3),0,0)
   em.init('enemybullet',{x=self.x,y=self.y,dx=ang[1],dy=ang[2],canv=self.canv})
+  te.play('assets/sfx/enemy_fire.ogg','static',{'enemy_fire','sfx'},0.5)
 end
 
 function Enemy:updatehitbox()
