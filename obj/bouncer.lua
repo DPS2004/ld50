@@ -14,7 +14,7 @@ function Bouncer:update(dt)
   self.dx = ang[1]
   self.dy = ang[2]
   self:bulletcheck()
-  self:move({bounce = true,knockback = 0})
+  self:move(dt,{bounce = true,knockback = 0})
   self:deathcheck()
   
 end

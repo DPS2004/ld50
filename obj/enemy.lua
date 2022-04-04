@@ -66,15 +66,15 @@ function Enemy:bulletcheck()
   
 end
 
-function Enemy:move(params)
+function Enemy:move(dt,params)
   params = params or {}
   params.knockback = params.knockback or 1
   
   self.oldx = self.x 
   self.oldy = self.y
   
-  local newx = self.x + self.dx
-  local newy = self.y + self.dy
+  local newx = self.x + self.dx*dt
+  local newy = self.y + self.dy*dt
   
   if self.hx then
     newx = newx + self.hx*params.knockback

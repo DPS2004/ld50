@@ -15,7 +15,7 @@ function Shooter:update(dt)
     self:shoot()
   end
   self:bulletcheck()
-  self:move()
+  self:move(dt)
   self:deathcheck()
 end
 

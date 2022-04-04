@@ -12,8 +12,8 @@ function Playerbullet:initialize(params)
 
 end
 
-function Playerbullet:update()
-  self:move()
+function Playerbullet:update(dt)
+  self:move(dt)
   self:checkwalls()
   
 end

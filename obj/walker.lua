@@ -16,7 +16,7 @@ function Walker:update(dt)
   self.dx = ang[1]
   self.dy = ang[2]
   self:bulletcheck()
-  self:move()
+  self:move(dt)
   self:deathcheck()
   self.flippedtimer = self.flippedtimer - dt
   if self.flippedtimer <= 0 then

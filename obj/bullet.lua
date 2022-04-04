@@ -18,9 +18,9 @@ function Bullet:initialize(params)
 
 end
 
-function Bullet:move()
-  self.x = self.x + self.dx
-  self.y = self.y + self.dy
+function Bullet:move(dt)
+  self.x = self.x + self.dx*dt
+  self.y = self.y + self.dy*dt
   
   self.hitbox.x = self.x - 2
   self.hitbox.y = self.y - 2
@@ -41,7 +41,7 @@ function Bullet:checkwalls()
 end
 
 function Bullet:update(dt)
-  self:move()
+  self:move(dt)
   self:checkwalls()
 end
 

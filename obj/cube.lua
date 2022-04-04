@@ -162,7 +162,6 @@ function Cube:draw()
   love.graphics.setColor(1,1,1,1)
 
   if true then
-    print('hi')
     if self.plane_l then self.plane_l:draw() end
     if self.plane_u then self.plane_u:draw() end
     if self.plane_c then self.plane_c:draw() end

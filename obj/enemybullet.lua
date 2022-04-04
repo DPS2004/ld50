@@ -12,8 +12,8 @@ function Enemybullet:initialize(params)
 
 end
 
-function Enemybullet:update()
-  self:move()
+function Enemybullet:update(dt)
+  self:move(dt)
   self:checkwalls()
   
 end

@@ -40,6 +40,10 @@ st:setinit(function(self)
   self.scoreop = 0
   self.greenscore = true
   
+  te.play("assets/music/ld50mus_intro.ogg","stream","bgm",1,1,function(a)
+    te.playLooping("assets/music/ld50mus.ogg","stream","bgm")
+  end)
+  
 end)
 
 

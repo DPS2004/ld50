@@ -84,8 +84,8 @@ function Player:update(dt)
     self.cdy = (self.dy*friction +self.cdy)/(friction+1)
     
     
-    local newx = self.x + self.cdx
-    local newy = self.y + self.cdy
+    local newx = self.x + self.cdx*dt
+    local newy = self.y + self.cdy*dt
     
     self.hitbox.x = newx - 3
     self.hitbox.y = newy - 6
@@ -249,6 +249,7 @@ function Player:update(dt)
         if helpers.collide(self.hitbox,v.hitbox) then
           self.hitcooldown = 89
           cs:addscore(-200,'gothit')
+          te.play('assets/sfx/player_hit.ogg','static',{'player_hit','sfx'},1)
         end
       end
     end
