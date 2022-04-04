@@ -409,8 +409,11 @@ st:setupdate(function(self,dt)
       v.skipupdate = true
     end
     self.dead = true
+    local highscore = savedata.highscore or 0
+    savedata.highscore = math.max(highscore, self.pointsgained)
+    sdfunc.save()
     cs = bs.load('menu')
-    cs:init(true, self.pointsgained)
+    cs:init(true, self.pointsgained, self.pointsgained > highscore)
     return
   end
   

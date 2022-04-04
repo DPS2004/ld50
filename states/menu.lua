@@ -3,11 +3,12 @@ require 'lib.perlin'
 
 local credits = love.filesystem.read("data/credits.txt")
 local _, credits_linecount = credits:gsub('\n', '\n')
-st:setinit(function(self, gameovered, pointsgained)
+st:setinit(function(self, gameovered, pointsgained, new_highscore)
   self.cube = em.init('cube',{x=project.res.cx,y=project.res.y*0.55})
   self.pointsgained = pointsgained
   
   self.start_time = love.timer.getTime()
+  self.new_highscore = new_highscore
 
   self.screen = (gameovered) and 'gameover' or 'title'
   self.screen_rotations = {
@@ -67,7 +68,8 @@ function st:drawPlay()
   s = '[press space]'
   love.graphics.print(s, 64, 128 - 48, 0, 1, 1, self.font:getWidth(s) / 2)
   
-  s = '[highscore goes here]'
+  local highscore = savedata.highscore or 0
+  s = 'highscore: '..highscore
   love.graphics.print(s, 64, 128 - 64, 0, 1, 1, self.font:getWidth(s) / 2)
   love.graphics.pop()
 end
@@ -124,6 +126,11 @@ function st:drawGameover()
   
   s = 'you gained '..(self.pointsgained or 'some')..' points'
   love.graphics.print(s, 64, 128 - 48, 0, 1, 1, self.font:getWidth(s) / 2)
+  
+  s = 'new high score!!'
+  if self.new_highscore then
+    love.graphics.print(s, 64, 128 - 36, 0, 1, 1, self.font:getWidth(s) / 2)
+  end
 
   love.graphics.pop()
 end
@@ -139,7 +146,7 @@ function st:update_title()
 end
 
 function st:update_credits()
-  local max_offset = self.font:getHeight() * credits_linecount - 80 -- why 80? i have no idea
+  local max_offset = self.font:getHeight() * credits_linecount - 70 -- why 70? i have no idea
   if maininput:pressed("right") then
     self.screen = 'title'
   end

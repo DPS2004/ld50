@@ -2,7 +2,8 @@
   "options": {
     "audio": {
       "musicvolume": 7,
-      "sfxvolume": 7
+      "sfxvolume": 7,
+      "highscore": 0
     },
   },
   "timesbooted": 0
