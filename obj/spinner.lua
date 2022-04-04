@@ -52,8 +52,17 @@ function Spinner:update(dt)
   
 end
 
+
 function Spinner:draw()
-  
+  love.graphics.push('all')
+  for _,c in pairs(cs.cube.canvas) do
+    love.graphics.setCanvas(c)
+    self:drawt()
+  end
+  love.graphics.pop()
+end
+
+function Spinner:drawt()
   for i,v in ipairs(self.orbiters) do
     v:draw()
   end

@@ -80,7 +80,7 @@ function Enemy:move(dt,params)
   local newy = self.y + self.dy*dt
   
   if self.hx then
-    if params.movehx then
+    if params.movehx and params.movehx.hx and params.movehx.hy then
       params.movehx.hx = params.movehx.hx + self.hx*params.knockback
       params.movehx.hy = params.movehx.hy + self.hy*params.knockback
     else
