@@ -4,7 +4,7 @@ project.release = false
 
 project.name = 'Hypercube Warrior'
 
-project.initstate = 'game'
+project.initstate = 'menu'
 
 --project.frameadvance = true
 
@@ -14,6 +14,9 @@ project.res.x = 352
 project.res.y = 198
 project.res.s = 3
 
+-- project.res.x = 352 * 3
+-- project.res.y = 198 * 3
+-- project.res.s = 1
 
 project.ctrls = {
   left = {"key:a",  "axis:leftx-", "button:dpleft"},
