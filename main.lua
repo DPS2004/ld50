@@ -109,8 +109,8 @@ function love.load()
     self.fgdrawfunc = drawfunc
   end
   
-  function Gamestate:init()
-    self:initfunc()
+  function Gamestate:init(...)
+    self:initfunc(...)
   end
   
   function Gamestate:update(dt)

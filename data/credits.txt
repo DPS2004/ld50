@@ -1,0 +1,55 @@
+--Game Design--
+
+DPS2004
+
+--Programming--
+DPS2004
+pipes
+
+--Art--
+
+DPS2004
+DeadlySprinklez
+
+--Music--
+
+DPS2004
+bunner
+
+--Tools used--
+
+Audacity
+Famitracker
+FL Studio
+Magical 8bit Plug
+
+Aseprite
+Paint.net
+Piskel
+
+Zerobrane Studio
+Visual Studio Code
+
+--Libraries--
+
+Baton by tesselode
+flux by rxi
+json.lua by rxi
+lovebird by rxi
+TEsound by Taehl
+g3d by groverburger
+perlin by kymckay
+
+Web port made possible with love.js by Davidobot
+
+--Special Thanks--
+
+huantian
+megaminerzero
+ThatOneGuy
+pipelinks
+saladplainzone
+DeadlySprinklez
+Squidly
+The Love2d Discord server
+You!

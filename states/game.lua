@@ -394,13 +394,24 @@ function st:addscore(num,text)
 end
 
 st:setupdate(function(self,dt)
-  
   self.scoreop = self.scoreop - (dt/40)
   
   self.scorecountdown = self.scorecountdown - dt
   if self.scorecountdown <= 0 then
     self.scorecountdown = 30
     self.score = self.score - 1
+  end
+
+  if self.score <= 0 then
+    print("imagine losing lmao")
+    for i,v in pairs(entities) do
+      v.delete = true
+      v.skipupdate = true
+    end
+    self.dead = true
+    cs = bs.load('menu')
+    cs:init(true, self.pointsgained)
+    return
   end
   
   if (not self.map[self.croom].cleared) then
@@ -425,6 +436,7 @@ st:setbgdraw(function(self)
   color('white')
   love.graphics.draw(sprites.stadium,0,0)
 end)
+
 --entities are drawn here
 st:setfgdraw(function(self)
   color()

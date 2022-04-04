@@ -48,6 +48,7 @@ function em.draw()
     if not v.skiprender then
 
       em.deep.queue(v.layer, function() 
+        if v.delete or v.skiprender then return end
         if v.canv then
           love.graphics.setCanvas(cs.cube.canvas[v.canv])
         else
@@ -68,6 +69,7 @@ end
 
 
 function em.update2(v,dt)
+  if v.skipupdate or v.delete then return end
   v:update(dt)
 end
 
