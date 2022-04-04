@@ -26,7 +26,7 @@ st:setinit(function(self)
     {x=15,y=6},{x=15,y=7},{x=15,y=8},{x=15,y=9},
   }
   
-  local skiptoboss = true
+  --local skiptoboss = true
   
   if skiptoboss then
     self.map[1].exits = {u=5,d=5,l=5,r=5}

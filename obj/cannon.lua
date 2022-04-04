@@ -26,6 +26,7 @@ function Cannon:update(dt)
     self.shotsleft = self.shotsleft - 1
     local ang = helpers.rotate(2,self.angle,0,0)
     em.init('enemybullet',{x=self.x,y=self.y,dx=ang[1],dy=ang[2],canv=self.canv})
+    te.play('assets/sfx/enemy_fire.ogg','static',{'enemy_fire','sfx'},0.5)
   end
   
   self:bulletcheck()

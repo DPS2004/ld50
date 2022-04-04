@@ -20,8 +20,7 @@ bunner
 
 Audacity
 Famitracker
-FL Studio
-Magical 8bit Plug
+Famistudio
 
 Aseprite
 Paint.net
@@ -48,7 +47,7 @@ huantian
 megaminerzero
 ThatOneGuy
 saladplainzone
-DeadlySprinklez
+SHAME
 Squidly
 The Love2d Discord server
 You!

@@ -29,7 +29,7 @@ function Spinner:initialize(params)
   self.orbiters = {}
   
   for i=1,self.orbiternum do
-    table.insert(self.orbiters,em.init('spinner_orbiter',{x=self.x,y=self.y,parentspinner=self}))
+    table.insert(self.orbiters,em.init('spinner_orbiter',{x=self.x,y=self.y,parentspinner=self,canv=self.canv}))
   end
   
   

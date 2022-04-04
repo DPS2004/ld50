@@ -32,6 +32,7 @@ end
 function Enemy:deathcheck()
   if self.hp <= 0 then
     self.delete = true
+    em.init('enemypoof',{x=self.x,y=self.y,size=self.size,canv=self.canv})
   end
   
 end
