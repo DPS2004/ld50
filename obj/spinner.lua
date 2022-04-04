@@ -2,6 +2,8 @@ Spinner = class('Spinner',Enemy)
 
 function Spinner:initialize(params)
   
+  self.orbiternum = 4
+  
   Enemy.initialize(self,params)
   
   self.pulsei = 0
@@ -18,7 +20,7 @@ function Spinner:initialize(params)
   
   self.rotatespeed = 0
   
-  self.orbiternum = 4
+  
   
   self.state = 0
   self.statetimer = 9999
@@ -32,7 +34,7 @@ function Spinner:initialize(params)
   
   
   
-  rw:ease(0,1,'outExpo',16,self,'extend')
+  rw:ease(0,1,'outExpo',14,self,'extend')
   rw:ease(0,1,'linear',6,self,'rotatespeed')
   rw:func(1,function() self:changestate(1) end)
     
@@ -46,7 +48,7 @@ function Spinner:changestate(forced)
   print('changing state')
   self.statetimer = math.random(300,500)
   
-  local numstates = 2
+  local numstates = 3
   
   self.state = (((self.state - 1) + math.random(1,numstates -1))%(numstates))+1
   if forced then
@@ -54,6 +56,9 @@ function Spinner:changestate(forced)
   end
   
   --self.state = 2
+  if #self.orbiters == 0 then
+    self.state = 1
+  end
   
   if self.state == 1 then
     self.chargespeed = 0.25
@@ -64,6 +69,16 @@ function Spinner:changestate(forced)
     self.statetimer = 499
     local dir = math.random(0,1)*3-1.5
     rw:ease(0,0.5,'linear',dir,self,'rotatespeed')
+    rw:play()
+  
+  elseif self.state == 3 then
+    self.statetimer = 9999
+    rw:ease(0,1,'inOutSine',64,self,'x')
+    rw:ease(0,1,'inOutSine',64,self,'y')
+    rw:ease(0,5,'linear',10,self,'rotatespeed')
+    rw:ease(1,2,'outSine',50,self,'extend')
+    rw:ease(3,2,'inSine',14,self,'extend')
+    rw:func(5,function() self.statetimer = 0 self:changestate() end)
     rw:play()
   end
   self.endingstate = false

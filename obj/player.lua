@@ -25,6 +25,11 @@ function Player:initialize(params)
   
   self.hitcooldown = 0
   
+  self.anim = 'idle'
+  self.animframe = 0
+  self.animtimer = 0
+  self.nextanim = 'idle'
+  
   self.canmove = true
   self.hitbox = {x=self.x,y=self.y,width=5,height=6}
   self.oldhitboxx = {x=self.x,y=self.y,width=5,height=6}
@@ -55,7 +60,7 @@ function Player:update(dt)
   if self.hitcooldown < 0 then
     self.hitcooldown = 0
   end
-  
+  local moving = false
   
   if self.canmove then
     
@@ -64,20 +69,26 @@ function Player:update(dt)
     
     self.dx = 0
     self.dy = 0
+    
     if maininput:down('left') and (not maininput:down('right')) then
       self.flip = true
       self.dx = -self.speed
+      moving = true
+      
     end
     if maininput:down('right') and (not maininput:down('left')) then
       self.flip = false
       self.dx = self.speed
+      moving = true
     end
     
     if maininput:down('up') and (not maininput:down('down')) then
       self.dy = -self.speed
+      moving = true
     end
     if maininput:down('down') and (not maininput:down('up')) then
       self.dy = self.speed
+      moving = true
     end
     local friction = 0.5
     self.cdx = (self.dx*friction +self.cdx)/(friction+1)
@@ -237,7 +248,7 @@ function Player:update(dt)
     
     
   else
-    
+    moving = true
   end
   cs.cube:updateRotation()
   if self.hitcooldown == 0 then
@@ -250,6 +261,9 @@ function Player:update(dt)
           self.hitcooldown = 89
           cs:addscore(-200,'gothit')
           te.play('assets/sfx/player_hit.ogg','static',{'player_hit','sfx'},1)
+          self.anim = 'hit'
+          self.animtimer = 30
+          self.nextanim = 'idle'
         end
       end
     end
@@ -259,7 +273,36 @@ function Player:update(dt)
     
   end
   
+  if self.anim == 'hit' then
+    self.frame = 2
+  elseif self.anim == 'idle' then
+    self.frame = 0
+    if moving then
+      self.anim = 'moving'
+      self.frame = 1
+      self.nextanim = 'moving'
+      self.animtimer = 10
+    end
+  end
   
+  if self.anim == 'moving' then
+    if not moving then
+      self.anim = 'idle'
+      self.nextanim = 'idle'
+      self.frame = 0
+    end
+  end
+  
+  self.animtimer = self.animtimer - dt
+  if self.animtimer <= 0 then
+    if self.nextanim == 'idle' then
+      self.frame = 0
+      self.anim = 'idle'
+    elseif self.nextanim == 'moving' then
+      self.frame = (self.frame + 1)%2
+      self.animtimer = 10
+    end
+  end
 end
 
 function Player:drawmain(sx,sy)
@@ -278,7 +321,7 @@ function Player:drawmain(sx,sy)
   end
   if math.floor(self.hitcooldown / 10) % 2 == 0 then
     helpers.drawbordered(function(dfx,dfy)
-      ez.drawframe(self.spr,0,self.x+dfx+sx,self.y+dfy+sy,0,1*flipscale,1,9,18)
+      ez.drawframe(self.spr,self.frame,self.x+dfx+sx,self.y+dfy+sy,0,1*flipscale,1,9,18)
       love.graphics.draw(self.gunspr,self.x+self.gunx+dfx+sx,self.y+self.guny+dfy-4+sy,0,gunflip,1,3,3)
     end,'white',true)
   end
