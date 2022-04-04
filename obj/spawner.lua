@@ -14,7 +14,7 @@ function Spawner:initialize(params)
   self.enemyy = 0
   self.enemysize = 0
   
-  self.hitbox = {x=0,y=0,width=8,height=8}
+  self.hitbox = {x=0,y=0,width=0,height=0}
   
   Entity.initialize(self,params)
   

@@ -23,6 +23,8 @@ function Player:initialize(params)
   
   self.speed = 1
   
+  self.hitcooldown = 0
+  
   self.canmove = true
   self.hitbox = {x=self.x,y=self.y,width=5,height=6}
   self.oldhitboxx = {x=self.x,y=self.y,width=5,height=6}
@@ -46,6 +48,14 @@ function Player:update(dt)
   if self.shootcooldown > 0 then
     self.shootcooldown = self.shootcooldown - dt
   end
+  
+  if self.hitcooldown > 0 then
+    self.hitcooldown = self.hitcooldown - dt
+  end
+  if self.hitcooldown < 0 then
+    self.hitcooldown = 0
+  end
+  
   
   if self.canmove then
     
@@ -225,10 +235,21 @@ function Player:update(dt)
     cs.cube.r.y = (self.x - 64)*-0.5
     cs.cube.r.z = (self.y - 64)*0.5
     
+    
   else
     
   end
   
+  if self.hitcooldown == 0 then
+    for i,v in ipairs(entities) do
+      if v.isenemy then
+        if helpers.collide(self.hitbox,v.hitbox) then
+          self.hitcooldown = 49
+          cs:addscore(-200,'gothit')
+        end
+      end
+    end
+  end
   
   
 end
@@ -247,10 +268,12 @@ function Player:drawmain(sx,sy)
   if self.gunx <=0 then
     gunflip = -1
   end
-  helpers.drawbordered(function(dfx,dfy)
-    ez.drawframe(self.spr,0,self.x+dfx+sx,self.y+dfy+sy,0,1*flipscale,1,9,18)
-    love.graphics.draw(self.gunspr,self.x+self.gunx+dfx+sx,self.y+self.guny+dfy-5+sy,0,gunflip,1,3,3)
-  end,'white',true)
+  if math.floor(self.hitcooldown / 10) % 2 == 0 then
+    helpers.drawbordered(function(dfx,dfy)
+      ez.drawframe(self.spr,0,self.x+dfx+sx,self.y+dfy+sy,0,1*flipscale,1,9,18)
+      love.graphics.draw(self.gunspr,self.x+self.gunx+dfx+sx,self.y+self.guny+dfy-5+sy,0,gunflip,1,3,3)
+    end,'white',true)
+  end
 end
 
 function Player:draw()

@@ -1,7 +1,7 @@
 local st = Gamestate:new('cubetest')
 
 st:setinit(function(self)
-  self.cube = em.init('cube',{x=project.res.cx,y=project.res.cy})
+  self.cube = em.init('cube',{x=project.res.cx,y=project.res.y*0.55})
   local dirs = {'c','l','r','u','d'}
   
   self.rooms = {}
@@ -27,6 +27,16 @@ st:setinit(function(self)
   }
   
   self:updaterooms()
+  
+  self.score = 1000
+  
+  self.scoredigits = {0,0,0,0,1,10,100,1000}
+  
+  self.scorecountdown = 30
+  
+  self.scoretext = ''
+  self.scoreop = 0
+  self.greenscore = true
   
 end)
 
@@ -338,7 +348,30 @@ function st:updaterooms()
   
 end
 
+function st:addscore(num,text)
+  self.score = self.score + num
+  self.scoreop = 1.5
+  self.scoretext = ''
+  
+  self.greenscore = num > 0
+  if self.greenscore then
+    self.scoretext = '+'
+  else
+    self.scoretext = ''
+  end
+  self.scoretext = self.scoretext .. num .. ' ' .. loc.get(text)
+end
+
 st:setupdate(function(self,dt)
+  
+  self.scoreop = self.scoreop - (dt/40)
+  
+  self.scorecountdown = self.scorecountdown - dt
+  if self.scorecountdown <= 0 then
+    self.scorecountdown = 30
+    self.score = self.score - 1
+  end
+  
   if not self.map[self.croom].cleared then
     local enemiesleft = false
     for i,v in ipairs(entities) do
@@ -349,6 +382,7 @@ st:setupdate(function(self,dt)
     
     if not enemiesleft then
       self.map[self.croom].cleared = true
+      cs:addscore(50,'clearedroom')
     end
     
   end
@@ -360,6 +394,25 @@ st:setbgdraw(function(self)
 end)
 --entities are drawn here
 st:setfgdraw(function(self)
+  color()
+  love.graphics.draw(sprites.scorecounter,0,0)
+  love.graphics.setScissor(117,5,119,15)
+  
+  
+  --draw score
+  
+  for i,v in ipairs(self.scoredigits) do
+    self.scoredigits[i] = (self.scoredigits[i]*3 + math.floor(self.score/10^(8-i)))/4
+    love.graphics.draw(sprites.numbers,102+i*15,-155+(self.scoredigits[i]%10)*16)
+  end
+  
+  love.graphics.setScissor()
+  if self.greenscore then
+    love.graphics.setColor(76/255,1,0,helpers.clamp(self.scoreop,0,1))
+  else
+    love.graphics.setColor(1,0,77/255,helpers.clamp(self.scoreop,0,1))
+  end
+  love.graphics.printf(self.scoretext,134,20,84,'center')
 
   
 end)

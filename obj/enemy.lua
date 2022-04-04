@@ -58,6 +58,7 @@ function Enemy:bulletcheck()
           te.play('assets/sfx/enemy_hit.ogg','static',{'enemy_hit','sfx'},0.9)
         else
           te.play('assets/sfx/enemy_die.ogg','static',{'enemy_hit','sfx'},1)
+          cs:addscore(25,'killedenemy')
         end
       end
     end

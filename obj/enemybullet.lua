@@ -6,6 +6,7 @@ function Enemybullet:initialize(params)
   
   self.name = 'enemybullet'
   
+  self.isenemy = true
   
   self.hitbox = {x=0,y=0,width=4,height=4}
 

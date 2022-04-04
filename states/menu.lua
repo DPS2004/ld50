@@ -3,9 +3,9 @@ local st = Gamestate:new('menu')
 st:setinit(function(self)
   self.selection = 0
   self.options = {
-    { text = "play", on_accept = function() cs = bs.load('game') cs:init() end },
-    { text = "credits", on_accept = function() print("made by me") end },
-    { text = "quit", on_accept = function() love.event.quit() end },
+    { text = loc.get("play"), on_accept = function() cs = bs.load('game') cs:init() end },
+    { text = loc.get("credits"), on_accept = function() print("made by me") end },
+    { text = loc.get("quit"), on_accept = function() love.event.quit() end },
   }
   self.box_width = 0
   self.box_width_target = 0

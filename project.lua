@@ -2,7 +2,7 @@ local project = {}
 
 project.release = false
 
-project.name = 'DPS2004 love2d template'
+project.name = 'Hypercube Warrior'
 
 project.initstate = 'game'
 

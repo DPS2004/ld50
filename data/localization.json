@@ -3,7 +3,26 @@
   "helloworld": {
     "en": "Hello World!",
     "fr": "Bonjour Monde!",
-  }
-
+  },
+  "play": {
+    "en": "PLAY"
+  },
+  "play": {
+    "en": "CREDITS"
+  },
+  "play": {
+    "en": "QUIT"
+  },
+  
+  "****************GAME SCORES*******************":{},
+  "killedenemy": {
+    "en": "Killed enemy!"
+  },
+  "gothit": {
+    "en": "Got hit..."
+  },
+  "clearedroom": {
+    "en": "Cleared room!"
+  },
   
 }
