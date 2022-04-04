@@ -12,8 +12,7 @@ function Shooter:update(dt)
     self.shoottimer = self.shoottimer - dt
   else
     self.shoottimer = math.random(50,80)
-    local ang = helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3),0,0)
-    em.init('enemybullet',{x=self.x,y=self.y,dx=ang[1],dy=ang[2],canv=self.canv})
+    self:shoot()
   end
   self:bulletcheck()
   self:move()

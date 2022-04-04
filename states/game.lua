@@ -310,6 +310,14 @@ function st:updaterooms()
         em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
       end
       
+      if tile.t == 17 then
+        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walker',canv='c'})
+      end
+      
+      if tile.t == 18 then
+        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walkshoot',canv='c'})
+      end
+      
     end
   end
   

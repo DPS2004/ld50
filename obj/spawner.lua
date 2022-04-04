@@ -40,7 +40,7 @@ function Spawner:draw()
   love.graphics.ellipse('fill',self.x,self.y,4*self.size,3*self.size)
   love.graphics.setColor(1,58/255,153/255,1)
   love.graphics.circle('fill',self.x,self.y+self.enemyy,self.enemysize)
-  
+  color()
 end
 
 return Spawner

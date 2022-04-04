@@ -9,6 +9,8 @@ em.new('obj/spawner.lua','spawner')
 
 em.new('obj/enemy.lua','enemy')
 em.new('obj/shooter.lua','shooter')
+em.new('obj/walker.lua','walker')
+em.new('obj/walkshoot.lua','walkshoot')
 
 em.new('obj/bullet.lua','bullet')
 em.new('obj/playerbullet.lua','playerbullet')

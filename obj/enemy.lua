@@ -36,6 +36,11 @@ function Enemy:deathcheck()
   
 end
 
+function Enemy:shoot()
+  local ang = helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3),0,0)
+  em.init('enemybullet',{x=self.x,y=self.y,dx=ang[1],dy=ang[2],canv=self.canv})
+end
+
 function Enemy:bulletcheck()
   self.hx = 0
   self.hy = 0
