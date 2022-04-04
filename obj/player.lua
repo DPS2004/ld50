@@ -111,7 +111,7 @@ function Player:update(dt)
       end
     end
     
-    if not cs.map[cs.croom].cleared then
+    if not cs.map[cs.croom].cleared and (cs.map[cs.croom].roomtype ~= 'boss') then
       for i,v in ipairs(cs.doortiles) do
         local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
         if helpers.collide(self.hitbox,blockhitbox) then

@@ -14,6 +14,9 @@ em.new('obj/walkshoot.lua','walkshoot')
 em.new('obj/bouncer.lua','bouncer')
 em.new('obj/cannon.lua','cannon')
 
+em.new('obj/spinner.lua','spinner')
+em.new('obj/spinner_orbiter.lua','spinner_orbiter')
+
 em.new('obj/bullet.lua','bullet')
 em.new('obj/playerbullet.lua','playerbullet')
 em.new('obj/enemybullet.lua','enemybullet')

@@ -29,7 +29,7 @@ function Cannon:update(dt)
   end
   
   self:bulletcheck()
-  self:move()
+  self:move(dt)
   self:deathcheck()
 end
 

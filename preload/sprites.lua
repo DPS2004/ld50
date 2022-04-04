@@ -13,6 +13,8 @@ sprites.walkshoot = love.graphics.newImage('assets/walkshoot.png')
 sprites.bouncer = love.graphics.newImage('assets/bouncer.png')
 sprites.cannon = love.graphics.newImage('assets/cannon.png')
 
+sprites.bossface = love.graphics.newImage('assets/boss_face.png')
+
 sprites.scorecounter = love.graphics.newImage('assets/scorecounter.png')
 sprites.numbers = love.graphics.newImage('assets/numbers.png')
 

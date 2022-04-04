@@ -26,6 +26,12 @@ st:setinit(function(self)
     {x=15,y=6},{x=15,y=7},{x=15,y=8},{x=15,y=9},
   }
   
+  local skiptoboss = true
+  
+  if skiptoboss then
+    self.map[1].exits = {u=5,d=5,l=5,r=5}
+  end
+  
   self:updaterooms()
   
   self.score = 1000
@@ -307,7 +313,13 @@ function st:levelgen(floor)
     
     if room.roomtype == 'start' then
       room.cleared = true
-      
+    elseif room.roomtype == 'boss' then
+      room.entered = false
+      room.cleared = false
+      room.exits['u'] = room.id
+      room.exits['d'] = room.id
+      room.exits['l'] = room.id
+      room.exits['r'] = room.id
     else
       room.cleared = false
     end
@@ -326,32 +338,40 @@ function st:updaterooms()
   self.rooms['r'].level = self.map[mainroom.exits.r]
   
   if not mainroom.cleared then
-    print('spawning enemies')
-    for tilei,tile in ipairs(mainroom.tiles) do
-      if tile.t == 16 then
-        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
+    if (mainroom.roomtype ~= 'boss') or (not mainroom.entered) then
+      print('spawning enemies')
+      mainroom.entered = true
+      for tilei,tile in ipairs(mainroom.tiles) do
+        if tile.t == 16 then
+          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
+        end
+        
+        if tile.t == 17 then
+          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walker',canv='c'})
+        end
+        
+        if tile.t == 18 then
+          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walkshoot',canv='c'})
+        end
+        
+        if tile.t == 19 then
+          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=90}})
+        end
+        
+        if tile.t == 20 then
+          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='cannon',canv='c'})
+        end
+        
+        if tile.t == 21 then
+          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=0}})
+        end
+        
+        --bosses
+        if tile.t == 32 then
+          em.init('spawner',{x=tile.x*8+8,y=tile.y*8+8,tospawn='spinner',finalsize=8,canv='c',eparams={angle=0}})
+        end
+        
       end
-      
-      if tile.t == 17 then
-        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walker',canv='c'})
-      end
-      
-      if tile.t == 18 then
-        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walkshoot',canv='c'})
-      end
-      
-      if tile.t == 19 then
-        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=90}})
-      end
-      
-      if tile.t == 20 then
-        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='cannon',canv='c'})
-      end
-      
-      if tile.t == 21 then
-        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=0}})
-      end
-      
     end
   end
   
@@ -383,7 +403,7 @@ st:setupdate(function(self,dt)
     self.score = self.score - 1
   end
   
-  if not self.map[self.croom].cleared then
+  if (not self.map[self.croom].cleared) then
     local enemiesleft = false
     for i,v in ipairs(entities) do
       if v.isenemy then

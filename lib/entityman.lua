@@ -30,10 +30,12 @@ function em.update(dt)
   
   
   for i,v in ipairs(entities) do
-    if not paused then
-      em.deep.queue(v.uplayer, em.update2, v, dt)
-    elseif v.runonpause then
-      em.deep.queue(v.uplayer, em.update2, v, dt)
+    if not v.skipupdate then
+      if not paused then
+        em.deep.queue(v.uplayer, em.update2, v, dt)
+      elseif v.runonpause then
+        em.deep.queue(v.uplayer, em.update2, v, dt)
+      end
     end
   end
   em.deep.execute() -- OH MY FUCKING GOD IM SUCH A DINGUS

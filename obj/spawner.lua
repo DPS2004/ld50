@@ -13,6 +13,7 @@ function Spawner:initialize(params)
   
   self.enemyy = 0
   self.enemysize = 0
+  self.finalsize = 5
   
   self.hitbox = {x=0,y=0,width=0,height=0}
   
@@ -23,13 +24,14 @@ function Spawner:initialize(params)
   
   rw:ease(0.5,0.5,'outSine',-1,self,'enemyy')
   
-  rw:ease(0.75,0.5,'outSine',5,self,'enemysize')
+  rw:ease(0.75,0.5,'outSine',self.finalsize,self,'enemysize')
   rw:ease(0.75,0.5,'outSine',0,self,'size')
   
   local newparams = {x=self.x,y=self.y-1,canv=self.canv}
   params.eparams = params.eparams or {}
   for k,v in pairs(params.eparams) do
     newparams[k] = v
+
   end
   rw:func(1.25,function() em.init(self.tospawn,newparams) self.delete = true end)
   

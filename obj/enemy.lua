@@ -41,12 +41,15 @@ function Enemy:shoot()
   em.init('enemybullet',{x=self.x,y=self.y,dx=ang[1],dy=ang[2],canv=self.canv})
 end
 
-function Enemy:bulletcheck()
+function Enemy:updatehitbox()
   self.hx = 0
   self.hy = 0
   self.hitbox.x = self.x - 3
   self.hitbox.y = self.y - 3
-  
+end
+
+function Enemy:bulletcheck()
+  self:updatehitbox()  
   for i,v in ipairs(entities) do
     if v.name == 'playerbullet' then
       if helpers.collide(self.hitbox,v.hitbox) then
@@ -77,8 +80,13 @@ function Enemy:move(dt,params)
   local newy = self.y + self.dy*dt
   
   if self.hx then
-    newx = newx + self.hx*params.knockback
-    newy = newy + self.hy*params.knockback
+    if params.movehx then
+      params.movehx.hx = params.movehx.hx + self.hx*params.knockback
+      params.movehx.hy = params.movehx.hy + self.hy*params.knockback
+    else
+      newx = newx + self.hx*params.knockback
+      newy = newy + self.hy*params.knockback
+    end
   end
   
   self.hitbox.x = newx - 3
@@ -90,35 +98,36 @@ function Enemy:move(dt,params)
   self.oldhitboxy.x = newx - 3
   self.oldhitboxy.y = self.y-3
   
-  local xok = true
-  local yok = true
-  for i,v in ipairs(cs.rooms.c.level.tiles) do
-    if v.t == 0 then
-      local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
-      if helpers.collide(self.hitbox,blockhitbox) then
-        if params.bounce then
-          self.angle = (self.angle + 180)%360
+  if not params.dontmove then
+    local xok = true
+    local yok = true
+    for i,v in ipairs(cs.rooms.c.level.tiles) do
+      if v.t == 0 then
+        local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
+        if helpers.collide(self.hitbox,blockhitbox) then
+          if params.bounce then
+            self.angle = (self.angle + 180)%360
+          end
+          
+          if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
+          if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
         end
-        
-        if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
-        if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
       end
     end
-  end
-  
-  if not cs.map[cs.croom].cleared then
-    for i,v in ipairs(cs.doortiles) do
-      local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
-      if helpers.collide(self.hitbox,blockhitbox) then
-        if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
-        if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
+    
+    if not cs.map[cs.croom].cleared then
+      for i,v in ipairs(cs.doortiles) do
+        local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
+        if helpers.collide(self.hitbox,blockhitbox) then
+          if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
+          if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
+        end
       end
     end
+    
+    if xok then self.x = newx else self.dx = 0 end
+    if yok then self.y = newy else self.dy = 0 end
   end
-  
-  if xok then self.x = newx else self.dx = 0 end
-  if yok then self.y = newy else self.dy = 0 end
-  
 end
 
 function Enemy:draw()
