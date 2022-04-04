@@ -239,7 +239,7 @@ function Player:update(dt)
   else
     
   end
-  
+  cs.cube:updateRotation()
   if self.hitcooldown == 0 then
     self.hitbox.height = 8
     self.hitbox.y = self.hitbox.y - 2

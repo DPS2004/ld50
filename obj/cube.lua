@@ -1,13 +1,24 @@
-Cube = class('Cube',Entity)
 
+do_move = false
+local mm = love.mousemoved
+function love.mousemoved(x,y,dx,dy)
+  if do_move then g3d.camera.firstPersonLook(dx,dy) end
+  if mm then mm(x,y,dx,dy) end
+end
+
+Cube = class('Cube',Entity)
 local outline_shader = love.graphics.newShader('assets/outline.glsl')
 function Cube:initialize(params)
+  self.cam_unzoom = 1.5
+  g3d.camera.fov = math.pi / 3
+  g3d.camera.lookAt(0, 5 * self.cam_unzoom, 0, 0, 0, 0)
   self.c_canvas = love.graphics.newCanvas(project.res.x, project.res.y)
   self.layer = 100 -- lower layers draw first
   self.uplayer = 0 --lower uplayer updates first
   self.x = 0
   self.y = 0
   self.i = 0
+
   self.fov = 150
   self.r = {x=0,y=0,z=0}
   self.scale = {x=1,y=1,z=1,g=48}
@@ -35,7 +46,20 @@ function Cube:initialize(params)
   self.canvas.u = love.graphics.newCanvas(128,128)
   self.canvas.d = love.graphics.newCanvas(128,128)
   
-    
+  local vertices = {
+  --   coords      uvs    normals    color
+    {-1, 1,  1,    1, 0,  0, 0, 0,  1, 1, 1, 1},  -- topright
+    {-1, 1, -1,    1, 1,  0, 0, 0,  1, 1, 1, 1},  -- bottomright
+    {1,  1, -1,    0, 1,  0, 0, 0,  1, 1, 1, 1}, -- bottomleft
+    {1,  1,  1,    0, 0,  0, 0, 0,  1, 1, 1, 1}, -- topleft
+  }
+
+  local scale = 1
+  self.plane_c = g3d.newModel(vertices, self.canvas.c, {0,0,0}, {0, 0, 0},          {2 * scale,2 * scale,2 * scale})
+  self.plane_l = g3d.newModel(vertices, self.canvas.l, {0,0,0}, {0, 0, -math.pi/2}, {2 * scale,2 * scale,2 * scale})
+  self.plane_r = g3d.newModel(vertices, self.canvas.r, {0,0,0}, {0, 0, math.pi/2},  {2 * scale,2 * scale,2 * scale})
+  self.plane_u = g3d.newModel(vertices, self.canvas.u, {0,0,0}, {math.pi/2,0, 0},   {2 * scale,2 * scale,2 * scale})
+  self.plane_d = g3d.newModel(vertices, self.canvas.d, {0,0,0}, {-math.pi/2,0, 0},  {2 * scale,2 * scale,2 * scale})
   
   self.points = {
     {x=1,y=1,z=1},
@@ -51,19 +75,15 @@ function Cube:initialize(params)
     {x=0,y=0,z=0},
 	}
   
-
-  
-  
   self.spr = sprites.cobblestone
   
   Entity.initialize(self,params)
-
 end
 
 
 function Cube:project()
 	
-  for pi,p in ipairs(self.points) do
+  for pi, p in ipairs(self.points) do
     local cosx = math.cos(self.r.x*(math.pi/180))
     local sinx = math.sin(self.r.x*(math.pi/180))
     
@@ -102,12 +122,25 @@ function Cube:project()
 	
 end
 
+function Cube:updateRotation()
+  g3d.camera.updateProjectionMatrix()
+  g3d.camera.updateViewMatrix()
+  local rx = self.r.x * math.pi / 180
+  local ry = self.r.y * math.pi / 180
+  local rz = self.r.z * math.pi / 180
+
+
+  self.plane_r:setRotation(0, -rz,ry + math.pi/2)
+  self.plane_l:setRotation(0, rz,ry - math.pi/2)
+  self.plane_c:setRotation(rz,0,ry)
+  self.plane_u:setRotation(rz + math.pi / 2,0,ry)
+  self.plane_d:setRotation(rz - math.pi / 2,0,ry)
+end
+
 function Cube:update(dt)
-  local amp = 90
+  if do_move then g3d.camera.firstPersonMovement(dt / 100) end
+
   self.i = self.i + dt
-  --self.r.x = self.r.x + dt
-  --self.r.y = math.sin(self.i/60)*amp
-  --self.r.z = math.cos(self.i/60)*amp
   --
 end
 
@@ -124,8 +157,25 @@ end
 
 function Cube:draw()
   love.graphics.push('all')
-  love.graphics.setCanvas(self.c_canvas)
+  love.graphics.setCanvas({self.c_canvas, depth = true})
   love.graphics.clear()
+  love.graphics.setColor(1,1,1,1)
+
+  if true then
+    print('hi')
+    if self.plane_l then self.plane_l:draw() end
+    if self.plane_u then self.plane_u:draw() end
+    if self.plane_c then self.plane_c:draw() end
+    if self.plane_d then self.plane_d:draw() end
+    if self.plane_r then self.plane_r:draw() end
+
+    love.graphics.pop()
+    love.graphics.setShader(outline_shader)
+    love.graphics.draw(self.c_canvas)
+    love.graphics.setShader()
+    do return end
+  end
+
   self:project()
   color('white')
   local drawlr = function()

@@ -1,3 +1,4 @@
+g3d = require('lib/g3d')
 function love.load()
   dofile = function(fname) love.filesystem.load(fname)() end
   dt = 1
