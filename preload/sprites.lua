@@ -11,8 +11,11 @@ sprites.enemyface = love.graphics.newImage('assets/enemy_face.png')
 sprites.walker = love.graphics.newImage('assets/walker.png')
 sprites.walkshoot = love.graphics.newImage('assets/walkshoot.png')
 sprites.bouncer = love.graphics.newImage('assets/bouncer.png')
+sprites.cannon = love.graphics.newImage('assets/cannon.png')
 
 sprites.scorecounter = love.graphics.newImage('assets/scorecounter.png')
 sprites.numbers = love.graphics.newImage('assets/numbers.png')
+
+sprites.stadium = love.graphics.newImage('assets/bg/stadium.png')
 
 return sprites

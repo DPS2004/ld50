@@ -50,7 +50,7 @@ function Player:update(dt)
   end
   
   if self.hitcooldown > 0 then
-    self.hitcooldown = self.hitcooldown - dt
+    self.hitcooldown = self.hitcooldown - dt*1.5
   end
   if self.hitcooldown < 0 then
     self.hitcooldown = 0
@@ -163,7 +163,7 @@ function Player:update(dt)
     if doshoot then
       if self.shootcooldown <= 0 then
         self.shootcooldown = 8
-        em.init('playerbullet',{x=self.x+self.gunx,y=self.y+self.guny-5,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
+        em.init('playerbullet',{x=self.x+self.gunx,y=self.y+self.guny-4,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
         te.play('assets/sfx/player_shoot.ogg','static',{'player_shoot','sfx'},0.7)
       end
     end
@@ -241,14 +241,21 @@ function Player:update(dt)
   end
   
   if self.hitcooldown == 0 then
+    self.hitbox.height = 8
+    self.hitbox.y = self.hitbox.y - 2
+  
     for i,v in ipairs(entities) do
       if v.isenemy then
         if helpers.collide(self.hitbox,v.hitbox) then
-          self.hitcooldown = 49
+          self.hitcooldown = 89
           cs:addscore(-200,'gothit')
         end
       end
     end
+    
+    self.hitbox.height = 6
+    self.hitbox.y = self.hitbox.y + 2
+    
   end
   
   
@@ -271,7 +278,7 @@ function Player:drawmain(sx,sy)
   if math.floor(self.hitcooldown / 10) % 2 == 0 then
     helpers.drawbordered(function(dfx,dfy)
       ez.drawframe(self.spr,0,self.x+dfx+sx,self.y+dfy+sy,0,1*flipscale,1,9,18)
-      love.graphics.draw(self.gunspr,self.x+self.gunx+dfx+sx,self.y+self.guny+dfy-5+sy,0,gunflip,1,3,3)
+      love.graphics.draw(self.gunspr,self.x+self.gunx+dfx+sx,self.y+self.guny+dfy-4+sy,0,gunflip,1,3,3)
     end,'white',true)
   end
 end

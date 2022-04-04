@@ -30,6 +30,8 @@ st:setinit(function(self)
   
   self.score = 1000
   
+  self.pointsgained = 0
+  
   self.scoredigits = {0,0,0,0,1,10,100,1000}
   
   self.scorecountdown = 30
@@ -338,6 +340,10 @@ function st:updaterooms()
         em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=90}})
       end
       
+      if tile.t == 20 then
+        em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='cannon',canv='c'})
+      end
+      
       if tile.t == 21 then
         em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=0}})
       end
@@ -356,6 +362,7 @@ function st:addscore(num,text)
   self.greenscore = num > 0
   if self.greenscore then
     self.scoretext = '+'
+    self.pointsgained = self.pointsgained + num
   else
     self.scoretext = ''
   end
@@ -391,6 +398,8 @@ end)
 st:setbgdraw(function(self)
   color('black')
   love.graphics.rectangle('fill',0,0,project.res.x,project.res.y)
+  color('white')
+  love.graphics.draw(sprites.stadium,0,0)
 end)
 --entities are drawn here
 st:setfgdraw(function(self)

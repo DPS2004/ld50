@@ -125,7 +125,7 @@ function Enemy:draw()
   love.graphics.setColor(1,58/255,153/255,1)
   love.graphics.circle('fill',self.x,self.y,self.size)
   color()
-  love.graphics.draw(self.spr, self.x - 3.5, self.y -1.5)
+  love.graphics.draw(self.spr, self.x - 4, self.y -1.5)
   
 end
 
