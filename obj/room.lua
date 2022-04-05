@@ -21,6 +21,9 @@ function Room:draw()
   if (not cs.map[cs.croom].cleared) and (cs.map[cs.croom].roomtype ~= 'boss') then
     love.graphics.draw(sprites.doors,0,0)
   end
+  
+  
+  
   love.graphics.setCanvas(self.wallcanvas)
   love.graphics.clear()
   if self.level then
@@ -41,6 +44,9 @@ function Room:draw()
   love.graphics.setShader(wallshader)
   love.graphics.draw(self.wallcanvas,0,0)
   love.graphics.setShader()
+  if cs.map[cs.croom].cleared and cs.pointsgained == 0 and cs.player.canmove then
+    love.graphics.draw(sprites.instructions,0,0)
+  end
   --love.graphics.print('test',1,1)
 end
 

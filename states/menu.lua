@@ -4,6 +4,11 @@ require 'lib.perlin'
 local credits = love.filesystem.read("data/credits.txt")
 local _, credits_linecount = credits:gsub('\n', '\n')
 st:setinit(function(self, gameovered, pointsgained, new_highscore)
+  if gameovered then
+    te.play("assets/music/gameover.ogg","stream","bgm")
+  else
+    te.playLooping("assets/music/menu.ogg","stream","bgm")
+  end
   self.cube = em.init('cube',{x=project.res.cx,y=project.res.y*0.55})
   self.pointsgained = pointsgained
   
@@ -139,10 +144,13 @@ end
 function st:update_title()
   if maininput:pressed("right") then
     self.screen = 'play'
+    te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
   elseif maininput:pressed("left") then
     self.screen = 'credits'
+    te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
   elseif maininput:pressed('down') then
     self.screen = 'quit'
+    te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
   end
 end
 
@@ -150,6 +158,7 @@ function st:update_credits()
   local max_offset = self.font:getHeight() * credits_linecount - 70 -- why 70? i have no idea
   if maininput:pressed("right") then
     self.screen = 'title'
+    te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
   end
   if maininput:down('up') then
     self.credits_offset = self.credits_offset - 100 * dt / 60
@@ -165,12 +174,16 @@ end
 function st:update_gameover()
   if maininput:pressed("down") then
     self.screen = 'title'
+    te.stop('bgm',false)
+    te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
+    te.playLooping("assets/music/menu.ogg","stream","bgm")
   end
 end
 
 function st:update_quit()
   if maininput:pressed("up") then
     self.screen = 'title'
+    te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
   end
   if maininput:pressed("accept") then
     love.event.quit()
@@ -180,8 +193,10 @@ end
 function st:update_play()
   if maininput:pressed("left") then
     self.screen = 'title'
+    te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
   end
   if maininput:pressed("accept") then
+    te.stop('bgm',false)
     cs = bs.load('game') 
     self.cube.delete = true
     cs:init()

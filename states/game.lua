@@ -36,6 +36,8 @@ st:setinit(function(self)
   
   self.score = 1000
   
+  self.level = 0
+  
   self.pointsgained = 0
   
   self.scoredigits = {0,0,0,0,1,10,100,1000}
@@ -412,6 +414,8 @@ st:setupdate(function(self,dt)
     local highscore = savedata.highscore or 0
     savedata.highscore = math.max(highscore, self.pointsgained)
     sdfunc.save()
+    te.stop('bgm',false)
+    
     cs = bs.load('menu')
     cs:init(true, self.pointsgained, self.pointsgained > highscore)
     return

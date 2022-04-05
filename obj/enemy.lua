@@ -14,6 +14,8 @@ function Enemy:initialize(params)
   
   self.isenemy = true
   
+  self.ishit = false
+  
   self.hitbox = {x=self.x,y=self.y,width=6,height=6}
   self.oldhitboxx = {x=self.x,y=self.y,width=6,height=6}
   self.oldhitboxy = {x=self.x,y=self.y,width=6,height=6}
@@ -61,6 +63,7 @@ function Enemy:bulletcheck()
         self.hy = v.dy * 0.5
         if self.hp > 0 then 
           te.play('assets/sfx/enemy_hit.ogg','static',{'enemy_hit','sfx'},0.9)
+          self.ishit = true
         else
           te.play('assets/sfx/enemy_die.ogg','static',{'enemy_hit','sfx'},1)
           cs:addscore(25,'killedenemy')
@@ -132,11 +135,27 @@ function Enemy:move(dt,params)
   end
 end
 
+function Enemy:setshader()
+  if self.ishit then
+    love.graphics.setShader(whiteoutshader)
+  else
+    love.graphics.setShader()
+  end
+end
+function Enemy:endshader()
+  if self.ishit then
+    love.graphics.setShader()
+    self.ishit = false
+  end
+end
+
 function Enemy:draw()
+  self:setshader()
   love.graphics.setColor(1,58/255,153/255,1)
   love.graphics.circle('fill',self.x,self.y,self.size)
   color()
   love.graphics.draw(self.spr, self.x - 4, self.y -1.5)
+  self:endshader()
   
 end
 

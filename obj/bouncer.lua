@@ -20,8 +20,9 @@ function Bouncer:update(dt)
 end
 
 function Bouncer:draw()
+  self:setshader()
   love.graphics.draw(self.spr,self.x,self.y,0,1,1,5,5)
-  
+  self:endshader()
 end
 
 return Bouncer

@@ -23,4 +23,6 @@ sprites.stage = love.graphics.newImage('assets/bg/stage.png')
 
 sprites.logo = love.graphics.newImage('assets/logo.png')
 
+sprites.instructions = love.graphics.newImage('assets/instructions.png')
+
 return sprites

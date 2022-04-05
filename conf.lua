@@ -6,7 +6,7 @@ function love.conf(t)
   t.identity = 'hypercube_warrior_ld50'
   
   t.window.usedpiscale = false
-  if not release then
+  if not project.release then
     t.console = true
   end
   

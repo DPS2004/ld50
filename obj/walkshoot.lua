@@ -47,8 +47,9 @@ function Walkshoot:update(dt)
 end
 
 function Walkshoot:draw()
+  self:setshader()
   love.graphics.draw(self.spr,self.x,self.y,0,self.flipped,1,5,5)
-  
+  self:endshader()
 end
 
 return Walkshoot

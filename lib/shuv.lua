@@ -37,7 +37,7 @@ function shuv.check()
   if not ismobile then
     if maininput:pressed("f5") then
       shuv.scale = shuv.scale + 1
-      if shuv.scale > 10 then
+      if shuv.scale > 7 then
         shuv.scale = 1
       end
       shuv.update = true

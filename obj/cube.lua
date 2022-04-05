@@ -75,7 +75,11 @@ function Cube:initialize(params)
     {x=0,y=0,z=0},
 	}
   
+  self.sx = 1
+  self.sy = 1
+  
   self.spr = sprites.cobblestone
+  
   
   Entity.initialize(self,params)
 end
@@ -170,7 +174,7 @@ function Cube:draw()
 
     love.graphics.pop()
     love.graphics.setShader(outline_shader)
-    love.graphics.draw(self.c_canvas)
+    love.graphics.draw(self.c_canvas,self.x,self.y,0,self.sx,self.sy,project.res.cx,project.res.cy)
     love.graphics.setShader()
     do return end
   end

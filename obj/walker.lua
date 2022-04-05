@@ -26,8 +26,9 @@ function Walker:update(dt)
 end
 
 function Walker:draw()
+  self:setshader()
   love.graphics.draw(self.spr,self.x,self.y,0,self.flipped,1,5,5)
-  
+  self:endshader()
 end
 
 return Walker

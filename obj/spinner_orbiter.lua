@@ -31,12 +31,12 @@ function SpinnerOrbiter:update(dt)
 end
 
 function SpinnerOrbiter:draw()
-  
+  self:setshader()
   love.graphics.setColor(1,58/255,153/255,1)
   love.graphics.circle('fill',self.x,self.y,self.size)
   color()
   love.graphics.circle('line',self.x,self.y,self.size)
-  
+  self:endshader()
   
 end
 

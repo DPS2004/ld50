@@ -4,6 +4,10 @@ function Spinner:initialize(params)
   
   self.orbiternum = 4
   
+  if cs.level ~= 0 then
+    self.orbiternum = math.min(4+cs.level,10)
+  end
+  
   Enemy.initialize(self,params)
   
   self.pulsei = 0
@@ -156,6 +160,33 @@ function Spinner:update(dt)
   
 end
 
+function Spinner:deathcheck()
+  if self.hp <= 0 then
+    self.delete = true
+    for i,v in ipairs(self.orbiters) do
+      v.delete = true
+    end
+    cs.level = cs.level + 1
+    
+    em.init('enemypoof',{x=self.x,y=self.y,size=self.size,canv=self.canv})
+    
+    rw:ease(0,1,'inSine',0,cs.cube,'sx')
+    rw:func(1,function()
+      cs.map = cs:levelgen(cs.level)
+      
+      cs.croom = 1
+      cs.player.x = 64
+      cs.player.y = 64
+      cs:updaterooms()
+      
+    end)
+    rw:ease(1,1,'inSine',1,cs.cube,'sx')
+    rw:play({bpm=120})
+    
+    
+  end
+  
+end
 
 function Spinner:draw()
   love.graphics.push('all')
@@ -170,11 +201,12 @@ function Spinner:drawt()
   for i,v in ipairs(self.orbiters) do
     v:draw()
   end
+  self:setshader()
   love.graphics.setColor(1,58/255,153/255,1)
   love.graphics.circle('fill',self.x,self.y,self.size+math.sin(self.pulsei))
   color()
   love.graphics.draw(sprites.bossface,self.x-5,self.y-2)
-  
+  self:endshader()
   
 end
 

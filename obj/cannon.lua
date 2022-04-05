@@ -35,8 +35,10 @@ function Cannon:update(dt)
 end
 
 function Cannon:draw()
+  self:setshader()
   love.graphics.draw(sprites.cannon,self.x,self.y,math.rad(self.angle),1,1,5,7)
   Enemy.draw(self)
+  self:endshader()
   
 end
 
