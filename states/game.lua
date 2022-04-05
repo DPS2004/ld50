@@ -84,7 +84,9 @@ function st:levelgen(floor)
     end
     
     
-    
+    if #list == 0 then
+      return
+    end
     local listindex = math.random(1,#list)
     
     local roomindex = list[listindex]

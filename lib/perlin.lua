@@ -1,9 +1,29 @@
+-- http://lua-users.org/wiki/BitUtils
+
+local function nand(x,y,z)
+    z= z or 2 ^ 16
+    if z<2 then
+        return 1-x*y
+    else
+        return nand((x-x%z)/z,(y-y%z)/z,math.sqrt(z))*z+nand(x%z,y%z,math.sqrt(z))
+    end
+end
+local bnot = function(y,z)
+    return nand(nand(0,0,z),y,z)
+end
+local band = function(x,y,z)
+    return nand(bnot(0,z),nand(x,y,z),z)
+end
+
+bit32 = {band = band}
+
+
 -- https://gist.github.com/kymckay/25758d37f8e3872e1636d90ad41fe2ed
 --[[
     Implemented as described here:
     http://flafla2.github.io/2014/08/09/perlinnoise.html
 ]]--
-local bit32 = require('bit')
+-- local bit32 = require('bit')
 perlin = {}
 perlin.p = {}
 

@@ -38,9 +38,7 @@ function love.load()
   -- localization
   loc = require "lib.loc"
   loc.load("data/localization.json")
-
-  --from https://www.love2d.org/forums/viewtopic.php?f=5&t=12483&start=130
-  persp = require "lib.Perspective"
+  
 
   -- manages gamestates
   bs = require "lib.basestate"
@@ -207,9 +205,9 @@ function love.load()
   vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
   {
     if(Texel(tex, texture_coords).a != 0.0){
-      for(int xo=-2;xo<=2;xo++){
-        for(int yo=-2;yo<=2;yo++){
-          if(Texel(tex, vec2(texture_coords.x+xo*(1/128.0),texture_coords.y+yo*(1/128.0))).a != 1.0){
+      for(float xo=-2.0;xo<=2.0;xo++){
+        for(float yo=-2.0;yo<=2.0;yo++){
+          if(Texel(tex, vec2(texture_coords.x+xo*(1.0/128.0),texture_coords.y+yo*(1.0/128.0))).a != 1.0){
               return vec4(0.823529412,0.258823529,1,1);
             
           }
@@ -328,7 +326,7 @@ function love.update(d)
     debugprint = true
 
     shuv.check()
-    if not acdelt then
+    if not project.acdelt then
       dt = 1
     else
       dt = d * 60
