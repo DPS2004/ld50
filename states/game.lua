@@ -225,16 +225,14 @@ function st:levelgen(floor)
     if not room.roomtype then
       if numexits == 1 then
         room.roomtype = 'deadend'
-        for k,v in pairs(room.exits) do
-          if v == 'u' then
-            room.rotate = 0
-          elseif v == 'r' then
-            room.rotate = 1
-          elseif v =='d' then
-            room.rotate = 2
-          else
-            room.rotate = 3
-          end
+        if hasexit['u'] then
+          room.rotate = 0
+        elseif hasexit['r'] then
+          room.rotate = 3
+        elseif hasexit['d'] then
+          room.rotate = 2
+        else
+          room.rotate = 1
         end
       elseif numexits == 2 then
         if exdirs[1] == oppositedir[exdirs[2]] then
