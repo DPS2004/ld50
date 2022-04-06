@@ -2,6 +2,8 @@ local sprites = {}
 
 
 sprites.floortile = love.graphics.newImage('assets/room/floor.png')
+sprites.floortiledark = love.graphics.newImage('assets/room/floordark.png')
+
 sprites.doors = love.graphics.newImage('assets/room/doors.png')
 sprites.instructions = love.graphics.newImage('assets/room/instructions.png')
 

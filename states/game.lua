@@ -343,6 +343,12 @@ function st:updaterooms()
   self.rooms['l'].level = self.map[mainroom.exits.l]
   self.rooms['r'].level = self.map[mainroom.exits.r]
   
+  self.floors['c'].level = mainroom
+  self.floors['u'].level = self.map[mainroom.exits.u]
+  self.floors['d'].level = self.map[mainroom.exits.d]
+  self.floors['l'].level = self.map[mainroom.exits.l]
+  self.floors['r'].level = self.map[mainroom.exits.r]
+  
   if not mainroom.cleared then
     if (mainroom.roomtype ~= 'boss') or (not mainroom.entered) then
       print('spawning enemies')
@@ -440,6 +446,7 @@ st:setupdate(function(self,dt)
     if not enemiesleft then
       self.map[self.croom].cleared = true
       cs:addscore(50,'clearedroom')
+      em.init('clearparticles',{x=0,y=0,canv = 'c'})
     end
     
   end

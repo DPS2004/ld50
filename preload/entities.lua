@@ -5,6 +5,9 @@ em.new('obj/cube.lua','cube')
 em.new('obj/floortile.lua','floortile')
 em.new('obj/player.lua','player')
 em.new('obj/room.lua','room')
+
+em.new('obj/clearparticles.lua','clearparticles')
+
 em.new('obj/enemy/spawner.lua','spawner')
 
 em.new('obj/enemy/enemy.lua','enemy')
