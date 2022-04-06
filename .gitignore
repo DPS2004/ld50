@@ -3,3 +3,5 @@
 /release_pc
 /release_web
 /release_editor
+.DS_Store
+.vscode/
