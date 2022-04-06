@@ -16,6 +16,8 @@ project.res.s = 2
 
 project.nosaves = true
 
+project.noquit = true
+
 -- project.res.x = 352 * 3
 -- project.res.y = 198 * 3
 -- project.res.s = 1
