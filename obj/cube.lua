@@ -7,7 +7,6 @@ function love.mousemoved(x,y,dx,dy)
 end
 
 Cube = class('Cube',Entity)
-local outline_shader = love.graphics.newShader('assets/outline.glsl')
 function Cube:initialize(params)
   self.cam_unzoom = 1.5
   g3d.camera.fov = math.pi / 3
@@ -173,7 +172,7 @@ function Cube:draw()
     if self.plane_r then self.plane_r:draw() end
 
     love.graphics.pop()
-    love.graphics.setShader(outline_shader)
+    love.graphics.setShader(shaders.outline)
     love.graphics.draw(self.c_canvas,self.x,self.y,0,self.sx,self.sy,project.res.cx,project.res.cy)
     love.graphics.setShader()
     do return end
@@ -212,7 +211,7 @@ function Cube:draw()
   self:drawface('c')
   
   love.graphics.pop()
-  love.graphics.setShader(outline_shader)
+  love.graphics.setShader(shaders.outline)
   love.graphics.draw(self.c_canvas)
   love.graphics.setShader()
 end

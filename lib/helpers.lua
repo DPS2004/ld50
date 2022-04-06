@@ -322,7 +322,7 @@ function helpers.drawbordered(df,bcol,lightborder)
   if bcol == 'black' then
     love.graphics.setColor({0,0,0,1})
   else
-    love.graphics.setShader(whiteoutshader)
+    love.graphics.setShader(shaders.whiteout)
   end
   
   for x=-1,1 do

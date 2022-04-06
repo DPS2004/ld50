@@ -12,7 +12,7 @@ project.res = {}
 
 project.res.x = 352
 project.res.y = 198
-project.res.s = 3
+project.res.s = 2
 
 project.nosaves = true
 

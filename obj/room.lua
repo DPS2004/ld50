@@ -41,7 +41,7 @@ function Room:draw()
     love.graphics.setCanvas(shuv.canvas)
   end
   color()
-  love.graphics.setShader(wallshader)
+  love.graphics.setShader(shaders.walls)
   love.graphics.draw(self.wallcanvas,0,0)
   love.graphics.setShader()
   if cs.map[cs.croom].cleared and cs.pointsgained == 0 and cs.player.canmove then

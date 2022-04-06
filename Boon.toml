@@ -60,6 +60,10 @@ ignore_list = [
     # Boon-specific files and directories
     "Boon.toml",
     "release",
+    "release_pc",
+    "release_editor",
+    "release_web",
+    "webassets",
 ]
 
 # List of targets to build for

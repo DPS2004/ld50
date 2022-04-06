@@ -174,7 +174,9 @@ function love.load()
   quads = require('preload.quads')
   
   
+  -- load shaderss
   
+  shaders = require('preload.shaders')
   
   --colors
   colors = require('preload.colors')
@@ -187,40 +189,7 @@ function love.load()
   
   
   
-  whiteoutshader = love.graphics.newShader([[
-    
-  uniform vec4 colors[4];
   
-  vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
-  {
-    float pixelalpha = Texel(tex, texture_coords).a;
-    return vec4(1,1,1,pixelalpha);
-  }
-    
-  ]])
-  
-  --shoutouts to pipelinks for getting this working
-  wallshader = love.graphics.newShader([[
-  
-  vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
-  {
-    if(Texel(tex, texture_coords).a != 0.0){
-      for(float xo=-2.0;xo<=2.0;xo++){
-        for(float yo=-2.0;yo<=2.0;yo++){
-          if(Texel(tex, vec2(texture_coords.x+xo*(1.0/128.0),texture_coords.y+yo*(1.0/128.0))).a != 1.0){
-              return vec4(0.823529412,0.258823529,1,1);
-            
-          }
-        }
-      }
-      return vec4(0,0,0,1);
-    } else {
-      return vec4(0,0,0,0);
-    }
-  }
-    
-    
-  ]])
   
 
   print("setting up controls")
@@ -237,28 +206,31 @@ function love.load()
   
   
   -- load savefile
-  local defaultsave = dpf.loadjson('data/defaultsave.json')
+  local defaultsave = dpf.loadjson(project.defaultsaveloc)
     
   if project.nosaves then
     savedata = defaultsave
   else
-    savedata = dpf.loadjson('savedata/main.sav',defaultsave)
+    savedata = dpf.loadjson(project.saveloc,defaultsave)
   end
   
   
   
   
-  
-  savedata.timesbooted = savedata.timesbooted + 1
+  if project.name ~= 'roomedit' then
+    savedata.timesbooted = savedata.timesbooted + 1
+  end
   
   sdfunc = {}
   function sdfunc.save()
-    dpf.savejson('savedata/main.sav',savedata)
+    dpf.savejson(project.saveloc,savedata)
   end
   
   function sdfunc.updatevol()
-    te.volume('sfx',savedata.options.audio.sfxvolume/10)
-    te.volume('music',savedata.options.audio.sfxvolume/10)
+    if project.name ~= 'roomedit' then
+      te.volume('sfx',savedata.options.audio.sfxvolume/10)
+      te.volume('music',savedata.options.audio.sfxvolume/10)
+    end
   end
   
   sdfunc.updatevol()

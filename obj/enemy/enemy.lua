@@ -137,7 +137,7 @@ end
 
 function Enemy:setshader()
   if self.ishit then
-    love.graphics.setShader(whiteoutshader)
+    love.graphics.setShader(shaders.whiteout)
   else
     love.graphics.setShader()
   end
