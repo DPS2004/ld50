@@ -2,6 +2,15 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+#canvas {
+    image-rendering: pixelated;
+}
+
 h1 {
     font-family: arial;
     color: rgb( 0,0,0 );
