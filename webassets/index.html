@@ -1,6 +1,22 @@
 <!doctype html>
 <html lang="en-us">
   <head>
+    <script>
+      const h = () => {
+        const canvas = document.querySelector('#canvas')
+        const wWidth = window.innerWidth
+        const wHeight = window.innerHeight
+        const baseWidth = 352
+        const baseHeight = 198
+        const scale = Math.min(wWidth / baseWidth, wHeight / baseHeight);
+        const style = `width: ${baseWidth * scale}px; height: ${baseHeight * scale}px`
+        console.log(style)
+        canvas.style.width = `${baseWidth * scale}px`
+        canvas.style.height = `${baseHeight * scale}px`
+      }
+      document.addEventListener('DOMContentLoaded', h)
+      window.addEventListener('resize', h)
+    </script>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, maximum-scale=1">
