@@ -48,9 +48,9 @@ function st:drawTitle()
   
   love.graphics.print('A - credits', 64 - font:getWidth('A - credits') / 2, 0)
   love.graphics.pop()
-
-  love.graphics.print('S - quit', 64 - font:getWidth('W - quit') / 2, 128 - 12)
-
+  if not project.noquit then
+    love.graphics.print('S - quit', 64 - font:getWidth('W - quit') / 2, 128 - 12)
+  end
     love.graphics.draw(sprites.logo,64,64,0,0.45+math.sin(love.timer.getTime()/2)*0.05,0.5+math.cos(love.timer.getTime()/2)*0.05,109,52)
     
   love.graphics.pop()
@@ -149,8 +149,10 @@ function st:update_title()
     self.screen = 'credits'
     te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
   elseif maininput:pressed('down') then
-    self.screen = 'quit'
-    te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
+    if not project.noquit then
+      self.screen = 'quit'
+      te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
+    end
   end
 end
 
