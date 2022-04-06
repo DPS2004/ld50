@@ -13,6 +13,7 @@ em.new('obj/enemy/walker.lua','walker')
 em.new('obj/enemy/walkshoot.lua','walkshoot')
 em.new('obj/enemy/bouncer.lua','bouncer')
 em.new('obj/enemy/cannon.lua','cannon')
+em.new('obj/enemy/bubble.lua','bubble')
 
 em.new('obj/enemy/enemypoof.lua','enemypoof')
 

@@ -257,17 +257,25 @@ function love.load()
         local flipped = helpers.copy(v)
         for tilei,tile in ipairs(flipped) do
           tile.x = 15-tile.x
+          
+          if tile.t == 22 then -- bubble centering
+            tile.x = tile.x - 1
+          end
+          
           if groupname == 'corner' then
             local oldx = tile.x
             local oldy = tile.y
             tile.x = oldy
             tile.y = 15-oldx
             
-            
             if tile.t == 21 then --flip bouncer enemies
               tile.t = 19
             elseif tile.t == 19 then
               tile.t = 21
+            end
+            
+            if tile.t == 22 then -- bubble centering
+              tile.y = tile.y - 1
             end
             
             
