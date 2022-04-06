@@ -19,7 +19,9 @@ function Player:initialize(params)
   self.gunaimx = 10
   self.gunaimy = 0
   
-  self.gunspr = sprites.gun
+  self.gunframe = 2
+  
+  self.gunspr = ez.newanim(templates.player.gun)
   
   self.speed = 1
   
@@ -144,22 +146,43 @@ function Player:update(dt)
     self.gunaimy = 0
     if maininput:down('shootleft') and (not maininput:down('shootright')) then
       self.flip = true
-      self.gunaimx = -10
+      self.gunaimx = -11
     end
     if maininput:down('shootright') and (not maininput:down('shootleft')) then
       self.flip = false
-      self.gunaimx = 10
+      self.gunaimx = 11
     end
     
     if maininput:down('shootup') and (not maininput:down('shootdown')) then
-      self.gunaimy = -10
+      self.gunaimy = -11
     end
     if maininput:down('shootdown') and (not maininput:down('shootup')) then
-      self.gunaimy = 10
+      self.gunaimy = 11
     end
+    
+    --sprites
+    
+    if self.gunaimy < 0 then
+      if self.gunaimx == 0 then
+        self.gunframe = 0
+      else
+        self.gunframe = 1
+      end
+    elseif self.gunaimy > 0 then
+      if self.gunaimx == 0 then
+        self.gunframe = 4
+      else
+        self.gunframe = 3
+      end
+    else
+      self.gunframe = 2
+    end
+    
+    
     
     local doshoot = false
     if self.gunaimx == 0 and self.gunaimy == 0 then
+      self.gunframe = 2
       if self.flip then 
         self.gunaimx = -10
       else
@@ -168,13 +191,21 @@ function Player:update(dt)
     else
       doshoot = true
     end
+    
+    if self.gunaimy <= -9.5 then
+      self.gunaimy = -9.5
+    end
+    
+    self.gunaimx,self.gunaimy = helpers.circlimit(self.gunaimx,self.gunaimy,11)
+    
+    
     self.gunx = (self.gunx + self.gunaimx)/2
     self.guny = (self.guny + self.gunaimy)/2
     
     if doshoot then
       if self.shootcooldown <= 0 then
         self.shootcooldown = 8
-        em.init('playerbullet',{x=self.x+self.gunx,y=self.y+self.guny-4,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
+        em.init('playerbullet',{x=self.x+(self.gunx*0.85),y=self.y+(self.guny*0.85)-5,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
         te.play('assets/sfx/player_shoot.ogg','static',{'player_shoot','sfx'},0.7)
       end
     end
@@ -322,7 +353,7 @@ function Player:drawmain(sx,sy)
   if math.floor(self.hitcooldown / 10) % 2 == 0 then
     helpers.drawbordered(function(dfx,dfy)
       ez.drawframe(self.spr,self.frame,self.x+dfx+sx,self.y+dfy+sy,0,1*flipscale,1,9,18)
-      love.graphics.draw(self.gunspr,self.x+self.gunx+dfx+sx,self.y+self.guny+dfy-4+sy,0,gunflip,1,3,3)
+      ez.drawframe(self.gunspr,self.gunframe,self.x+self.gunx+dfx+sx-0.5,self.y+self.guny+dfy-6+sy,0,gunflip,1,4,5)
     end,'white',true)
   end
 end

@@ -343,4 +343,14 @@ function helpers.drawbordered(df,bcol,lightborder)
 
 end
 
+function helpers.circlimit(x,y,r)
+  local ox, oy = x,y
+  local len = math.sqrt(x^2 + y^2)
+  if len > r then
+    ox, oy = ox/ (len/r), oy / (len/r)
+  end
+  return ox,oy
+end
+
+
 return helpers
