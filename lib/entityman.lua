@@ -62,6 +62,9 @@ function em.draw()
   em.deep.execute()
   for i,v in ipairs(entities) do
     if v.delete then
+      if v.onDelete then
+        v:onDelete()
+      end
       table.remove(entities, i)
     end
   end

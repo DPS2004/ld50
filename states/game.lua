@@ -456,31 +456,32 @@ st:setbgdraw(function(self)
   color('black')
   love.graphics.rectangle('fill',0,0,project.res.x,project.res.y)
   color('white')
-  love.graphics.draw(sprites.stage,0,0)
+  shuv.do_autoscaled(function() love.graphics.draw(sprites.stage,0,0) end)
 end)
 
 --entities are drawn here
 st:setfgdraw(function(self)
-  color()
-  love.graphics.draw(sprites.scorecounter,0,0)
-  love.graphics.setScissor(117,5,119,15)
-  
-  
-  --draw score
-  
-  for i,v in ipairs(self.scoredigits) do
-    self.scoredigits[i] = (self.scoredigits[i]*3 + math.floor(self.score/10^(8-i)))/4
-    love.graphics.draw(sprites.numbers,102+i*15,-155+(self.scoredigits[i]%10)*16)
-  end
-  
-  love.graphics.setScissor()
-  if self.greenscore then
-    love.graphics.setColor(76/255,1,0,helpers.clamp(self.scoreop,0,1))
-  else
-    love.graphics.setColor(1,0,77/255,helpers.clamp(self.scoreop,0,1))
-  end
-  love.graphics.printf(self.scoretext,134,20,84,'center')
-
+  shuv.do_autoscaled(function()
+    color()
+    love.graphics.draw(sprites.scorecounter,0,0)
+    love.graphics.setScissor(117 * shuv.internal_scale, 5 * shuv.internal_scale, 119 * shuv.internal_scale, 15 * shuv.internal_scale) 
+    
+    
+    --draw score
+    
+    for i,v in ipairs(self.scoredigits) do
+      self.scoredigits[i] = (self.scoredigits[i]*3 + math.floor(self.score/10^(8-i)))/4
+      love.graphics.draw(sprites.numbers,102+i*15,-155+(self.scoredigits[i]%10)*16)
+    end
+    
+    love.graphics.setScissor()
+    if self.greenscore then
+      love.graphics.setColor(76/255,1,0,helpers.clamp(self.scoreop,0,1))
+    else
+      love.graphics.setColor(1,0,77/255,helpers.clamp(self.scoreop,0,1))
+    end
+    love.graphics.printf(self.scoretext,134,20,84,'center')
+  end)
   
 end)
 

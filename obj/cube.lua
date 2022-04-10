@@ -11,7 +11,7 @@ function Cube:initialize(params)
   self.cam_unzoom = 1.5
   g3d.camera.fov = math.pi / 3
   g3d.camera.lookAt(0, 5 * self.cam_unzoom, 0, 0, 0, 0)
-  self.c_canvas = love.graphics.newCanvas(project.res.x, project.res.y)
+  self.c_canvas = shuv.makeCanvas()
   self.layer = 100 -- lower layers draw first
   self.uplayer = 0 --lower uplayer updates first
   self.x = 0
@@ -160,60 +160,32 @@ end
 
 function Cube:draw()
   love.graphics.push('all')
-  love.graphics.setCanvas({self.c_canvas, depth = true})
+  love.graphics.setCanvas({self.c_canvas.canvas, depth = true})
   love.graphics.clear()
   love.graphics.setColor(1,1,1,1)
 
-  if true then
-    if self.plane_l then self.plane_l:draw() end
-    if self.plane_u then self.plane_u:draw() end
-    if self.plane_c then self.plane_c:draw() end
-    if self.plane_d then self.plane_d:draw() end
-    if self.plane_r then self.plane_r:draw() end
+  if self.plane_l then self.plane_l:draw() end
+  if self.plane_u then self.plane_u:draw() end
+  if self.plane_c then self.plane_c:draw() end
+  if self.plane_d then self.plane_d:draw() end
+  if self.plane_r then self.plane_r:draw() end
 
-    love.graphics.pop()
-    love.graphics.setShader(shaders.outline)
-    love.graphics.draw(self.c_canvas,self.x,self.y,0,self.sx,self.sy,project.res.cx,project.res.cy)
-    love.graphics.setShader()
-    do return end
-  end
-
-  self:project()
-  color('white')
-  local drawlr = function()
-    if self.r.y > 0 then
-      self:drawface('l')
-    else
-      self:drawface('r')
-    end
-  end
-  
-  local drawdu = function()
-    if self.r.z > 0 then
-      self:drawface('d')
-    else
-      self:drawface('u')
-    end
-  end
-  
-  local drawlrdu = function()
-    if math.abs(self.r.z) > math.abs(self.r.y) then
-      drawlr()
-      drawdu()
-    else
-      drawdu()
-      drawlr()
-    end
-  end
-  
-
-  drawlrdu()
-  self:drawface('c')
-  
   love.graphics.pop()
   love.graphics.setShader(shaders.outline)
-  love.graphics.draw(self.c_canvas)
+
+  shuv.do_autoscaled(function()
+    love.graphics.draw(self.c_canvas.canvas, self.x,self.y,0, -- surely there's a better way to do this
+      self.sx / shuv.internal_scale, 
+      self.sy / shuv.internal_scale, 
+      project.res.cx * shuv.internal_scale,
+      project.res.cy * shuv.internal_scale)
+  end)
   love.graphics.setShader()
+end
+
+function Cube:onDelete()
+  print("REMOVING SCREEN_CANVAS YOOOOOOO")
+  shuv.deleteCanvas(self.c_canvas)
 end
 
 return Cube
