@@ -205,7 +205,7 @@ function Player:update(dt)
     if doshoot then
       if self.shootcooldown <= 0 then
         self.shootcooldown = 8
-        em.init('playerbullet',{x=self.x+(self.gunx*0.85),y=self.y+(self.guny*0.85)-5,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
+        em.init('playerbullet',{x=self.x+(self.gunx*0.85),y=self.y+(self.guny*0.85)-4,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
         te.play('assets/sfx/player_shoot.ogg','static',{'player_shoot','sfx'},0.7)
       end
     end
@@ -353,7 +353,7 @@ function Player:drawmain(sx,sy)
   if math.floor(self.hitcooldown / 10) % 2 == 0 then
     helpers.drawbordered(function(dfx,dfy)
       ez.drawframe(self.spr,self.frame,self.x+dfx+sx,self.y+dfy+sy,0,1*flipscale,1,9,18)
-      ez.drawframe(self.gunspr,self.gunframe,self.x+self.gunx+dfx+sx-0.5,self.y+self.guny+dfy-6+sy,0,gunflip,1,4,5)
+      ez.drawframe(self.gunspr,self.gunframe,self.x+self.gunx+dfx+sx-0.5,self.y+self.guny+dfy-5+sy,0,gunflip,1,4,5)
     end,'white',true)
   end
 end

@@ -44,13 +44,13 @@ st:setinit(function(self)
   
   self.scorecountdown = 30
   
+  self.musbpm = 120
+  
   self.scoretext = ''
   self.scoreop = 0
   self.greenscore = true
   
-  te.play("assets/music/ld50mus_intro.ogg","stream","bgm",1,1,function(a)
-    te.playLooping("assets/music/ld50mus.ogg","stream","bgm")
-  end)
+  st:playmusic(0)
   
 end)
 
@@ -384,6 +384,7 @@ function st:updaterooms()
         
         --bosses
         if tile.t == 32 then
+          self:playmusic(1)
           em.init('spawner',{x=tile.x*8+8,y=tile.y*8+8,tospawn='spinner',finalsize=8,canv='c',eparams={angle=0}})
         end
         
@@ -409,12 +410,32 @@ function st:addscore(num,text)
   self.scoretext = self.scoretext .. num .. ' ' .. loc.get(text)
 end
 
+function st:playmusic(m)
+  m = m or 0
+  
+  te.stop('bgm',false)
+  
+  if m == 1 then --boss
+    self.musbpm = 150
+    te.play("assets/music/boss_intro.ogg","stream","bgm",1.1,1,function(a)
+      te.playLooping("assets/music/boss.ogg","stream","bgm",1.1)
+    end)
+  else --main/fallback
+    self.musbpm = 120
+    te.play("assets/music/ld50mus_intro.ogg","stream","bgm",1,1,function(a)
+      te.playLooping("assets/music/ld50mus.ogg","stream","bgm")
+    end)
+  end
+  
+  self.scorecountdown = 3600 / self.musbpm
+end
+
 st:setupdate(function(self,dt)
   self.scoreop = self.scoreop - (dt/40)
   
   self.scorecountdown = self.scorecountdown - dt
   if self.scorecountdown <= 0 then
-    self.scorecountdown = 30
+    self.scorecountdown = self.scorecountdown + (3600 / self.musbpm)
     self.score = self.score - 1
   end
 
@@ -447,6 +468,7 @@ st:setupdate(function(self,dt)
       self.map[self.croom].cleared = true
       cs:addscore(50,'clearedroom')
       em.init('clearparticles',{x=0,y=0,canv = 'c'})
+      te.play('assets/sfx/room_clear.ogg','static',{'room_clear','sfx'},1.5)
     end
     
   end

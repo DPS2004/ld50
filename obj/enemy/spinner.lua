@@ -178,7 +178,7 @@ function Spinner:deathcheck()
       cs.player.x = 64
       cs.player.y = 64
       cs:updaterooms()
-      
+      cs:playmusic(0)
     end)
     rw:ease(1,1,'inSine',1,cs.cube,'sx')
     rw:play({bpm=120})
