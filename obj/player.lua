@@ -273,19 +273,29 @@ function Player:update(dt)
     
     if maininput:pressed('accept') then
       if self.holding == 1 then
-        local newbox = em.init('thrownbox',{x=self.x+self.gunx,y=self.y+self.guny-5,hp=self.throwhp,canv = self.canv})
+        
         local distance = helpers.distance({self.x,self.y-5},{self.throwx*8+5,self.throwy*8+5}) / 200
+        local newbox = em.init('thrownbox',{
+          x=self.x+self.gunx,
+          y=self.y+self.guny-5,
+          dx = self.gunx,
+          dy = self.guny,
+          hp=self.throwhp,
+          canv = self.canv
+        })
         
         rw:ease(0,distance,'linear',self.throwx*8+5,newbox,'x')
         rw:ease(0,distance,'linear',self.throwy*8+5,newbox,'y')
         rw:func(distance,function()
-          if newbox then
+          if newbox and newbox.delete == false then
             if newbox.hp ~= 1 then
               newbox.delete = true
               table.insert(cs.rooms.c.level.tiles,{x=self.throwx,y=self.throwy,t=2,hp=newbox.hp-1,solid = true,drawflash = true})
             else
               newbox:destroy()
             end
+          else
+            newbox = nil
           end
         end)
         rw:play()

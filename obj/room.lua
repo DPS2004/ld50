@@ -53,11 +53,11 @@ function Room:draw()
       if v.t == 2 then
         if v.drawflash then
           love.graphics.setShader(shaders.whiteout)
-          v.drawflash = false
         end
         ez.drawframe(self.blockspr,4-v.hp,v.x*8-1,v.y*8-1)
         if v.drawflash then
           love.graphics.setShader()
+          v.drawflash = false
         end
       end
     end

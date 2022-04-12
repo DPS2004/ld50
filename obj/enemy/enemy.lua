@@ -52,21 +52,38 @@ function Enemy:updatehitbox()
   self.hitbox.y = self.y - 3
 end
 
+function Enemy:gethit(v, hpminus)
+  hpminus = hpminus or 1
+  self.hp = self.hp - hpminus
+  self.hx = v.dx * 0.5
+  self.hy = v.dy * 0.5
+  if self.hp > 0 then 
+    te.play('assets/sfx/enemy_hit.ogg','static',{'enemy_hit','sfx'},0.9)
+    self.ishit = true
+  else
+    te.play('assets/sfx/enemy_die.ogg','static',{'enemy_hit','sfx'},1)
+    cs:addscore(25,'killedenemy')
+  end
+  
+end
+
 function Enemy:bulletcheck()
+  
+  self.ishit = false
+  
   self:updatehitbox()  
   for i,v in ipairs(entities) do
     if v.name == 'playerbullet' then
       if helpers.collide(self.hitbox,v.hitbox) then
         v.delete = true
-        self.hp = self.hp - 1
-        self.hx = v.dx * 0.5
-        self.hy = v.dy * 0.5
-        if self.hp > 0 then 
-          te.play('assets/sfx/enemy_hit.ogg','static',{'enemy_hit','sfx'},0.9)
-          self.ishit = true
-        else
-          te.play('assets/sfx/enemy_die.ogg','static',{'enemy_hit','sfx'},1)
-          cs:addscore(25,'killedenemy')
+        self:gethit(v)
+      end
+    end
+    if v.name == 'thrownbox' then
+      if helpers.collide(self.hitbox,v.hitbox) then
+        if v:checkhit(o) then
+          self:gethit(v,10)
+          v:gethit(self)
         end
       end
     end
@@ -139,13 +156,12 @@ function Enemy:setshader()
   if self.ishit then
     love.graphics.setShader(shaders.whiteout)
   else
-    love.graphics.setShader()
+    --love.graphics.setShader()
   end
 end
 function Enemy:endshader()
   if self.ishit then
     love.graphics.setShader()
-    self.ishit = false
   end
 end
 

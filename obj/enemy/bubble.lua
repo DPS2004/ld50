@@ -21,17 +21,20 @@ function Bubble:update(dt)
   self.pulsei = self.pulsei + dt/20
   self.size = self.basesize + math.sin(self.pulsei)
   
+  self.ishit = false
+  
   for i,v in ipairs(entities) do
     if v.name == 'playerbullet' then
       if helpers.distance({self.x,self.y},{v.x,v.y}) <= self.size then
         v.delete = true
-        self.hp = self.hp - 1
-        if self.hp > 0 then 
-          te.play('assets/sfx/enemy_hit.ogg','static',{'enemy_hit','sfx'},0.9)
-          self.ishit = true
-        else
-          te.play('assets/sfx/enemy_die.ogg','static',{'enemy_hit','sfx'},1)
-          cs:addscore(25,'killedenemy')
+        self:gethit(v)
+      end
+    end
+    if v.name == 'thrownbox' then
+      if helpers.distance({self.x,self.y},{v.x,v.y}) <= self.size+4 then
+        if v:checkhit(o) then
+          self:gethit(v,10)
+          v:gethit(self)
         end
       end
     end
