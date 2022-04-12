@@ -271,6 +271,29 @@ function Player:update(dt)
       self.throwy = math.floor((self.y + (dy * maxdistance) - 5) / 8)
     end
     
+    if maininput:pressed('accept') then
+      if self.holding == 1 then
+        local newbox = em.init('thrownbox',{x=self.x+self.gunx,y=self.y+self.guny-5,hp=self.throwhp,canv = self.canv})
+        local distance = helpers.distance({self.x,self.y-5},{self.throwx*8+5,self.throwy*8+5}) / 200
+        
+        rw:ease(0,distance,'linear',self.throwx*8+5,newbox,'x')
+        rw:ease(0,distance,'linear',self.throwy*8+5,newbox,'y')
+        rw:func(distance,function()
+          if newbox then
+            if newbox.hp ~= 1 then
+              newbox.delete = true
+              table.insert(cs.rooms.c.level.tiles,{x=self.throwx,y=self.throwy,t=2,hp=newbox.hp-1,solid = true,drawflash = true})
+            else
+              newbox:destroy()
+            end
+          end
+        end)
+        rw:play()
+        
+        self.holding = 0
+      end
+    end
+    
     ---room transitions
     local movedistance = 14
     local cuberot = 66

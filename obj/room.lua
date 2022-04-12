@@ -51,7 +51,14 @@ function Room:draw()
     color('white')
     for i,v in ipairs(self.level.tiles) do
       if v.t == 2 then
+        if v.drawflash then
+          love.graphics.setShader(shaders.whiteout)
+          v.drawflash = false
+        end
         ez.drawframe(self.blockspr,4-v.hp,v.x*8-1,v.y*8-1)
+        if v.drawflash then
+          love.graphics.setShader()
+        end
       end
     end
   end

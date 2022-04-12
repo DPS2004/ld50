@@ -3,7 +3,6 @@
 em.new('obj/template.lua','templateobj')
 em.new('obj/cube.lua','cube')
 em.new('obj/floortile.lua','floortile')
-em.new('obj/player.lua','player')
 em.new('obj/room.lua','room')
 
 em.new('obj/clearparticles.lua','clearparticles')
@@ -26,3 +25,6 @@ em.new('obj/enemy/spinner_orbiter.lua','spinner_orbiter')
 em.new('obj/bullet.lua','bullet')
 em.new('obj/playerbullet.lua','playerbullet')
 em.new('obj/enemybullet.lua','enemybullet')
+
+em.new('obj/player.lua','player')
+em.new('obj/thrownbox.lua','thrownbox')

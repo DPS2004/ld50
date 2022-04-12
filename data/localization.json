@@ -24,5 +24,8 @@
   "clearedroom": {
     "en": "Cleared room!"
   },
+  "destroyedbox": {
+    "en": "SMAAAASH!"
+  },
   
 }
