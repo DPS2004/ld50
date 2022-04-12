@@ -294,6 +294,13 @@ function st:levelgen(floor)
       room.tiles = helpers.copy(levels.groups[room.roomtype][math.random(1,#levels.groups[room.roomtype])])
       print(room.roomtype,room.rotate)
       
+      for tilei,tile in ipairs(room.tiles) do
+        if tile.t == 0 or tile.t == 2 then
+          tile.solid = true
+          tile.hp = 4
+        end
+      end
+      
       for i=1,room.rotate do
         for tilei,tile in ipairs(room.tiles) do
           local oldx = tile.x
@@ -354,6 +361,9 @@ function st:updaterooms()
       print('spawning enemies')
       mainroom.entered = true
       for tilei,tile in ipairs(mainroom.tiles) do
+        
+        
+        
         if tile.t == 16 then
           em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
         end

@@ -25,6 +25,14 @@ function Player:initialize(params)
   
   self.speed = 1
   
+  self.holding = 0
+  
+  self.throwx = 0
+  self.throwy = 0
+  self.throwhp = 0
+  
+  self.blockspr = ez.newanim(templates.block)
+  
   self.hitcooldown = 0
   
   self.anim = 'idle'
@@ -115,9 +123,28 @@ function Player:update(dt)
     local function sign(a) return a > 0 and 1 or -1 end
 
     for i,v in ipairs(cs.rooms.c.level.tiles) do
-      if v.t == 0 then
+      if v.solid then
         local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
         if helpers.collide(self.hitbox,blockhitbox) then
+          
+          if v.t == 2 then
+            
+            if self.holding == 0 and (maininput:down('shootleft') or maininput:down('shootright') or maininput:down('shootup') or maininput:down('shootdown')) then
+              self.holding = 1
+              
+              
+              
+              self.gunx = (v.x*8 + 4) - self.x
+              self.guny = (v.y*8 + 4) - (self.y+5)
+              
+              self.throwhp = v.hp
+              
+              table.remove(cs.rooms.c.level.tiles,i)
+              
+              print('picked up block, hp '..self.throwhp)
+            end
+          end
+          
           if helpers.collide(self.oldhitboxx,blockhitbox) and sign(self.hitbox.y - blockhitbox.y) ~= sign(self.cdy)  then yok = false end
           if helpers.collide(self.oldhitboxy,blockhitbox) and sign(self.hitbox.x - blockhitbox.x) ~= sign(self.cdx) then xok = false end
         end
@@ -202,12 +229,46 @@ function Player:update(dt)
     self.gunx = (self.gunx + self.gunaimx)/2
     self.guny = (self.guny + self.gunaimy)/2
     
-    if doshoot then
+    if doshoot and self.holding == 0 then
       if self.shootcooldown <= 0 then
         self.shootcooldown = 8
         em.init('playerbullet',{x=self.x+(self.gunx*0.85),y=self.y+(self.guny*0.85)-4,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
         te.play('assets/sfx/player_shoot.ogg','static',{'player_shoot','sfx'},0.7)
       end
+    end
+    
+    if self.holding ~= 0 then
+      local tocollide = {}
+      for i,v in ipairs(cs.rooms.c.level.tiles) do
+        if v.solid then
+          table.insert(tocollide,v)
+        end
+      end
+
+      for i,v in ipairs(cs.doortiles) do
+        table.insert(tocollide,v)
+      end
+      
+      local dmove = helpers.rotate(1,helpers.anglepoints(0,0,self.gunx,self.guny),0,0)
+      local dx,dy = dmove[1],dmove[2]
+      local maxdistance = 0
+      local dobreak = false
+      for distance = 0, 400 do
+        for i,v in ipairs(tocollide) do
+          local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
+          if helpers.collide(blockhitbox,{x=(self.x + (dx * distance)) - 0.5,y=(self.y + (dy * distance)) - 5.5,width = 1,height = 1}) then
+            if not dobreak then
+              maxdistance = distance - 4 
+              dobreak = true
+            end
+          end
+          if dobreak then
+            break
+          end
+        end
+      end
+      self.throwx = math.floor((self.x + (dx * maxdistance)) / 8)
+      self.throwy = math.floor((self.y + (dy * maxdistance) - 5) / 8)
     end
     
     ---room transitions
@@ -353,9 +414,23 @@ function Player:drawmain(sx,sy)
   if math.floor(self.hitcooldown / 10) % 2 == 0 then
     helpers.drawbordered(function(dfx,dfy)
       ez.drawframe(self.spr,self.frame,self.x+dfx+sx,self.y+dfy+sy,0,1*flipscale,1,9,18)
-      ez.drawframe(self.gunspr,self.gunframe,self.x+self.gunx+dfx+sx-0.5,self.y+self.guny+dfy-5+sy,0,gunflip,1,4,5)
+      if self.holding == 0 then
+        ez.drawframe(self.gunspr,self.gunframe,self.x+self.gunx+dfx+sx-0.5,self.y+self.guny+dfy-5+sy,0,gunflip,1,4,5)
+      end
     end,'white',true)
+    
+    color()
+    if self.holding == 1 then
+      ez.drawframe(self.blockspr,4-self.throwhp,self.x+self.gunx+sx,self.y+self.guny+sy-5,0,1,1,5,5)
+      love.graphics.draw(sprites.throwcursor,self.throwx*8+5+sx,self.throwy*8+5+sy,0,1,1,5,5)
+    end
+    
+    
+    
+    
+    color()
   end
+  
 end
 
 function Player:draw()

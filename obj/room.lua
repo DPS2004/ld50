@@ -7,6 +7,8 @@ function Room:initialize(params)
   self.wallcanvas = love.graphics.newCanvas(128,128)
   
   Entity.initialize(self,params)
+  
+  self.blockspr = ez.newanim(templates.block)
 
 end
 
@@ -44,6 +46,16 @@ function Room:draw()
   love.graphics.setShader(shaders.walls)
   love.graphics.draw(self.wallcanvas,0,0)
   love.graphics.setShader()
+  
+  if self.level then
+    color('white')
+    for i,v in ipairs(self.level.tiles) do
+      if v.t == 2 then
+        ez.drawframe(self.blockspr,4-v.hp,v.x*8-1,v.y*8-1)
+      end
+    end
+  end
+  
   if cs.map[cs.croom].cleared and cs.pointsgained == 0 and cs.player.canmove then
     love.graphics.draw(sprites.instructions,0,0)
   end

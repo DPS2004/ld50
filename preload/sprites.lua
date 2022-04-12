@@ -7,8 +7,8 @@ sprites.floortiledark = love.graphics.newImage('assets/room/floordark.png')
 sprites.doors = love.graphics.newImage('assets/room/doors.png')
 sprites.instructions = love.graphics.newImage('assets/room/instructions.png')
 
-sprites.gun = love.graphics.newImage('assets/player/gun.png')
 sprites.playerbullet = love.graphics.newImage('assets/player/playerbullet.png')
+sprites.throwcursor = love.graphics.newImage('assets/player/throwcursor.png')
 
 sprites.enemyface = love.graphics.newImage('assets/enemy/enemy_face.png')
 sprites.walker = love.graphics.newImage('assets/enemy/walker.png')

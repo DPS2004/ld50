@@ -107,7 +107,7 @@ function Enemy:move(dt,params)
     local xok = true
     local yok = true
     for i,v in ipairs(cs.rooms.c.level.tiles) do
-      if v.t == 0 then
+      if v.solid then
         local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
         if helpers.collide(self.hitbox,blockhitbox) then
           if params.bounce then

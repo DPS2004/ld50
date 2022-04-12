@@ -236,11 +236,9 @@ function love.load()
   sdfunc.updatevol()
   sdfunc.save()
 
-
   entities = {}
   -- load entities
   dofile('preload/entities.lua')
-  
   
   -- load states
 
