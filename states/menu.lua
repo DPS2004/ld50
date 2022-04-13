@@ -1,7 +1,7 @@
 local st = Gamestate:new('menu')
 require 'lib.perlin'
 
-local credits = love.filesystem.read("data/credits.txt")
+local credits = love.filesystem.read("data/"..loc.get('creditstxt'))
 local _, credits_linecount = credits:gsub('\n', '\n')
 st:setinit(function(self, gameovered, pointsgained, new_highscore)
   if gameovered then
@@ -44,12 +44,12 @@ function st:drawTitle()
   love.graphics.translate(64,64)
   love.graphics.rotate(-math.pi / 2)
   love.graphics.translate(-64,-64)
-  love.graphics.print('D - play', 64 - font:getWidth('D - play') / 2, 128 - 12)
+  love.graphics.print('D - '..loc.get('play'), 64 - font:getWidth('D - '..loc.get('play')) / 2, 128 - 12)
   
-  love.graphics.print('A - credits', 64 - font:getWidth('A - credits') / 2, 0)
+  love.graphics.print('A - '..loc.get('credits'), 64 - font:getWidth('A - '..loc.get('credits')) / 2, 0)
   love.graphics.pop()
   if not project.noquit then
-    love.graphics.print('S - quit', 64 - font:getWidth('W - quit') / 2, 128 - 12)
+    love.graphics.print('S - '..loc.get('quit'), 64 - font:getWidth('S - '..loc.get('quit')) / 2, 128 - 12)
   end
     love.graphics.draw(sprites.logo,64,64,0,0.45+math.sin(love.timer.getTime()/2)*0.05,0.5+math.cos(love.timer.getTime()/2)*0.05,109,52)
     
@@ -65,17 +65,17 @@ function st:drawPlay()
   love.graphics.translate(64,64)
   love.graphics.rotate(-math.pi / 2)
   love.graphics.translate(-64,-64)
-  love.graphics.print('A - main', 64 - self.font:getWidth('A - main') / 2)
+  love.graphics.print('A - '..loc.get('main'), 64 - self.font:getWidth('A - '..loc.get('main')) / 2)
   love.graphics.pop()
 
-  local s = 'PLAY'
+  local s = string.upper(loc.get('play'))
   love.graphics.print(s, 64, 32, 0, 2, 2, self.font:getWidth(s) / 2 - 1)
 
-  s = '[press space]'
+  s = loc.get('pressbutton',{'space'})
   love.graphics.print(s, 64, 128 - 48, 0, 1, 1, self.font:getWidth(s) / 2)
   
   local highscore = savedata.highscore or 0
-  s = 'highscore: '..highscore
+  s = loc.get('highscore',{highscore})
   love.graphics.print(s, 64, 128 - 64, 0, 1, 1, self.font:getWidth(s) / 2)
   love.graphics.pop()
 end
@@ -84,9 +84,9 @@ function st:drawCredits()
   love.graphics.push('all')
   love.graphics.setCanvas(self.cube.canvas.l)
   love.graphics.clear(0,0,0,1)
-  local s = 'W - up'
+  local s = 'W - '..loc.get('up')
   love.graphics.print(s, 64 - self.font:getWidth(s) / 2, 1)
-  s = 'S - down'
+  s = 'S - '..loc.get('down')
   love.graphics.print(s, 64 - self.font:getWidth(s) / 2, 128 - 12)
 
   love.graphics.setScissor(0,12, 128, 100)
@@ -98,7 +98,7 @@ function st:drawCredits()
   love.graphics.translate(64,64)
   love.graphics.rotate(-math.pi / 2)
   love.graphics.translate(-64,-64)
-  s = 'D - main'
+  s = 'D - '..loc.get('main')
   love.graphics.print(s, 64 - self.font:getWidth(s) / 2, 128 - 12)
   love.graphics.pop()
 
@@ -110,11 +110,11 @@ function st:drawQuit()
   love.graphics.setCanvas(self.cube.canvas.d)
   love.graphics.clear(0,0,0,1)
 
-  love.graphics.print('W - main', 64 - self.font:getWidth('W - main') / 2)
-  local s = '[press space]'
+  love.graphics.print('W - '..loc.get('main'), 64 - self.font:getWidth('W - '..loc.get('main')) / 2)
+  local s = loc.get('pressbutton',{'space'})
   love.graphics.print(s, 64, 128 - 48, 0, 1, 1, self.font:getWidth(s) / 2)
   
-  s = 'QUIT?'
+  s = string.upper(loc.get('quit')..'?')
   love.graphics.print(s, 64, 32, 0, 2, 2, self.font:getWidth(s) / 2 - 1)
   love.graphics.pop()
 end
@@ -124,16 +124,16 @@ function st:drawGameover()
   love.graphics.setCanvas(self.cube.canvas.u)
   love.graphics.clear(0,0,0,1)
 
-  local s = 'GAME OVER'
+  local s = string.upper(loc.get('gameover'))
   love.graphics.print(s, 64, 32, 0, 2, 2, self.font:getWidth(s) / 2 - 1)
 
-  s = 'S - main'
+  s = 'S - '..loc.get('main')
   love.graphics.print(s, 64 - self.font:getWidth(s) / 2, 128 - 12)
   
-  s = 'you gained '..(self.pointsgained or 'some')..' points'
+  s = loc.get('gainedpoints',{(self.pointsgained or loc.get('gainedpointsfallback'))})
   love.graphics.print(s, 64, 128 - 48, 0, 1, 1, self.font:getWidth(s) / 2)
   
-  s = 'new high score!!'
+  s = loc.get('newhighscore')
   if self.new_highscore then
     love.graphics.print(s, 64, 128 - 36, 0, 1, 1, self.font:getWidth(s) / 2)
   end

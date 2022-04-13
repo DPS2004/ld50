@@ -5,13 +5,52 @@
     "fr": "Bonjour Monde!",
   },
   "play": {
-    "en": "PLAY"
+    "en": "play"
   },
-  "play": {
-    "en": "CREDITS"
+  "credits": {
+    "en": "credits"
   },
-  "play": {
-    "en": "QUIT"
+  "quit": {
+    "en": "quit"
+  },
+  "main": {
+    "en": "main"
+  },
+  
+  "creditstxt": {
+    "en": "credits.txt"
+  },
+  
+  "up": {
+    "en": "up"
+  },
+  
+  "down": {
+    "en": "down"
+  },
+  
+  "pressbutton": {
+    "en": "[press @@1@@]"
+  },
+  
+  "highscore": {
+    "en": "highscore: @@1@@"
+  },
+  
+  "gameover": {
+    "en": "game over"
+  },
+  
+  "gainedpoints": {
+    "en": "you gained @@1@@ points"
+  },
+  
+  "gainedpointsfallback": {
+    "en": "some"
+  },
+  
+  "newhighscore": {
+    "en": "new high score!!"
   },
   
   "****************GAME SCORES*******************":{},

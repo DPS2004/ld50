@@ -352,5 +352,9 @@ function helpers.circlimit(x,y,r)
   return ox,oy
 end
 
+function helpers.firstupper(str)
+    return str:gsub("^%1", string.upper)
+end
+
 
 return helpers

@@ -6,5 +6,6 @@
       "highscore": 0
     },
   },
-  "timesbooted": 0
+  "timesbooted": 0,
+  "skiptutorial": false
 }
