@@ -63,7 +63,7 @@ function Room:draw()
     end
   end
   
-  if cs.map[cs.croom].cleared and cs.pointsgained == 0 and cs.player.canmove then
+  if cs.map[cs.croom].cleared and cs.pointsgained == 0 and cs.player.canmove and (not cs.playtutorial) then
     love.graphics.draw(sprites.instructions,0,0)
   end
   --love.graphics.print('test',1,1)

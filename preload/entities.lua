@@ -28,3 +28,6 @@ em.new('obj/enemybullet.lua','enemybullet')
 
 em.new('obj/player.lua','player')
 em.new('obj/thrownbox.lua','thrownbox')
+
+em.new('obj/speechbubble.lua','speechbubble')
+em.new('obj/textbox.lua','textbox')

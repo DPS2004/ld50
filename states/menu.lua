@@ -201,6 +201,14 @@ function st:update_play()
     te.stop('bgm',false)
     cs = bs.load('game') 
     self.cube.delete = true
+    
+    if not savedata.skiptutorial then
+      cs.playtutorial = true
+      print('loading tutorial mode')
+    else
+      print('no tutorial')
+    end
+    
     cs:init()
   end
 end

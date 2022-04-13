@@ -13,7 +13,8 @@ function love.load()
   
   fonts ={
     main = love.graphics.newFont("assets/fonts/Axmolotl.ttf", 16),
-    pico = love.graphics.newFont("assets/fonts/PICO-8 wide.ttf", 4)
+    pico = love.graphics.newFont("assets/fonts/PICO-8 wide.ttf", 4),
+    disco = love.graphics.newFont("assets/fonts/DigitalDisco-Thin.ttf", 16)
   }
   
   -- font is https://tepokato.itch.io/axolotl-font

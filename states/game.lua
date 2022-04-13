@@ -12,13 +12,6 @@ st:setinit(function(self)
     self.rooms[v] = em.init('room',{canv=v})
   end
   
-
-  
-  self.player = em.init('player',{x=64,y=64,canv='c'})
-  self.map = self:levelgen(0)
-  
-  self.croom = 1
-  
   self.doortiles = {
     {x=6,y=0},{x=7,y=0},{x=8,y=0},{x=9,y=0},
     {x=6,y=15},{x=7,y=15},{x=8,y=15},{x=9,y=15},
@@ -26,31 +19,216 @@ st:setinit(function(self)
     {x=15,y=6},{x=15,y=7},{x=15,y=8},{x=15,y=9},
   }
   
-  --local skiptoboss = true
-  
-  if skiptoboss then
-    self.map[1].exits = {u=5,d=5,l=5,r=5}
-  end
-  
-  self:updaterooms()
+  self.player = em.init('player',{x=64,y=64,canv='c'})
   
   self.score = 1000
-  
-  self.level = 0
-  
-  self.pointsgained = 0
-  
   self.scoredigits = {0,0,0,0,1,10,100,1000}
-  
   self.scorecountdown = 30
   
-  self.musbpm = 120
+  self.pointsgained = 0
   
   self.scoretext = ''
   self.scoreop = 0
   self.greenscore = true
   
-  st:playmusic(0)
+  
+  
+  if not self.playtutorial then
+    self.map = self:levelgen(0)
+    
+    self.croom = 1
+    
+    self.level = 0
+    
+    --local skiptoboss = true
+    
+    if skiptoboss then
+      self.map[1].exits = {u=5,d=5,l=5,r=5}
+    end
+    
+    self.musbpm = 120
+    
+    st:playmusic(0)
+  else
+    print('starting game in tutorial mode')
+    
+    self.croom = 1
+    
+    self.musbpm = 120
+    
+    self.tutorialfunc = nil
+    
+    local loadtiles = function(id)
+      local tiles = helpers.copy(levels.groups.tutorial[id])
+      for tilei,tile in ipairs(tiles) do
+        if tile.t == 0 or tile.t == 2 then
+          tile.solid = true
+          tile.hp = 4
+        end
+      end
+      if id == 4 then
+        for y=1,14 do
+          table.insert(tiles,{x=4,y=y,t=0,solid=true,todelete=true})
+        end
+      end
+      return tiles
+    end
+    
+    self.map = {}
+    
+    for i=1,5 do
+      table.insert(self.map,{
+        id = i,
+        staylocked = (i==1 or i==2),
+        cleared = false,
+        exits = {r = i+1,l=i-1},
+        tiles = loadtiles(i)
+      })
+    end
+    
+    local diasounds = {}
+    for i=0,37 do
+      table.insert(diasounds,'assets/sfx/talk/'..i..'.ogg')
+    end
+    
+    local dspeed = 1
+    
+    local dialogs = {
+      {t=loc.get('tutorial1'),l=80,w=150,n=2}, --Hi, good to see you.
+      {t=loc.get('tutorial2'),l=240,w=286,n=3}, --We're going live soon, so let's get you acquainted with the way this all works.
+      {t=loc.get('tutorial3'),l=200,w=250,n=function(self) --Try moving around with WASD, and shooting with the Arrow Keys.
+        if not self.movetimer then self.movetimer = 0 self.shoottimer = 0 end
+        if (maininput:down('left') or maininput:down('right') or maininput:down('up') or maininput:down('down')) then
+          self.movetimer = self.movetimer + 1
+        end
+        if (maininput:down('shootleft') or maininput:down('shootright') or maininput:down('shootup') or maininput:down('shootdown')) then
+          self.shoottimer = self.shoottimer + 1
+        end
+        if self.shoottimer >= 200 and self.movetimer >= 200 then
+          self.playdialog(4)
+          self.map[self.croom].staylocked = false
+          return true
+        end
+      end
+      },
+      {t=loc.get('tutorial4'),l=80,w=150,n=function(self)--Great. Move into the next room, please.
+        if self.croom ~= 1 then
+          self.playdialog(5)
+          return true
+        end
+      end
+      },
+      {t=loc.get('tutorial5'),l=80,w=200,n=function(self)--Defeat the enemy in the center of the screen.
+        local enemiesleft = false
+        for i,v in ipairs(entities) do
+          if v.isenemy then
+            enemiesleft = true
+          end
+        end
+        
+        if not enemiesleft then
+          self.playdialog(6)
+          return true
+        end
+      end
+      }, 
+      {t=loc.get('tutorial6'),l=40,w=80,n=7}, --Good job.
+      {t=loc.get('tutorial7'),l=240,w=280,n=8}, --You have probably noticed the score display on the top of the screen.
+      {t=loc.get('tutorial8'),l=280,w=336,n=9}, --Your score increases when you defeat enemies, clear rooms, or things of that nature.
+      {t=loc.get('tutorial9'),l=200,w=200,n=10}, --But your score steadily decreases as time passes.
+      {t=loc.get('tutorial10'),l=190,w=170,n=11}, --It also goes down quite a bit when you get hit.
+      {t=loc.get('tutorial11'),l=190,w=176,n=12}, --If your score reaches 0, the game will end.
+      {t=loc.get('tutorial12'),l=190,w=230,n=13,onclear = function(self) --Don't worry, for this tutorial your score will never go below 500.
+        print('aeiou')
+        self.map[self.croom].staylocked = false
+      end
+      },
+      {t=loc.get('tutorial13'),l=60,w=130,n=function(self)--Next room, please.
+        if self.croom == 3 then
+          self.playdialog(14)
+          print('clearing 13')
+          return true
+        end
+      end
+      },
+      {t=loc.get('tutorial14'),l=100,w=230,n=function(self)--This room has two enemies in it. Defeat them both, and move on.
+        if self.croom == 4 then
+          self.playdialog(15)
+          return true
+        end
+      end
+      }, 
+      {t=loc.get('tutorial15'),l=60,w=100,n=16}, --Do you see those boxes?
+      {t=loc.get('tutorial16'),l=240,w=300,n=17,onclear = function(self)--You can pick up and aim them with the arrow keys, and throw them with space.
+        local deleted = 0
+        local max = #self.map[4].tiles
+        for i=1,max do
+          if self.map[4].tiles[i-deleted] and self.map[4].tiles[i-deleted].todelete then
+            table.remove(self.map[4].tiles,i-deleted)
+            deleted = deleted + 1
+          end
+        end
+      end
+      },
+      {t=loc.get('tutorial17'),l=60,w=100,n=function() end}, --Go ahead, try it out.
+    }
+    
+    
+    self.playdialog = function(id)
+      print('dialog '..id)
+      local params = {
+        x=-352,y=190,
+        width = dialogs[id].w,height = 34,
+        tailoffset = 28,
+        length = dialogs[id].l*dspeed,
+        text=dialogs[id].t,
+        showbutton = (type(dialogs[id].n) == 'number'),
+        autostart = false,
+        sound = diasounds,
+        buttoncallback = function(oldbubble)
+          if dialogs[id].onclear then dialogs[id].onclear(self) end
+          rw:ease(0,1,'inCubic',250,oldbubble,'y')
+          if type(dialogs[id].n) == 'number' then
+            rw:func(0.25,function() self.playdialog(dialogs[id].n) end)
+          end
+          rw:func(1,function() oldbubble:cleanup() end)
+          rw:play({bpm = 120})
+        end
+      }
+      if (type(dialogs[id].n) ~= 'number') then
+        params.buttoncallback = nil
+        self.tutorialfunc = dialogs[id].n
+      end
+          
+      
+      local newbubble = em.init('speechbubble',params)
+      
+      if (type(dialogs[id].n) ~= 'number') then
+        self.newerbubble = newbubble
+        self.newtutorialfunc = dialogs[id].n
+        if not self.oldbubble then
+          self.oldbubble = self.newerbubble
+        end
+      end
+      
+      rw:ease(0,1,'outCubic',1,newbubble,'x')
+      rw:func(1,function() newbubble:start() end)
+      rw:play({bpm=120})
+    end
+    
+    
+    
+    
+    self.playdialog(1)
+    
+    
+  end
+  
+  self:updaterooms()
+  
+  
+  
+  
   
 end)
 
@@ -448,6 +626,12 @@ st:setupdate(function(self,dt)
     self.scorecountdown = self.scorecountdown + (3600 / self.musbpm)
     self.score = self.score - 1
   end
+  
+  if self.playtutorial then
+    if self.score < 500 then
+      self.score = self.score + 10
+    end
+  end
 
   if self.score <= 0 then
     print("imagine losing lmao")
@@ -468,6 +652,11 @@ st:setupdate(function(self,dt)
   
   if (not self.map[self.croom].cleared) then
     local enemiesleft = false
+    
+    if self.map[self.croom].staylocked then
+      enemiesleft = true
+    end
+    
     for i,v in ipairs(entities) do
       if v.isenemy then
         enemiesleft = true
@@ -482,6 +671,17 @@ st:setupdate(function(self,dt)
     end
     
   end
+  
+  if self.tutorialfunc then
+    if self:tutorialfunc() then
+      print('tutorialfunc success')
+      self.tutorialfunc = nil
+      rw:ease(0,1,'inCubic',250,self.oldbubble,'y')
+      rw:func(1,function() self.oldbubble:cleanup() print(self.oldbubble.delete) self.oldbubble = nil if self.newerbubble then print('swapping bubbles') self.oldbubble = self.newerbubble self.tutorialfunc = self.newtutorialfunc self.newerbubble = nil self.newtutorialfunc = nil end end)
+      rw:play({bpm = 120})
+    end
+  end
+  
 end)
 
 st:setbgdraw(function(self)
@@ -507,6 +707,7 @@ st:setfgdraw(function(self)
     end
     
     love.graphics.setScissor()
+    love.graphics.setFont(fonts.main)
     if self.greenscore then
       love.graphics.setColor(76/255,1,0,helpers.clamp(self.scoreop,0,1))
     else

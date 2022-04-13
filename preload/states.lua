@@ -7,3 +7,5 @@ bs.new('menu')
 
 bs.new('editor_mapselect')
 bs.new('editor')
+
+bs.new('dialogtest')

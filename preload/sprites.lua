@@ -30,4 +30,6 @@ sprites.logo = love.graphics.newImage('assets/menu/logo.png')
 sprites.editortiles = love.graphics.newImage('assets/editor/tiles.png')
 sprites.editorcursor = love.graphics.newImage('assets/editor/cursor.png')
 
+sprites.speechtail = love.graphics.newImage('assets/ui/speechtail.png')
+
 return sprites

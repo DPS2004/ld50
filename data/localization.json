@@ -53,6 +53,60 @@
     "en": "new high score!!"
   },
   
+  "****************Tutorial*******************":{},
+  
+  "tutorial1": {
+    "en": "Hi, good to see you."
+  },
+  "tutorial2": {
+    "en": "We're going live soon, so let's get you acquainted with the way this all works."
+  },
+  "tutorial3": {
+    "en": "Try moving around with WASD, and shooting with the Arrow Keys."
+  },
+  "tutorial4": {
+    "en": "Great. Move into the next room, please."
+  },
+  "tutorial5": {
+    "en": "Defeat the enemy in the center of the screen."
+  },
+  "tutorial6": {
+    "en": "Good job."
+  },
+  "tutorial7": {
+    "en": "You have probably noticed the score display on the top of the screen."
+  },
+  "tutorial8": {
+    "en": "Your score increases when you defeat enemies, clear rooms, or things of that nature."
+  },
+  "tutorial9": {
+    "en": "But your score steadily decreases as time passes."
+  },
+  "tutorial10": {
+    "en": "It also goes down quite a bit when you get hit."
+  },
+  "tutorial11": {
+    "en": "If your score reaches 0, the game will end."
+  },
+  "tutorial12": {
+    "en": "Don't worry, for this tutorial your score will never go below 500."
+  },
+  "tutorial13": {
+    "en": "Next room, please."
+  },
+  "tutorial14": {
+    "en": "This room has two enemies in it. Defeat them both, and move on."
+  },
+  "tutorial15": {
+    "en": "Do you see those boxes?"
+  },
+  "tutorial16": {
+    "en": "You can pick up and aim them with the arrow keys, and throw them with space."
+  },
+  "tutorial17": {
+    "en": "Go ahead, try it out."
+  },
+  
   "****************GAME SCORES*******************":{},
   "killedenemy": {
     "en": "Killed enemy!"

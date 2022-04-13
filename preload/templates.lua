@@ -7,5 +7,7 @@ templates.player.gun = ez.newtemplate('player/gun.png',9,0)
 
 templates.block = ez.newtemplate('room/block.png',10,0)
 
+templates.pressbutton = ez.newtemplate("ui/pressbutton.png",8,30)
+
 
 return templates
