@@ -76,7 +76,7 @@ st:setinit(function(self)
     
     self.map = {}
     
-    for i=1,5 do
+    for i=1,4 do
       table.insert(self.map,{
         id = i,
         staylocked = (i==1 or i==2),
@@ -85,6 +85,37 @@ st:setinit(function(self)
         tiles = loadtiles(i)
       })
     end
+    table.insert(self.map,{
+      id = 5,
+      staylocked = true,
+      cleared = false,
+      exits = {l=4,u = 6,d = 7},
+      tiles = loadtiles(5)
+    })
+    table.insert(self.map,{
+      id = 6,
+      cleared = false,
+      exits = {u = 8,d = 5},
+      tiles = loadtiles(6)
+    })
+    table.insert(self.map,{
+      id = 7,
+      cleared = false,
+      exits = {u = 5,d = 8},
+      tiles = loadtiles(7)
+    })
+    table.insert(self.map,{
+      id = 8,
+      cleared = false,
+      exits = {u = 7,d = 6,l=9},
+      tiles = loadtiles(8)
+    })
+    table.insert(self.map,{
+      id = 9,
+      cleared = false,
+      exits = {r=8},
+      tiles = loadtiles(9)
+    })
     
     local diasounds = {}
     for i=0,37 do
@@ -170,7 +201,40 @@ st:setinit(function(self)
         end
       end
       },
-      {t=loc.get('tutorial17'),l=60,w=100,n=function() end}, --Go ahead, try it out.
+      {t=loc.get('tutorial17'),l=60,w=100,n=function() --Go ahead, try it out.
+        local enemiesleft = false
+        for i,v in ipairs(entities) do
+          if v.isenemy then
+            enemiesleft = true
+          end
+        end
+        
+        if not enemiesleft then
+          self.playdialog(18)
+          return true
+        end
+      end
+      }, 
+      {t=loc.get('tutorial18'),l=45,w=80,n=function() --Nicely done.
+        local enemiesleft = false
+        for i,v in ipairs(entities) do
+          if v.isenemy then
+            enemiesleft = true
+          end
+        end
+        
+        if (not enemiesleft)  and (self.croom == 5) then
+          self.playdialog(19)
+          return true
+        end
+      end
+      },
+      {t=loc.get('tutorial19'),l=70,w=110,n=20}, --This room has two exits.
+      {t=loc.get('tutorial20'),l=160,w=280,n=21}, --If you find yourself lost, remember that unvisited rooms have a lighter floor.
+      {t=loc.get('tutorial21'),l=140,w=270,onclear = function(self)--I must go now, but I trust you to make it to the main stage. Good luck.
+        self.map[self.croom].staylocked = false
+      end
+      }, 
     }
     
     
@@ -182,7 +246,7 @@ st:setinit(function(self)
         tailoffset = 28,
         length = dialogs[id].l*dspeed,
         text=dialogs[id].t,
-        showbutton = (type(dialogs[id].n) == 'number'),
+        showbutton = (type(dialogs[id].n) == 'number' or (not dialogs[id].n)),
         autostart = false,
         sound = diasounds,
         buttoncallback = function(oldbubble)
@@ -195,7 +259,7 @@ st:setinit(function(self)
           rw:play({bpm = 120})
         end
       }
-      if (type(dialogs[id].n) ~= 'number') then
+      if dialogs[id].n and (type(dialogs[id].n) ~= 'number') then
         params.buttoncallback = nil
         self.tutorialfunc = dialogs[id].n
       end
@@ -203,7 +267,7 @@ st:setinit(function(self)
       
       local newbubble = em.init('speechbubble',params)
       
-      if (type(dialogs[id].n) ~= 'number') then
+      if dialogs[id].n and (type(dialogs[id].n) ~= 'number') then
         self.newerbubble = newbubble
         self.newtutorialfunc = dialogs[id].n
         if not self.oldbubble then
