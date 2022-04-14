@@ -16,6 +16,7 @@ sprites.walkshoot = love.graphics.newImage('assets/enemy/walkshoot.png')
 sprites.bouncer = love.graphics.newImage('assets/enemy/bouncer.png')
 sprites.cannon = love.graphics.newImage('assets/enemy/cannon.png')
 sprites.bullet = love.graphics.newImage('assets/enemy/enemybullet.png')
+sprites.target = love.graphics.newImage('assets/enemy/target.png')
 
 sprites.bossface = love.graphics.newImage('assets/enemy/boss_face.png')
 

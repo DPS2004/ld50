@@ -257,7 +257,7 @@ function love.load()
         for tilei,tile in ipairs(flipped) do
           tile.x = 15-tile.x
           
-          if tile.t == 22 then -- bubble centering
+          if tile.t == 22 or tile.t == 23 then -- bubble centering
             tile.x = tile.x - 1
           end
           
@@ -273,7 +273,7 @@ function love.load()
               tile.t = 21
             end
             
-            if tile.t == 22 then -- bubble centering
+            if tile.t == 22 or tile.t == 23 then -- bubble centering
               tile.y = tile.y - 1
             end
             

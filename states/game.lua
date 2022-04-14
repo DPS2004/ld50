@@ -492,7 +492,7 @@ function st:levelgen(floor)
             tile.t = 21
           end
           
-          if tile.t == 22 then -- bubble centering
+          if tile.t == 22 or tile.t == 23 then -- bubble centering
             tile.y = tile.y - 1
           end
           
@@ -568,6 +568,10 @@ function st:updaterooms()
         
         if tile.t == 22 then
           em.init('spawner',{x=tile.x*8+8,y=tile.y*8+8,tospawn='bubble',finalsize=8,canv='c'})
+        end
+        
+        if tile.t == 23 then
+          em.init('spawner',{x=tile.x*8+8,y=tile.y*8+8,tospawn='target',finalsize=8,canv='c'})
         end
         
         --bosses
