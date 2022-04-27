@@ -110,6 +110,10 @@ function helpers.lerp(a, b, t)
   return a + (b - a) * t
 end
 
+function helpers.map(x, in_min, in_max, out_min, out_max)
+  return out_min + ((out_max - out_min) / (in_max - in_min)) * (x - in_min)
+end
+
 helpers.eases = {
   ["Linear"] = function (t)
     return t
