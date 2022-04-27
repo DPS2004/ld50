@@ -229,10 +229,12 @@ function BlackHole:draw()
     love.graphics.push('all')
     local c = cs.cube.canvas
     self:drawt(c.c)
-    self:drawt(c.d, 0, -90)
-    self:drawt(c.u, 0, 90)
-    self:drawt(c.l, -90, 0)
-    self:drawt(c.r, 90, 0)
+    if not cs.playtutorial then
+      self:drawt(c.d, 0, -90)
+      self:drawt(c.u, 0, 90)
+      self:drawt(c.l, -90, 0)
+      self:drawt(c.r, 90, 0)
+    end
     love.graphics.pop()
 end
 
