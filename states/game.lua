@@ -48,13 +48,16 @@ st:setinit(function(self)
     
     self.musbpm = 120
     
-    st:playmusic(0)
+    self:playmusic(0)
+    
   else
     print('starting game in tutorial mode')
     
     self.croom = 1
     
-    self.musbpm = 120
+    self.musbpm = 128
+    
+    self:playmusic(2)
     
     self.tutorialfunc = nil
     
@@ -113,6 +116,7 @@ st:setinit(function(self)
     table.insert(self.map,{
       id = 9,
       cleared = false,
+      staylocked = true,
       exits = {r=8},
       tiles = loadtiles(9)
     })
@@ -280,7 +284,20 @@ st:setinit(function(self)
       rw:play({bpm=120})
     end
     
-    
+    self.endtutorial = function(self)
+      savedata.skiptutorial = true
+      self.pointsgained = 0
+      self.playtutorial = falsex
+      self.level = 0
+      cs.map = cs:levelgen(cs.level)
+
+      cs.croom = 1
+      cs.player.x = 64
+      cs.player.y = 64
+      cs:updaterooms()
+      cs:playmusic(0)
+      
+    end
     
     
     self.playdialog(1)
@@ -604,7 +621,9 @@ function st:updaterooms()
       mainroom.entered = true
       for tilei,tile in ipairs(mainroom.tiles) do
         
-        
+        if tile.t == 15 then
+          em.init('blackhole',{x=64,y=64,canv='c'})
+        end
         
         if tile.t == 16 then
           em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
@@ -674,8 +693,11 @@ function st:playmusic(m)
   if m == 1 then --boss
     self.musbpm = 150
     te.play("assets/music/boss_intro.ogg","stream","bgm",1.1,1,function(a)
-      te.playLooping("assets/music/boss.ogg","stream","bgm",1.1)
+      te.playLooping("assets/music/boss.ogg","stream","bgm",nil,1.1)
     end)
+  elseif m == 2 then --tutorial
+    self.musbpm = 128.6
+    te.playLooping("assets/music/tutorial.ogg","stream","bgm",nil,1)
   else --main/fallback
     self.musbpm = 120
     te.play("assets/music/ld50mus_intro.ogg","stream","bgm",1,1,function(a)

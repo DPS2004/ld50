@@ -54,14 +54,19 @@ function BlackHole:update(dt)
         self.pull_force = 2
         rw:ease(0, 1, 'inSine', 0, cs.cube, 'sx')
         rw:func(1, function()
-            cs.map = cs:levelgen(cs.level)
+            if cs.playtutorial then
+              cs:endtutorial()
+              self.delete = true
+            else
+              cs.map = cs:levelgen(cs.level)
 
-            cs.croom = 1
-            cs.player.x = 64
-            cs.player.y = 64
-            cs:updaterooms()
-            cs:playmusic(0)
-            self.delete = true
+              cs.croom = 1
+              cs.player.x = 64
+              cs.player.y = 64
+              cs:updaterooms()
+              cs:playmusic(0)
+              self.delete = true
+            end
         end)
         rw:ease(1, 1, 'inSine', 1, cs.cube, 'sx')
         rw:play({ bpm = 120 })

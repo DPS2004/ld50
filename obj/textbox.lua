@@ -112,7 +112,7 @@ function Textbox:update(dt)
     if self.sound then
       if cc == helpers.trim(cc) then
         --te.stop('textbox')
-        te.play(self.sound,'static',{'textbox','sfx'},0.4)
+        te.play(self.sound,'static',{'textbox','sfx'},0.2)
       end
     end
   end
