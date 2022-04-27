@@ -19,9 +19,21 @@ function Enemybullet:update(dt)
 end
 
 
-function Enemybullet:draw()
+function Enemybullet:drawt()
   color()
   love.graphics.draw(self.spr,self.x,self.y,0,1,1,2,2)
+end
+
+function Enemybullet:draw()
+  if self.all_canv then
+    for _, c in pairs(cs.cube.canvas) do
+      love.graphics.setCanvas(c)
+      self:drawt()
+    end
+  else
+    love.graphics.setCanvas(self.canv)
+    self:drawt()
+  end
 end
 
 return Enemybullet

@@ -179,12 +179,8 @@ function BlackHole:drawLayer(x, y, layercolor, angle, inner_r, slice_r, slices, 
     love.graphics.draw(self.current_swirl)
 end
 
-function BlackHole:draw()
-    if self.canv then
-        love.graphics.setCanvas({cs.cube.canvas[self.canv], stencil = true})
-    else
-        love.graphics.setCanvas({shuv.canvas, stencil = true})
-    end
+function BlackHole:drawt(canvas, ry_offset, rz_offset)
+    love.graphics.setCanvas(canvas)
     
     local overall_scale = self.scale
     local slice_r = 12
@@ -193,8 +189,9 @@ function BlackHole:draw()
 
     local inset = 18
 
-    local ry = cs.cube.r.y
-    local rz = cs.cube.r.z
+    local ry = cs.cube.r.y + (ry_offset or 0)
+    local rz = cs.cube.r.z + (rz_offset or 0)
+    -- print(ry)
 
     local shallowness = 6
     local x_offset = -ry / shallowness 
@@ -226,6 +223,17 @@ function BlackHole:draw()
 
     color('white')
     self:drawParticles(x_offset, y_offset)
+end
+
+function BlackHole:draw()
+    love.graphics.push('all')
+    local c = cs.cube.canvas
+    self:drawt(c.c)
+    self:drawt(c.d, 0, -90)
+    self:drawt(c.u, 0, 90)
+    self:drawt(c.l, -90, 0)
+    self:drawt(c.r, 90, 0)
+    love.graphics.pop()
 end
 
 return BlackHole

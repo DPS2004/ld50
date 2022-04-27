@@ -143,7 +143,7 @@ function Spinner:update(dt)
         if self.shotcooldown == 0 then
           if math.floor(self.statetimer/50)%2 == 0 then
             fired = true
-            em.init('enemybullet',{x=v.x,y=v.y,dx=ang[1]/10,dy=ang[2]/10,canv=self.canv})
+            em.init('enemybullet',{x=v.x,y=v.y,dx=ang[1]/10,dy=ang[2]/10,canv=self.canv,all_canv = true})
           end
         end
       end
