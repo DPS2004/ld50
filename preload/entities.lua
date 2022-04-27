@@ -27,6 +27,7 @@ em.new('obj/bullet.lua','bullet')
 em.new('obj/playerbullet.lua','playerbullet')
 em.new('obj/enemybullet.lua','enemybullet')
 
+em.new('obj/blackhole.lua','blackhole')
 em.new('obj/player.lua','player')
 em.new('obj/thrownbox.lua','thrownbox')
 

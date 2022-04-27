@@ -169,19 +169,9 @@ function Spinner:deathcheck()
     cs.level = cs.level + 1
     
     em.init('enemypoof',{x=self.x,y=self.y,size=self.size,canv=self.canv})
+    em.init('blackhole',{x=64,y=64,canv=self.canv})
     
-    rw:ease(0,1,'inSine',0,cs.cube,'sx')
-    rw:func(1,function()
-      cs.map = cs:levelgen(cs.level)
-      
-      cs.croom = 1
-      cs.player.x = 64
-      cs.player.y = 64
-      cs:updaterooms()
-      cs:playmusic(0)
-    end)
-    rw:ease(1,1,'inSine',1,cs.cube,'sx')
-    rw:play({bpm=120})
+    
     
     
   end
