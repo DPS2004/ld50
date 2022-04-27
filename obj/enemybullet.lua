@@ -9,7 +9,9 @@ function Enemybullet:initialize(params)
   self.isenemy = true
   
   self.hitbox = {x=0,y=0,width=4,height=4}
-
+  if type(self.canv) == 'string' then
+    self.canv = cs.cube.canvas[self.canv]
+  end
 end
 
 function Enemybullet:update(dt)
