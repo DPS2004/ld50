@@ -287,7 +287,7 @@ st:setinit(function(self)
     self.endtutorial = function(self)
       savedata.skiptutorial = true
       self.pointsgained = 0
-      self.playtutorial = falsex
+      self.playtutorial = false
       self.level = 0
       cs.map = cs:levelgen(cs.level)
 
