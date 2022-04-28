@@ -10,11 +10,16 @@ function Bullet:initialize(params)
   self.dy = 0
   self.name = 'bullet'
   
+  self.size = 2
+  self.hbsize = 2
+  
   self.spr = sprites.bullet
   
-  self.hitbox = {x=0,y=0,width=4,height=4}
   
   Entity.initialize(self,params)
+  
+  
+  self.hitbox = {x=self.x - self.hbsize,y=self.y-self.hbsize,width=self.hbsize*2,height=self.hbsize*2}
 
 end
 
@@ -22,8 +27,8 @@ function Bullet:move(dt)
   self.x = self.x + self.dx*dt
   self.y = self.y + self.dy*dt
   
-  self.hitbox.x = self.x - 2
-  self.hitbox.y = self.y - 2
+  self.hitbox.x = self.x - self.hbsize
+  self.hitbox.y = self.y - self.hbsize
 end
 
 function Bullet:checkwalls()
@@ -50,7 +55,9 @@ end
 
 function Bullet:draw()
   color()
-  love.graphics.draw(self.spr,self.x,self.y,0,1,1,3,3)
+  if self.size == 2 then
+    love.graphics.draw(self.spr,self.x,self.y,0,1,1,3,3)
+  end
 end
 
 return Bullet

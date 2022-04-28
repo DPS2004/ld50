@@ -50,7 +50,6 @@ end
 
 function Spinner:changestate(forced)
   
-  print('changing state')
   self.statetimer = math.random(300,500)
   
   local numstates = 3

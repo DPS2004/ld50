@@ -165,6 +165,8 @@ function Enemy:move(dt,params)
     
     if xok then self.x = newx else self.dx = 0 end
     if yok then self.y = newy else self.dy = 0 end
+    
+    return (not xok) or (not yok)
   end
 end
 

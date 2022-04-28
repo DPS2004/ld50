@@ -8,7 +8,7 @@ function Enemybullet:initialize(params)
   
   self.isenemy = true
   
-  self.hitbox = {x=0,y=0,width=4,height=4}
+  
   if type(self.canv) == 'string' then
     self.canv = cs.cube.canvas[self.canv]
   end
@@ -23,7 +23,15 @@ end
 
 function Enemybullet:drawt()
   color()
-  love.graphics.draw(self.spr,self.x,self.y,0,1,1,2,2)
+  if self.size == 2 then
+    love.graphics.draw(self.spr,self.x,self.y,0,1,1,2,2)
+  else
+    love.graphics.setColor(1,58/255,153/255,1)
+    love.graphics.setLineWidth(2)
+    love.graphics.circle('line',self.x,self.y,self.size)
+    love.graphics.setLineWidth(1)
+    color()
+  end
 end
 
 function Enemybullet:draw()

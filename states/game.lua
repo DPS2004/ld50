@@ -726,7 +726,7 @@ function st:updaterooms()
         
         if tile.t == 33 then
           self:playmusic(1)
-          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+4,tospawn='crusher',finalsize=10,canv='c'})
+          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+4,tospawn='crusher',finalsize=10,canv='c',spawnoffset = 0})
         end
         
       end

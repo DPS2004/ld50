@@ -8,7 +8,7 @@ function Playerbullet:initialize(params)
   
   self.spr = sprites.playerbullet
   
-  self.hitbox = {x=0,y=0,width=4,height=4}
+  
 
 end
 
@@ -21,7 +21,9 @@ end
 
 function Playerbullet:draw()
   color()
-  love.graphics.draw(self.spr,self.x,self.y,0,1,1,2,2)
+  if self.size == 2 then
+    love.graphics.draw(self.spr,self.x,self.y,0,1,1,2,2)
+  end
 end
 
 return Playerbullet
