@@ -7,6 +7,7 @@ function Spinner:initialize(params)
   if cs.level ~= 0 then
     self.orbiternum = math.min(4+cs.level,10)
   end
+  params.hbsize = params.hbsize or 4
   
   Enemy.initialize(self,params)
   

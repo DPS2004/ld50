@@ -3,11 +3,13 @@ Bubble = class('Bubble',Enemy)
 function Bubble:initialize(params)
   
   self.basesize = 8
+  params.hbsize = params.hbsize or 5
   Enemy.initialize(self,params)
   
-  self.hp = 20
+  self.hp = 15
   
   self.hitbox = {x=self.x-5,y=self.y-5,width=10,height=10}
+  
   self.pulsei = 0
   self.size = self.basesize
   

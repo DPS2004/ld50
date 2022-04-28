@@ -12,15 +12,17 @@ function Enemy:initialize(params)
   self.hp = 5
   self.spr = sprites.enemyface
   
+  self.hbsize = 3
+  
   self.isenemy = true
   
   self.ishit = false
   
-  self.hitbox = {x=self.x,y=self.y,width=6,height=6}
-  self.oldhitboxx = {x=self.x,y=self.y,width=6,height=6}
-  self.oldhitboxy = {x=self.x,y=self.y,width=6,height=6}
-  
   Entity.initialize(self,params)
+  
+  self.hitbox = {x=self.x-self.hbsize,y=self.y-self.hbsize,width=self.hbsize*2,height=self.hbsize*2}
+  self.oldhitboxx = {x=self.x-self.hbsize,y=self.y-self.hbsize,width=self.hbsize*2,height=self.hbsize*2}
+  self.oldhitboxy = {x=self.x-self.hbsize,y=self.y-self.hbsize,width=self.hbsize*2,height=self.hbsize*2}
   
 end
 
@@ -45,11 +47,27 @@ function Enemy:shoot()
   te.play('assets/sfx/enemy_fire.ogg','static',{'enemy_fire','sfx'},0.5)
 end
 
-function Enemy:updatehitbox()
-  self.hx = 0
-  self.hy = 0
-  self.hitbox.x = self.x - 3
-  self.hitbox.y = self.y - 3
+function Enemy:updatehitbox(x,y)
+  x = x or self.x
+  y = y or self.y
+  
+  self.hitbox.x = x - self.hbsize
+  self.hitbox.y = y - self.hbsize
+  self.hitbox.width = self.hbsize*2
+  self.hitbox.height = self.hbsize*2
+  
+  self.oldhitboxx.x = self.x - self.hbsize
+  self.oldhitboxx.y = y - self.hbsize
+  self.oldhitboxx.width = self.hbsize*2
+  self.oldhitboxx.height = self.hbsize*2
+  
+  self.oldhitboxy.x = x - self.hbsize
+  self.oldhitboxy.y = self.y - self.hbsize
+  self.oldhitboxy.width = self.hbsize*2
+  self.oldhitboxy.height = self.hbsize*2
+  
+  
+  
 end
 
 function Enemy:gethit(v, hpminus)
@@ -72,6 +90,7 @@ function Enemy:bulletcheck()
   self.ishit = false
   
   self:updatehitbox()  
+  
   for i,v in ipairs(entities) do
     if v.name == 'playerbullet' then
       if helpers.collide(self.hitbox,v.hitbox) then
@@ -109,16 +128,13 @@ function Enemy:move(dt,params)
       newx = newx + self.hx*params.knockback
       newy = newy + self.hy*params.knockback
     end
+    
+    self.hx = 0
+    self.hy = 0
+    
   end
   
-  self.hitbox.x = newx - 3
-  self.hitbox.y = newy - 3
-  
-  self.oldhitboxx.x = self.x-3
-  self.oldhitboxx.y = newy - 3
-  
-  self.oldhitboxy.x = newx - 3
-  self.oldhitboxy.y = self.y-3
+  self:updatehitbox(newx,newy)
   
   if not params.dontmove then
     local xok = true

@@ -23,6 +23,8 @@ em.new('obj/enemy/enemypoof.lua','enemypoof')
 em.new('obj/enemy/spinner.lua','spinner')
 em.new('obj/enemy/spinner_orbiter.lua','spinner_orbiter')
 
+em.new('obj/enemy/crusher.lua','crusher')
+
 em.new('obj/bullet.lua','bullet')
 em.new('obj/playerbullet.lua','playerbullet')
 em.new('obj/enemybullet.lua','enemybullet')

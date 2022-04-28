@@ -250,7 +250,7 @@ function love.load()
   levels = dpf.loadjson('data/levels.json',{})
   
   for groupname, group in pairs(levels.groups) do
-    if groupname ~= 'boss' then
+    if string.sub(groupname,1,4) ~= 'boss' then
       for i=1,#group do
         local v = group[i]
         local flipped = helpers.copy(v)

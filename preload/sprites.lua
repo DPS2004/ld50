@@ -20,6 +20,8 @@ sprites.target = love.graphics.newImage('assets/enemy/target.png')
 
 sprites.bossface = love.graphics.newImage('assets/enemy/boss_face.png')
 
+sprites.crusher = love.graphics.newImage('assets/enemy/boss2.png')
+
 sprites.scorecounter = love.graphics.newImage('assets/ui/scorecounter.png')
 sprites.numbers = love.graphics.newImage('assets/ui/numbers.png')
 

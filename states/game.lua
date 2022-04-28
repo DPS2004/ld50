@@ -31,6 +31,15 @@ st:setinit(function(self)
   self.scoreop = 0
   self.greenscore = true
   
+  self.bosslist = {
+    'spinner',
+    'crusher'
+  }
+  self.unseenbosses = {}
+  for i,v in ipairs(self.bosslist) do
+    table.insert(self.unseenbosses,v)
+  end
+
   
   
   if not self.playtutorial then
@@ -40,7 +49,7 @@ st:setinit(function(self)
     
     self.level = 0
     
-    --local skiptoboss = true
+    local skiptoboss = true
     
     if skiptoboss then
       self.map[1].exits = {u=5,d=5,l=5,r=5}
@@ -549,8 +558,25 @@ function st:levelgen(floor)
   inspectrooms()
   
   for roomi,room in ipairs(map) do
-    if levels.groups[room.roomtype] then
-      room.tiles = helpers.copy(levels.groups[room.roomtype][math.random(1,#levels.groups[room.roomtype])])
+    if levels.groups[room.roomtype] or room.roomtype == 'boss' then
+      
+      if room.roomtype ~= 'boss' then
+        room.tiles = helpers.copy(levels.groups[room.roomtype][math.random(1,#levels.groups[room.roomtype])])
+      else
+        local loadboss = table.remove(self.unseenbosses,math.random(1,#self.unseenbosses))
+        print('setting boss to '..loadboss)
+        room.tiles = helpers.copy(levels.groups['boss_'..loadboss][math.random(1,#levels.groups['boss_'..loadboss])])
+        
+        if #self.unseenbosses == 0 then
+          print('repopulating boss table')
+          for i,v in ipairs(self.bosslist) do
+            if v ~= loadboss then
+              table.insert(self.unseenbosses,v)
+            end
+          end
+        end
+        
+      end
       print(room.roomtype,room.rotate)
       
       for tilei,tile in ipairs(room.tiles) do
@@ -696,6 +722,11 @@ function st:updaterooms()
         if tile.t == 32 then
           self:playmusic(1)
           em.init('spawner',{x=tile.x*8+8,y=tile.y*8+8,tospawn='spinner',finalsize=8,canv='c',eparams={angle=0}})
+        end
+        
+        if tile.t == 33 then
+          self:playmusic(1)
+          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+4,tospawn='crusher',finalsize=10,canv='c'})
         end
         
       end

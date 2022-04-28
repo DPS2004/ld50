@@ -2,6 +2,8 @@ SpinnerOrbiter = class('SpinnerOrbiter',Enemy)
 
 function SpinnerOrbiter:initialize(params)
   
+  
+  params.hbsize = params.hbsize or 4
   Enemy.initialize(self,params)
   
   self.hp = 20
@@ -16,10 +18,7 @@ function SpinnerOrbiter:initialize(params)
   self.hitbox = {x=0,y=0,width=8,height=8}
 end
 
-function SpinnerOrbiter:updatehitbox()
-  self.hitbox.x = self.x - 4
-  self.hitbox.y = self.y - 4
-end
+
 
 function SpinnerOrbiter:update(dt)
   
