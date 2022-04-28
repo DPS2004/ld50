@@ -597,6 +597,41 @@ function st:levelgen(floor)
     end
     
   end
+  
+  -- add "ruined" rooms to blank sides
+  
+  local ruined = {}
+  
+  for roomi,room in ipairs(map) do
+    if not room.ruined then
+      for dir,_ in pairs(oppositedir) do
+        if not room.exits[dir] then
+          local newruined = nil
+          if math.random(0,1)==0 or #ruined == 0 then
+            newruined = newroom()
+            newruined.ruined = true
+            newruined.tiles = helpers.copy(levels.groups['ruined'][math.random(1,#levels.groups['ruined'])])
+            for i=0,math.random(0,3) do
+              for tilei,tile in ipairs(newruined.tiles) do
+                local oldx = tile.x
+                local oldy = tile.y
+                tile.x = oldy
+                tile.y = 15-oldx
+              end
+            end
+            table.insert(ruined,newruined)
+            
+          else
+            newruined = ruined[math.random(1,#ruined)]
+          end
+          room:link(newruined,dir)
+        end
+      end
+    end
+    
+  end
+  
+  
   return map
 end
 

@@ -30,6 +30,9 @@ function Floortile:draw()
     if self.level.cleared then
       drawspr = self.spr
     end
+    if self.level.ruined then
+      color('black')
+    end
   end
   
   for x=-1,5 do
