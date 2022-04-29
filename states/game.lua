@@ -31,6 +31,8 @@ st:setinit(function(self)
   self.scoreop = 0
   self.greenscore = true
   
+  self.roomscleared = 0
+  
   self.bosslist = {
     'spinner',
     'crusher'
@@ -66,17 +68,35 @@ st:setinit(function(self)
     
     self.musbpm = 128
     
+    self.tutorialsecretfound = false
+    
+    --self.skiptotutorialsecret = true
+    
+    self.secretary = em.init('secretary',{canv = 'c'})
+    
+    self.playstatic = false
+    
     self:playmusic(2)
+    
     
     self.tutorialfunc = nil
     
     local loadtiles = function(id)
       local tiles = helpers.copy(levels.groups.tutorial[id])
       for tilei,tile in ipairs(tiles) do
-        if tile.t == 0 or tile.t == 2 then
+        if tile.t == 0 or tile.t == 2 or tile.t == 3 then
           tile.solid = true
           tile.hp = 4
+          if tile.t == 3 then
+            tile.bulletpass = true
+          end
         end
+      end
+      if id == 1 then
+        for y = 6,9 do
+          table.insert(tiles,{x=0,y=y,t=0,solid=true,todelete=true})
+        end
+        
       end
       if id == 4 then
         for y=1,14 do
@@ -97,6 +117,8 @@ st:setinit(function(self)
         tiles = loadtiles(i)
       })
     end
+    self.map[1].exits.l = 10
+    
     table.insert(self.map,{
       id = 5,
       staylocked = true,
@@ -129,6 +151,30 @@ st:setinit(function(self)
       exits = {r=8},
       tiles = loadtiles(9)
     })
+  
+  
+    table.insert(self.map,{
+      id = 10,
+      cleared = true,
+      staydark = true,
+      exits = {l=11,r=1},
+      tiles = loadtiles(10)
+    })
+    table.insert(self.map,{
+      id = 11,
+      cleared = true,
+      staydark = true,
+      exits = {l=12,r=10},
+      tiles = loadtiles(10)
+    })
+    table.insert(self.map,{
+      id = 12,
+      cleared = true,
+      staydark = true,
+      tutorialsecret = true,
+      exits = {r=11},
+      tiles = loadtiles(11)
+    })
     
     local diasounds = {}
     for i=0,37 do
@@ -149,7 +195,9 @@ st:setinit(function(self)
           self.shoottimer = self.shoottimer + 1
         end
         if self.shoottimer >= 200 and self.movetimer >= 200 then
-          self.playdialog(4)
+          if not (self.skiptotutorialsecret) then
+            self.playdialog(4)
+          end
           self.map[self.croom].staylocked = false
           return true
         end
@@ -248,6 +296,15 @@ st:setinit(function(self)
         self.map[self.croom].staylocked = false
       end
       }, 
+      
+      {t=loc.get('tutorialsecret1'),l=50,w=60,n=23},
+      {t=loc.get('tutorialsecret2'),l=90,w=200,n=24}, 
+      {t=loc.get('tutorialsecret3'),l=50,w=100,n=function(self) 
+        if self.croom ~= 12 then
+          return true
+        end
+      end},
+    
     }
     
     
@@ -291,6 +348,8 @@ st:setinit(function(self)
       rw:ease(0,1,'outCubic',1,newbubble,'x')
       rw:func(1,function() newbubble:start() end)
       rw:play({bpm=120})
+      
+      cs.currentbubble = newbubble
     end
     
     self.endtutorial = function(self)
@@ -580,9 +639,12 @@ function st:levelgen(floor)
       print(room.roomtype,room.rotate)
       
       for tilei,tile in ipairs(room.tiles) do
-        if tile.t == 0 or tile.t == 2 then
+        if tile.t == 0 or tile.t == 2  or tile.t == 3 then
           tile.solid = true
           tile.hp = 4
+          if tile.t == 3 then
+            tile.bulletpass = true
+          end
         end
       end
       
@@ -764,6 +826,9 @@ function st:playmusic(m)
   elseif m == 2 then --tutorial
     self.musbpm = 128.6
     te.playLooping("assets/music/tutorial.ogg","stream","bgm",nil,1)
+  elseif m == 3 then --tutorial
+    self.musbpm = 0
+    te.playLooping("assets/music/static.ogg","stream","bgm",nil,0.5)
   else --main/fallback
     self.musbpm = 120
     te.play("assets/music/ld50mus_intro.ogg","stream","bgm",1,1,function(a)
@@ -771,7 +836,9 @@ function st:playmusic(m)
     end)
   end
   
-  self.scorecountdown = 3600 / self.musbpm
+  if self.musbpm ~= 0 then
+    self.scorecountdown = 3600 / self.musbpm
+  end
 end
 
 st:setupdate(function(self,dt)
@@ -779,11 +846,32 @@ st:setupdate(function(self,dt)
   
   self.scorecountdown = self.scorecountdown - dt
   if self.scorecountdown <= 0 then
-    self.scorecountdown = self.scorecountdown + (3600 / self.musbpm)
-    self.score = self.score - 1
+    if self.musbpm ~= 0 then
+      self.scorecountdown = self.scorecountdown + (3600 / self.musbpm)
+      self.score = self.score - 1
+    end
   end
   
   if self.playtutorial then
+    
+    if self.roomscleared >= 1 and (not self.tutorialsecretfound) then
+      self.tutorialsecretfound = true
+      te.play('assets/sfx/room_clear_echo.ogg','static',{'room_clear_echo','sfx'},1.5)
+      local deleted = 0
+      local max = #self.map[1].tiles
+      for i=1,max do
+        if self.map[1].tiles[i-deleted] and self.map[1].tiles[i-deleted].todelete then
+          table.remove(self.map[1].tiles,i-deleted)
+          deleted = deleted + 1
+        end
+      end
+    end
+    
+    if self.croom == 10 and (not self.playstatic) then
+      self.playstatic = true
+      self:playmusic(3)
+    end
+    
     if self.score < 500 then
       self.score = self.score + 10
     end
@@ -820,6 +908,7 @@ st:setupdate(function(self,dt)
     end
     
     if not enemiesleft then
+      self.roomscleared = self.roomscleared + 1
       self.map[self.croom].cleared = true
       cs:addscore(50,'clearedroom')
       em.init('clearparticles',{x=0,y=0,canv = 'c'})

@@ -35,4 +35,6 @@ sprites.editorcursor = love.graphics.newImage('assets/editor/cursor.png')
 
 sprites.speechtail = love.graphics.newImage('assets/ui/speechtail.png')
 
+sprites.monitor = love.graphics.newImage('assets/room/monitor.png')
+
 return sprites

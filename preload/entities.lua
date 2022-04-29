@@ -35,3 +35,5 @@ em.new('obj/thrownbox.lua','thrownbox')
 
 em.new('obj/speechbubble.lua','speechbubble')
 em.new('obj/textbox.lua','textbox')
+
+em.new('obj/secretary.lua','secretary')

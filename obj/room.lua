@@ -15,7 +15,6 @@ end
 
 function Room:update(dt)
   
-  
 end
 
 function Room:draw()
@@ -65,6 +64,9 @@ function Room:draw()
   
   if cs.map[cs.croom].cleared and cs.pointsgained == 0 and cs.player.canmove and (not cs.playtutorial) then
     love.graphics.draw(sprites.instructions,0,0)
+  end
+  if self.level and self.level.tutorialsecret then
+    cs.secretary:draw(true)
   end
   --love.graphics.print('test',1,1)
 end

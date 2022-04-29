@@ -9,5 +9,8 @@ templates.block = ez.newtemplate('room/block.png',10,0)
 
 templates.pressbutton = ez.newtemplate("ui/pressbutton.png",8,30)
 
+templates.table = ez.newtemplate("room/table.png",34,20)
+templates.secretary = ez.newtemplate("room/secretary.png",9,0)
+
 
 return templates

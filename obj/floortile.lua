@@ -27,7 +27,7 @@ function Floortile:draw()
   local drawspr = self.sprdark
   
   if self.level then
-    if self.level.cleared then
+    if self.level.cleared and (not self.level.staydark) then
       drawspr = self.spr
     end
     if self.level.ruined then

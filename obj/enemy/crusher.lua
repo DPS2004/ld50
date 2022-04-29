@@ -7,7 +7,7 @@ function Crusher:initialize(params)
   Enemy.initialize(self,params)
   
   
-  self.hp = 60
+  self.hp = 80
   
   self.hbsize = 11
   

@@ -33,7 +33,7 @@ end
 
 function Bullet:checkwalls()
   for i,v in ipairs(cs.rooms.c.level.tiles) do
-    if v.solid then
+    if v.solid and (not v.bulletpass) then
       local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
       if helpers.collide(self.hitbox,blockhitbox) then
         self.delete = true

@@ -26,13 +26,14 @@ end
 
 function shuv.init()
   shuv.canvas = love.graphics.newCanvas(project.res.x * shuv.internal_scale, project.res.y * shuv.internal_scale)
+  shuv.lastframe = love.graphics.newCanvas(project.res.x * shuv.internal_scale, project.res.y * shuv.internal_scale)
   shuv.scale = project.res.s
 end
 
 function shuv.internal_rescale(scale)
   shuv.internal_scale = scale
   shuv.canvas = love.graphics.newCanvas(project.res.x * shuv.internal_scale, project.res.y * shuv.internal_scale)
-
+  shuv.lastframe = love.graphics.newCanvas(project.res.x * shuv.internal_scale, project.res.y * shuv.internal_scale)
   for _, v in ipairs(shuv.screensize_canvases) do
     v.canvas = love.graphics.newCanvas(project.res.x * shuv.internal_scale, project.res.y * shuv.internal_scale)
   end
@@ -107,6 +108,10 @@ function shuv.finish()
   love.graphics.setCanvas()
   love.graphics.draw(shuv.canvas,shuv.xoffset,shuv.yoffset,0,shuv.scale / shuv.internal_scale,shuv.scale / shuv.internal_scale)
   tinput = ""
+  
+  love.graphics.setCanvas(shuv.lastframe)
+  love.graphics.draw(shuv.canvas,0,0)
+  love.graphics.setCanvas()
 end
 
 return shuv

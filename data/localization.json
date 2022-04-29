@@ -119,6 +119,18 @@
     "en": "I must go now, but I trust you to make it to the main stage. Good luck."
   },
   
+  "tutorialsecret1": {
+    "en": "...Hello?"
+  },
+  
+  "tutorialsecret2": {
+    "en": "I don't think you should be here right now."
+  },
+  
+  "tutorialsecret3": {
+    "en": "Please leave."
+  },
+  
   "****************GAME SCORES*******************":{},
   "killedenemy": {
     "en": "Killed enemy!"
