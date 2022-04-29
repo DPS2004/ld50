@@ -35,7 +35,7 @@ end
 
 function Crusher:changestate(forced)
   
-  self.statetimer = math.random(300,500)
+  --self.statetimer = math.random(300,500)
   
   local numstates = 3
   
@@ -51,7 +51,7 @@ function Crusher:changestate(forced)
     
     self.shakecharge = 0
     self.chargeangle = helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)
-    local ang = helpers.rotate(3,self.chargeangle,0,0)
+    local ang = helpers.rotate(4,self.chargeangle,0,0)
     self.chargex = ang[1]
     self.chargey = ang[2]
     rw:ease(0,2,'linear',0.15,self,'shakecharge')
@@ -63,16 +63,125 @@ function Crusher:changestate(forced)
     rw:play({bpm = math.random(40,80)})
     
   elseif self.state == 2 then
-    self.statetimer = 499
+    self.statetimer = math.random(500,800)
     print('running state 2')
-    
+    self:cardinalcharge()
   
   elseif self.state == 3 then
-    self.statetimer = 499
+    self.statetimer = 9999
     print('running state 3')
+    self:spin(20)
     
   end
   self.endingstate = false
+end
+
+function Crusher:spin(spinsleft)
+  spinsleft = spinsleft - 1
+  self.r = 0
+  rw:ease(0,1,'inQuad',90,self,'r')
+  rw:func(1,function()
+    self.r = 0
+    te.play('assets/sfx/enemy_fire.ogg','static',{'enemy_fire','sfx'},0.5)
+    local bullnum = 0
+    if cs.level == 0 then
+      bullnum = math.random(1,2)
+    else
+      bullnum = math.random(1,3)
+    end
+    
+    --mama mia
+    local angles = {
+      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3),0,0),
+      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)-20,0,0),
+      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)+20,0,0),
+      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)-40,0,0),
+      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)+40,0,0)
+    }
+    
+    --i cooka tha spaghett
+    if bullnum == 1 then
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=angles[1][1],dy=angles[1][2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+    elseif bullnum == 2 then
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=angles[2][1],dy=angles[2][2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=angles[3][1],dy=angles[3][2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+    else --PLEASE FOR THE LOVE OF GOD FIX THIS LATER
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=angles[1][1],dy=angles[1][2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=angles[4][1],dy=angles[4][2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=angles[5][1],dy=angles[5][2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+    end
+    
+    if spinsleft ~= 0 then
+      self:spin(spinsleft)
+    else
+      for i = 0,11 do
+        ang1 = helpers.rotate(1.5,i*30,0,0)
+          em.init('enemybullet',{x=self.x, y=self.y,
+          dx=ang1[1],dy=ang1[2],
+          --hbsize = 3,
+          --size = 4,
+          canv=self.canv,
+          all_canv = true
+        })
+      end
+      
+      self.shakecharge = 0.2
+      rw:ease(0,1,'linear',0,self,'shakecharge')
+      rw:ease(0,1,'outQuad',360,self,'r')
+      rw:func(2,function()
+        self:changestate()
+      end)
+      rw:play()
+    end
+  end)
+  rw:play({bpm = 260 - (spinsleft*10)})
+      
+end
+
+function Crusher:cardinalcharge()
+  self.endingstate = true
+  self.chargeangle = math.floor((helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)/90)+0.5)*90
+  local ang = helpers.rotate(3,self.chargeangle,0,0)
+  self.chargex = ang[1]
+  self.chargey = ang[2]
+  self.dx = self.chargex
+  self.dy = self.chargey
 end
 
 
@@ -110,36 +219,90 @@ function Crusher:update(dt)
   
   self.hbsize = 11
   
-  local hit = self:move(dt)
-  if hit and self.state == 1 then
-    print('hit wall')
-    self.dx = 0
-    self.dy = 0
-    self.shakecharge = 0.15
+  local hit = self:move(dt,{knockback = 0})
+  if hit then
+    if self.state == 1 then
+      print('hit wall')
+      self.dx = 0
+      self.dy = 0
+      self.shakecharge = 0.15
+      
+      local ang1 = helpers.rotate(3,self.chargeangle+150,0,0)
+      local ang2 = helpers.rotate(3,self.chargeangle-150,0,0)
+      local ang3 = helpers.rotate(3,self.chargeangle-180,0,0)
+      
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=ang1[1],dy=ang1[2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=ang2[1],dy=ang2[2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+      if cs.level ~= 0 then
+        em.init('enemybullet',{x=self.x, y=self.y,
+          dx=ang3[1],dy=ang3[2],
+          hbsize = 3,
+          size = 4,
+          canv=self.canv,
+          all_canv = true
+        })
+      end
+      rw:ease(0,1,'linear',0,self,'shakecharge')
+      rw:func(1,function()
+        self:changestate()
+      end)
+      rw:play()
+    elseif self.state == 2 then
+      print('hit wall')
+      self.dx = 0
+      self.dy = 0
+      self.shakecharge = 0.15
+      
+      local ang1 = helpers.rotate(2,self.chargeangle+135,0,0)
+      local ang2 = helpers.rotate(2,self.chargeangle-135,0,0)
+      local ang3 = helpers.rotate(2,self.chargeangle-180,0,0)
+      
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=ang1[1],dy=ang1[2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+      em.init('enemybullet',{x=self.x, y=self.y,
+        dx=ang2[1],dy=ang2[2],
+        hbsize = 3,
+        size = 4,
+        canv=self.canv,
+        all_canv = true
+      })
+      if cs.level ~= 0 then
+        em.init('enemybullet',{x=self.x, y=self.y,
+          dx=ang3[1],dy=ang3[2],
+          hbsize = 3,
+          size = 4,
+          canv=self.canv,
+          all_canv = true
+        })
+      end
     
-    local ang1 = helpers.rotate(3,self.chargeangle+150,0,0)
-    local ang2 = helpers.rotate(3,self.chargeangle-150,0,0)
-    
-    em.init('enemybullet',{x=self.x, y=self.y,
-      dx=ang1[1],dy=ang1[2],
-      hbsize = 3,
-      size = 4,
-      canv=self.canv,
-      all_canv = true
-    })
-    em.init('enemybullet',{x=self.x, y=self.y,
-      dx=ang2[1],dy=ang2[2],
-      hbsize = 3,
-      size = 4,
-      canv=self.canv,
-      all_canv = true
-    })
-  
-    rw:ease(0,1,'linear',0,self,'shakecharge')
-    rw:func(1,function()
-      self:changestate()
-    end)
-    rw:play()
+      rw:ease(0,1,'linear',0,self,'shakecharge')
+      rw:func(1,function()
+        if self.state == 2 and self.statetimer > 0 then
+          self:cardinalcharge()
+        else
+          self.endingstate = false
+        end
+      end)
+      rw:play()
+    end
   end
   
   
