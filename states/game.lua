@@ -854,7 +854,7 @@ st:setupdate(function(self,dt)
   
   if self.playtutorial then
     
-    if self.roomscleared >= 1 and (not self.tutorialsecretfound) then
+    if (self.roomscleared >= 8 or self.skiptotutorialsecret) and (not self.tutorialsecretfound)  then
       self.tutorialsecretfound = true
       te.play('assets/sfx/room_clear_echo.ogg','static',{'room_clear_echo','sfx'},1.5)
       local deleted = 0
