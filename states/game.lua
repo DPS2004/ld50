@@ -51,7 +51,7 @@ st:setinit(function(self)
     
     self.level = 0
     
-    local skiptoboss = true
+    --local skiptoboss = true
     
     if skiptoboss then
       self.map[1].exits = {u=5,d=5,l=5,r=5}
