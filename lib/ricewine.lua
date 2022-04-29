@@ -43,9 +43,30 @@ end
 
 function ricewine:stopall()
   print('stopping')
-  for i,v in ipairs(self.tweens) do
+  local deleted = 0
+  for i=1, #self.tweens do
+    v = self.tweens[i-deleted]
+    if v._oncomplete then v._oncomplete = nil end
+    if v._onstart then v._onstart = nil end
     v:stop()
+    table.remove(self.tweens,i-deleted)
+    deleted = deleted + 1
+    print('removed a tween')
   end
+end
+
+function ricewine:update()
+  for i,v in ipairs(self.tweens) do
+    if v.doremove then
+      table.remove(self.tweens,i)
+    end
+  end
+end
+
+function ricewine:to(a,b,c)
+  local newtween = self.flux.to(a,b,c)
+  table.insert(self.tweens,newtween)
+  return newtween
 end
 
 function ricewine:play(params)

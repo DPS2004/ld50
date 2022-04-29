@@ -51,7 +51,7 @@ st:setinit(function(self)
     
     self.level = 0
     
-    --local skiptoboss = true
+    local skiptoboss = true
     
     if skiptoboss then
       self.map[1].exits = {u=5,d=5,l=5,r=5}
@@ -879,6 +879,7 @@ st:setupdate(function(self,dt)
 
   if self.score <= 0 then
     print("imagine losing lmao")
+    rw:stopall()
     for i,v in pairs(entities) do
       v.delete = true
       v.skipupdate = true

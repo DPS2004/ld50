@@ -199,6 +199,7 @@ end
 function flux:remove(x)
   if type(x) == "number" then
     -- Remove from object table, destroy table if it is empty
+    self[x].doremove = true
     local obj = self[x].obj
     self[obj][self[x]] = nil
     if not next(self[obj]) then self[obj] = nil end

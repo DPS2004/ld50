@@ -310,7 +310,7 @@ function Player:update(dt)
     
     if self.x < 8 then
       self.canmove = false
-      flux.to(self, 30, {x=(0-movedistance),y=64}):oncomplete(function() 
+      rw:to(self, 30, {x=(0-movedistance),y=64}):oncomplete(function() 
         self.x = 128-movedistance
         self.canmove = true 
         if cs.map[cs.croom].exits.l then
@@ -318,14 +318,14 @@ function Player:update(dt)
           cs:updaterooms()
         end
       end)
-      flux.to(cs.cube.r, 30, {y=cuberot,z=0}):ease('outSine')
+      rw:to(cs.cube.r, 30, {y=cuberot,z=0}):ease('outSine')
       te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
       
     end
     
     if self.x > 120 then
       self.canmove = false
-      flux.to(self, 30, {x=128+movedistance,y=64}):oncomplete(function() 
+      rw:to(self, 30, {x=128+movedistance,y=64}):oncomplete(function() 
         self.x = movedistance
         self.canmove = true 
         if cs.map[cs.croom].exits.r then
@@ -333,13 +333,13 @@ function Player:update(dt)
           cs:updaterooms()
         end
       end)
-      flux.to(cs.cube.r, 30, {y=(0-cuberot),z=0}):ease('outSine')
+      rw:to(cs.cube.r, 30, {y=(0-cuberot),z=0}):ease('outSine')
       te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
     end
     
     if self.y < 8 then
       self.canmove = false
-      flux.to(self, 30, {x=64,y=(0-movedistance)}):oncomplete(function() 
+      rw:to(self, 30, {x=64,y=(0-movedistance)}):oncomplete(function() 
         self.y = 128-movedistance
         self.canmove = true 
         if cs.map[cs.croom].exits.u then
@@ -347,14 +347,14 @@ function Player:update(dt)
           cs:updaterooms()
         end
       end)
-      flux.to(cs.cube.r, 30, {y=0,z=(0-cuberot)}):ease('outSine')
+      rw:to(cs.cube.r, 30, {y=0,z=(0-cuberot)}):ease('outSine')
       te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
       
     end
     
     if self.y > 120 then
       self.canmove = false
-      flux.to(self, 30, {x=64,y=128+movedistance}):oncomplete(function() 
+      rw:to(self, 30, {x=64,y=128+movedistance}):oncomplete(function() 
         self.y = movedistance
         self.canmove = true 
         if cs.map[cs.croom].exits.d then
@@ -362,7 +362,7 @@ function Player:update(dt)
           cs:updaterooms()
         end
       end)
-      flux.to(cs.cube.r, 30, {y=0,z=cuberot}):ease('outSine')
+      rw:to(cs.cube.r, 30, {y=0,z=cuberot}):ease('outSine')
       te.play('assets/sfx/cube_rotate.ogg','static',{'cube_rotate','sfx'},0.5)
     end
     
@@ -382,7 +382,7 @@ function Player:update(dt)
   
     for i,v in ipairs(entities) do
       if v.isenemy then
-        if helpers.collide(self.hitbox,v.hitbox) then
+        if helpers.collide(self.hitbox,v.hitbox) and self.hitcooldown == 0 then
           self.hitcooldown = 89
           cs:addscore(-200,'gothit')
           te.play('assets/sfx/player_hit.ogg','static',{'player_hit','sfx'},1)
