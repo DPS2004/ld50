@@ -81,93 +81,95 @@ function Crusher:spin(spinsleft)
   self.r = 0
   rw:ease(0,1,'inQuad',90,self,'r')
   rw:func(1,function()
-    self.r = 0
-    te.play('assets/sfx/enemy_fire.ogg','static',{'enemy_fire','sfx'},0.5)
-    local bullnum = 0
-    if cs.level == 0 then
-      bullnum = math.random(1,2)
-    else
-      bullnum = math.random(1,3)
-    end
-    
-    --mama mia
-    local angles = {
-      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3),0,0),
-      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)-20,0,0),
-      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)+20,0,0),
-      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)-40,0,0),
-      helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)+40,0,0)
-    }
-    
-    --i cooka tha spaghett
-    if bullnum == 1 then
-      em.init('enemybullet',{x=self.x, y=self.y,
-        dx=angles[1][1],dy=angles[1][2],
-        hbsize = 3,
-        size = 4,
-        canv=self.canv,
-        all_canv = true
-      })
-    elseif bullnum == 2 then
-      em.init('enemybullet',{x=self.x, y=self.y,
-        dx=angles[2][1],dy=angles[2][2],
-        hbsize = 3,
-        size = 4,
-        canv=self.canv,
-        all_canv = true
-      })
-      em.init('enemybullet',{x=self.x, y=self.y,
-        dx=angles[3][1],dy=angles[3][2],
-        hbsize = 3,
-        size = 4,
-        canv=self.canv,
-        all_canv = true
-      })
-    else --PLEASE FOR THE LOVE OF GOD FIX THIS LATER
-      em.init('enemybullet',{x=self.x, y=self.y,
-        dx=angles[1][1],dy=angles[1][2],
-        hbsize = 3,
-        size = 4,
-        canv=self.canv,
-        all_canv = true
-      })
-      em.init('enemybullet',{x=self.x, y=self.y,
-        dx=angles[4][1],dy=angles[4][2],
-        hbsize = 3,
-        size = 4,
-        canv=self.canv,
-        all_canv = true
-      })
-      em.init('enemybullet',{x=self.x, y=self.y,
-        dx=angles[5][1],dy=angles[5][2],
-        hbsize = 3,
-        size = 4,
-        canv=self.canv,
-        all_canv = true
-      })
-    end
-    
-    if spinsleft ~= 0 then
-      self:spin(spinsleft)
-    else
-      for i = 0,11 do
-        ang1 = helpers.rotate(1.5,i*30,0,0)
-          em.init('enemybullet',{x=self.x, y=self.y,
-          dx=ang1[1],dy=ang1[2],
-          --hbsize = 3,
-          --size = 4,
+    if not self.delete then
+      self.r = 0
+      te.play('assets/sfx/enemy_fire.ogg','static',{'enemy_fire','sfx'},0.5)
+      local bullnum = 0
+      if cs.level == 0 then
+        bullnum = math.random(1,2)
+      else
+        bullnum = math.random(1,3)
+      end
+      
+      --mama mia
+      local angles = {
+        helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3),0,0),
+        helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)-20,0,0),
+        helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)+20,0,0),
+        helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)-40,0,0),
+        helpers.rotate(1.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3)+40,0,0)
+      }
+      
+      --i cooka tha spaghett
+      if bullnum == 1 then
+        em.init('enemybullet',{x=self.x, y=self.y,
+          dx=angles[1][1],dy=angles[1][2],
+          hbsize = 3,
+          size = 4,
+          canv=self.canv,
+          all_canv = true
+        })
+      elseif bullnum == 2 then
+        em.init('enemybullet',{x=self.x, y=self.y,
+          dx=angles[2][1],dy=angles[2][2],
+          hbsize = 3,
+          size = 4,
+          canv=self.canv,
+          all_canv = true
+        })
+        em.init('enemybullet',{x=self.x, y=self.y,
+          dx=angles[3][1],dy=angles[3][2],
+          hbsize = 3,
+          size = 4,
+          canv=self.canv,
+          all_canv = true
+        })
+      else --PLEASE FOR THE LOVE OF GOD FIX THIS LATER
+        em.init('enemybullet',{x=self.x, y=self.y,
+          dx=angles[1][1],dy=angles[1][2],
+          hbsize = 3,
+          size = 4,
+          canv=self.canv,
+          all_canv = true
+        })
+        em.init('enemybullet',{x=self.x, y=self.y,
+          dx=angles[4][1],dy=angles[4][2],
+          hbsize = 3,
+          size = 4,
+          canv=self.canv,
+          all_canv = true
+        })
+        em.init('enemybullet',{x=self.x, y=self.y,
+          dx=angles[5][1],dy=angles[5][2],
+          hbsize = 3,
+          size = 4,
           canv=self.canv,
           all_canv = true
         })
       end
       
-      self.shakecharge = 0.2
-      rw:ease(0,1,'linear',0,self,'shakecharge')
-      rw:ease(0,1,'outQuad',360,self,'r')
-      rw:func(2,function()
-        self:changestate()
-      end)
-      rw:play()
+      if spinsleft ~= 0 then
+        self:spin(spinsleft)
+      else
+        for i = 0,11 do
+          ang1 = helpers.rotate(1.5,i*30,0,0)
+            em.init('enemybullet',{x=self.x, y=self.y,
+            dx=ang1[1],dy=ang1[2],
+            --hbsize = 3,
+            --size = 4,
+            canv=self.canv,
+            all_canv = true
+          })
+        end
+        
+        self.shakecharge = 0.2
+        rw:ease(0,1,'linear',0,self,'shakecharge')
+        rw:ease(0,1,'outQuad',360,self,'r')
+        rw:func(2,function()
+          self:changestate()
+        end)
+        rw:play()
+      end
     end
   end)
   rw:play({bpm = 260 - (spinsleft*10)})
