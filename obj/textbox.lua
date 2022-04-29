@@ -31,7 +31,7 @@ function Textbox:initialize(params)
     self.sound = nil
     self.progress = 1
   else
-    local talkease = flux.to(self, self.length, {progress = 1}):ease('linear')
+    local talkease = rw:to(self, self.length, {progress = 1}):ease('linear')
     if self.callback then
       talkease:oncomplete(self.callback)
     end

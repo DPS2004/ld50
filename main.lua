@@ -77,7 +77,7 @@ function love.load()
   ez = require "lib.ezanim"
 
   -- tween manager
-  flux = require "lib/flux.flux"
+  flux = require "lib/flux/flux"
   
   rw = require "lib/ricewine"
   
