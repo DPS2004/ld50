@@ -16,13 +16,13 @@ st:setinit(function(self)
 end)
 
 function st:addtile(x,y,t)
-  table.insert(self.level,{x=x,y=y,t=t})
+  table.insert(self.level.tiles,{x=x,y=y,t=t})
 end
 
 function st:deleteat(x,y)
-  for i,v in ipairs(self.level) do
+  for i,v in ipairs(self.level.tiles) do
     if v.x == x and v.y == y then
-      table.remove(self.level,i)
+      table.remove(self.level.tiles,i)
     end
   end
   
@@ -91,7 +91,7 @@ end)
 --entities are drawn here
 st:setfgdraw(function(self)
   color()
-  for i,v in ipairs(self.level) do
+  for i,v in ipairs(self.level.tiles) do
     love.graphics.draw(sprites.editortiles,self.tilequads[v.t],v.x*8,v.y*8)
   end
   
