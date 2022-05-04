@@ -82,7 +82,7 @@ st:setinit(function(self)
     self.tutorialfunc = nil
     
     local loadtiles = function(id)
-      local tiles = helpers.copy(levels.groups.tutorial[id])
+      local tiles = helpers.copy(levels.groups.tutorial[id].tiles)
       for tilei,tile in ipairs(tiles) do
         if tile.t == 0 or tile.t == 2 or tile.t == 3 then
           tile.solid = true
@@ -620,11 +620,11 @@ function st:levelgen(floor)
     if levels.groups[room.roomtype] or room.roomtype == 'boss' then
       
       if room.roomtype ~= 'boss' then
-        room.tiles = helpers.copy(levels.groups[room.roomtype][math.random(1,#levels.groups[room.roomtype])])
+        room.tiles = helpers.copy(levels.groups[room.roomtype][math.random(1,#levels.groups[room.roomtype])].tiles)
       else
         local loadboss = table.remove(self.unseenbosses,math.random(1,#self.unseenbosses))
         print('setting boss to '..loadboss)
-        room.tiles = helpers.copy(levels.groups['boss_'..loadboss][math.random(1,#levels.groups['boss_'..loadboss])])
+        room.tiles = helpers.copy(levels.groups['boss_'..loadboss][math.random(1,#levels.groups['boss_'..loadboss])].tiles)
         
         if #self.unseenbosses == 0 then
           print('repopulating boss table')
@@ -648,25 +648,7 @@ function st:levelgen(floor)
         end
       end
       
-      for i=1,room.rotate do
-        for tilei,tile in ipairs(room.tiles) do
-          local oldx = tile.x
-          local oldy = tile.y
-          tile.x = oldy
-          tile.y = 15-oldx
-          
-          if tile.t == 21 then --flip bouncer enemies
-            tile.t = 19
-          elseif tile.t == 19 then
-            tile.t = 21
-          end
-          
-          if tile.t == 22 or tile.t == 23 then -- bubble centering
-            tile.y = tile.y - 1
-          end
-          
-        end
-      end
+      modifyroom(room,'rotate',room.rotate)
       
       
     end
@@ -698,15 +680,9 @@ function st:levelgen(floor)
           if math.random(0,1)==0 or #ruined == 0 then
             newruined = newroom()
             newruined.ruined = true
-            newruined.tiles = helpers.copy(levels.groups['ruined'][math.random(1,#levels.groups['ruined'])])
-            for i=0,math.random(0,3) do
-              for tilei,tile in ipairs(newruined.tiles) do
-                local oldx = tile.x
-                local oldy = tile.y
-                tile.x = oldy
-                tile.y = 15-oldx
-              end
-            end
+            newruined.tiles = helpers.copy(levels.groups['ruined'][math.random(1,#levels.groups['ruined'])].tiles)
+            
+            modifyroom(newruined,'rotate',math.random(0,3))
             table.insert(ruined,newruined)
             
           else

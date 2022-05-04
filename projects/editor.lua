@@ -9,7 +9,7 @@ project.initstate = 'editor_mapselect'
 
 project.res = {}
 
-project.res.x = 128
+project.res.x = 240
 project.res.y = 160
 project.res.s = 5
 

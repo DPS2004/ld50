@@ -5,6 +5,40 @@ st:setinit(function(self)
   self.typing = false
   self.typefinish = 'none'
   self.textin = ''
+  
+  
+  
+  if not savedata.properties then
+    savedata.properties = {}
+    savedata.properties.version = 0
+  end
+  
+  
+  --backwards compat with old versions of the format
+  
+  if savedata.properties.version == 0 then
+    print('updating')
+    local newlevels = {}
+    newlevels.properties = {version = 1}
+    newlevels.groups = {}
+    for groupname, group in pairs(savedata.groups) do
+      newlevels.groups[groupname] = {}
+      for i,v in ipairs(group) do --move all level tile data to separate tile table
+        table.insert(newlevels.groups[groupname],
+          {
+            width = 16,
+            height = 16,
+            tiles = helpers.copy(v)
+          }
+        )
+      end
+    end
+    
+    savedata = newlevels
+    sdfunc.save()    
+  end
+  
+  
 end)
 
 

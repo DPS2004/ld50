@@ -250,40 +250,81 @@ function love.load()
   -- load levels
   levels = dpf.loadjson('data/levels.json',{})
   
-  for groupname, group in pairs(levels.groups) do
-    if string.sub(groupname,1,4) ~= 'boss' then
-      for i=1,#group do
-        local v = group[i]
-        local flipped = helpers.copy(v)
-        for tilei,tile in ipairs(flipped) do
+  
+  
+  
+  
+  function modifyroom(room,mod,param)
+    
+    if mod == 'rotate' then
+      param = param or 1
+      for i=1,param do
+        for tilei,tile in ipairs(room.tiles) do
+          local oldx = tile.x
+          local oldy = tile.y
+          tile.x = oldy
+          tile.y = 15-oldx
+          
+          if tile.t == 21 then --flip bouncer enemies
+            tile.t = 19
+          elseif tile.t == 19 then
+            tile.t = 21
+          end
+          
+          if tile.t == 22 or tile.t == 23 then -- bubble centering
+            tile.y = tile.y - 1
+          end
+          room.tiles[tilei] = tile
+        end
+        
+      end
+    end
+    
+    if mod == 'flip' then
+      param = param or 'x'
+      if param == 'y' then
+        
+        for tilei,tile in ipairs(room.tiles) do
+          tile.y = 15-tile.y
+          
+          if tile.t == 22 or tile.t == 23 then -- bubble centering
+            tile.y = tile.y - 1
+          end
+          
+          room.tiles[tilei] = tile
+        end
+        
+      else
+        for tilei,tile in ipairs(room.tiles) do
           tile.x = 15-tile.x
           
           if tile.t == 22 or tile.t == 23 then -- bubble centering
             tile.x = tile.x - 1
           end
           
-          if groupname == 'corner' then
-            local oldx = tile.x
-            local oldy = tile.y
-            tile.x = oldy
-            tile.y = 15-oldx
-            
-            if tile.t == 21 then --flip bouncer enemies
-              tile.t = 19
-            elseif tile.t == 19 then
-              tile.t = 21
-            end
-            
-            if tile.t == 22 or tile.t == 23 then -- bubble centering
-              tile.y = tile.y - 1
-            end
-            
-            
-          end
+          room.tiles[tilei] = tile
         end
-        table.insert(group,flipped)
       end
+    end
     
+    
+  end
+  
+  if project.name ~= 'roomedit' then -- i should move this function somewhere else
+    print('making room variations')
+    for groupname, group in pairs(levels.groups) do
+      if string.sub(groupname,1,4) ~= 'boss' then
+        for i=1,#group do
+          local v = group[i]
+          local flipped = helpers.copy(v)
+            modifyroom(flipped,'flip')
+          if groupname == 'corner' then
+            modifyroom(flipped,'rotate')
+          end
+          table.insert(group,flipped)
+        end
+      
+      end
     end
   end
   
