@@ -12,12 +12,6 @@ st:setinit(function(self)
     self.rooms[v] = em.init('room',{canv=v})
   end
   
-  self.doortiles = {
-    {x=6,y=0},{x=7,y=0},{x=8,y=0},{x=9,y=0},
-    {x=6,y=15},{x=7,y=15},{x=8,y=15},{x=9,y=15},
-    {x=0,y=6},{x=0,y=7},{x=0,y=8},{x=0,y=9},
-    {x=15,y=6},{x=15,y=7},{x=15,y=8},{x=15,y=9},
-  }
   
   self.player = em.init('player',{x=64,y=64,canv='c'})
   
@@ -81,6 +75,7 @@ st:setinit(function(self)
     
     self.tutorialfunc = nil
     
+    --[[
     local loadtiles = function(id)
       local tiles = helpers.copy(levels.groups.tutorial[id].tiles)
       for tilei,tile in ipairs(tiles) do
@@ -94,7 +89,10 @@ st:setinit(function(self)
       end
       if id == 1 then
         for y = 6,9 do
-          table.insert(tiles,{x=0,y=y,t=0,solid=true,todelete=true})
+          table.insert(tiles,{x=0,y=y*2,t=0,solid=true,todelete=true})
+          table.insert(tiles,{x=1,y=y*2,t=0,solid=true,todelete=true})
+          table.insert(tiles,{x=0,y=y*2+1,t=0,solid=true,todelete=true})
+          table.insert(tiles,{x=1,y=y*2+1,t=0,solid=true,todelete=true})
         end
         
       end
@@ -105,6 +103,7 @@ st:setinit(function(self)
       end
       return tiles
     end
+    ]]--
     
     self.map = {}
     
@@ -114,7 +113,7 @@ st:setinit(function(self)
         staylocked = (i==1 or i==2),
         cleared = false,
         exits = {r = i+1,l=i-1},
-        tiles = loadtiles(i)
+        toload = i
       })
     end
     self.map[1].exits.l = 10
@@ -124,32 +123,32 @@ st:setinit(function(self)
       staylocked = true,
       cleared = false,
       exits = {l=4,u = 6,d = 7},
-      tiles = loadtiles(5)
+      toload = 5
     })
     table.insert(self.map,{
       id = 6,
       cleared = false,
       exits = {u = 8,d = 5},
-      tiles = loadtiles(6)
+      toload = 6
     })
     table.insert(self.map,{
       id = 7,
       cleared = false,
       exits = {u = 5,d = 8},
-      tiles = loadtiles(7)
+      toload = 7
     })
     table.insert(self.map,{
       id = 8,
       cleared = false,
       exits = {u = 7,d = 6,l=9},
-      tiles = loadtiles(8)
+      toload = 8
     })
     table.insert(self.map,{
       id = 9,
       cleared = false,
       staylocked = true,
       exits = {r=8},
-      tiles = loadtiles(9)
+      toload = 9
     })
   
   
@@ -158,14 +157,14 @@ st:setinit(function(self)
       cleared = true,
       staydark = true,
       exits = {l=11,r=1},
-      tiles = loadtiles(10)
+      toload = 10
     })
     table.insert(self.map,{
       id = 11,
       cleared = true,
       staydark = true,
       exits = {l=12,r=10},
-      tiles = loadtiles(10)
+      toload = 10
     })
     table.insert(self.map,{
       id = 12,
@@ -173,8 +172,11 @@ st:setinit(function(self)
       staydark = true,
       tutorialsecret = true,
       exits = {r=11},
-      tiles = loadtiles(11)
+      toload = 11
     })
+    for i,v in ipairs(self.map) do
+      loadroom(v,levels.groups.tutorial[v.toload])
+    end
     
     local diasounds = {}
     for i=0,37 do
@@ -252,14 +254,7 @@ st:setinit(function(self)
       }, 
       {t=loc.get('tutorial15'),l=60,w=100,n=16}, --Do you see those boxes?
       {t=loc.get('tutorial16'),l=240,w=300,n=17,onclear = function(self)--You can pick up and aim them with the arrow keys, and throw them with space.
-        local deleted = 0
-        local max = #self.map[4].tiles
-        for i=1,max do
-          if self.map[4].tiles[i-deleted] and self.map[4].tiles[i-deleted].todelete then
-            table.remove(self.map[4].tiles,i-deleted)
-            deleted = deleted + 1
-          end
-        end
+        modifyroom(self.map[4],'cmdbreak')
       end
       },
       {t=loc.get('tutorial17'),l=60,w=100,n=function() --Go ahead, try it out.
@@ -620,11 +615,12 @@ function st:levelgen(floor)
     if levels.groups[room.roomtype] or room.roomtype == 'boss' then
       
       if room.roomtype ~= 'boss' then
-        room.tiles = helpers.copy(levels.groups[room.roomtype][math.random(1,#levels.groups[room.roomtype])].tiles)
+        loadroom(room,levels.groups[room.roomtype][math.random(1,#levels.groups[room.roomtype])])
+        
       else
         local loadboss = table.remove(self.unseenbosses,math.random(1,#self.unseenbosses))
         print('setting boss to '..loadboss)
-        room.tiles = helpers.copy(levels.groups['boss_'..loadboss][math.random(1,#levels.groups['boss_'..loadboss])].tiles)
+        loadroom(room,levels.groups['boss_'..loadboss][math.random(1,#levels.groups['boss_'..loadboss])])
         
         if #self.unseenbosses == 0 then
           print('repopulating boss table')
@@ -638,6 +634,7 @@ function st:levelgen(floor)
       end
       print(room.roomtype,room.rotate)
       
+      --[[
       for tilei,tile in ipairs(room.tiles) do
         if tile.t == 0 or tile.t == 2  or tile.t == 3 then
           tile.solid = true
@@ -647,7 +644,7 @@ function st:levelgen(floor)
           end
         end
       end
-      
+      ]]--
       modifyroom(room,'rotate',room.rotate)
       
       
@@ -680,7 +677,7 @@ function st:levelgen(floor)
           if math.random(0,1)==0 or #ruined == 0 then
             newruined = newroom()
             newruined.ruined = true
-            newruined.tiles = helpers.copy(levels.groups['ruined'][math.random(1,#levels.groups['ruined'])].tiles)
+            loadroom(newruined,levels.groups['ruined'][math.random(1,#levels.groups['ruined'])])
             
             modifyroom(newruined,'rotate',math.random(0,3))
             table.insert(ruined,newruined)
@@ -725,46 +722,46 @@ function st:updaterooms()
         end
         
         if tile.t == 16 then
-          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='shooter',canv='c'})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize+1,tospawn='shooter',canv='c'})
         end
         
         if tile.t == 17 then
-          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walker',canv='c'})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize+1,tospawn='walker',canv='c'})
         end
         
         if tile.t == 18 then
-          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='walkshoot',canv='c'})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize+1,tospawn='walkshoot',canv='c'})
         end
         
         if tile.t == 19 then
-          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=90}})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize+1,tospawn='bouncer',canv='c',eparams={angle=90}})
         end
         
         if tile.t == 20 then
-          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='cannon',canv='c'})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize+1,tospawn='cannon',canv='c'})
         end
         
         if tile.t == 21 then
-          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+5,tospawn='bouncer',canv='c',eparams={angle=0}})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize+1,tospawn='bouncer',canv='c',eparams={angle=0}})
         end
         
         if tile.t == 22 then
-          em.init('spawner',{x=tile.x*8+8,y=tile.y*8+8,tospawn='bubble',finalsize=8,canv='c'})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize,tospawn='bubble',finalsize=8,canv='c'})
         end
         
         if tile.t == 23 then
-          em.init('spawner',{x=tile.x*8+8,y=tile.y*8+8,tospawn='target',finalsize=8,canv='c'})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize,tospawn='target',finalsize=8,canv='c'})
         end
         
         --bosses
         if tile.t == 32 then
           self:playmusic(1)
-          em.init('spawner',{x=tile.x*8+8,y=tile.y*8+8,tospawn='spinner',finalsize=8,canv='c',eparams={angle=0}})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize,tospawn='spinner',finalsize=8,canv='c',eparams={angle=0}})
         end
         
         if tile.t == 33 then
           self:playmusic(1)
-          em.init('spawner',{x=tile.x*8+4,y=tile.y*8+4,tospawn='crusher',finalsize=10,canv='c',spawnoffset = 0})
+          em.init('spawner',{x=tile.x*levels.properties.tilesize,y=tile.y*levels.properties.tilesize,tospawn='crusher',finalsize=10,canv='c',spawnoffset = 0})
         end
         
       end
@@ -833,14 +830,7 @@ st:setupdate(function(self,dt)
     if (self.roomscleared >= 8 or self.skiptotutorialsecret) and (not self.tutorialsecretfound)  then
       self.tutorialsecretfound = true
       te.play('assets/sfx/room_clear_echo.ogg','static',{'room_clear_echo','sfx'},1.5)
-      local deleted = 0
-      local max = #self.map[1].tiles
-      for i=1,max do
-        if self.map[1].tiles[i-deleted] and self.map[1].tiles[i-deleted].todelete then
-          table.remove(self.map[1].tiles,i-deleted)
-          deleted = deleted + 1
-        end
-      end
+      modifyroom(self.map[1],'cmdbreak')
     end
     
     if self.croom == 10 and (not self.playstatic) then

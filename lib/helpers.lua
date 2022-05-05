@@ -360,5 +360,13 @@ function helpers.firstupper(str)
     return str:gsub("^%1", string.upper)
 end
 
+function helpers.tablematch(val,t)
+  for i,v in ipairs(t) do
+    if v == val then
+      return true
+    end
+  end
+  return false
+end
 
 return helpers

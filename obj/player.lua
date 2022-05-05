@@ -123,8 +123,14 @@ function Player:update(dt)
     local function sign(a) return a > 0 and 1 or -1 end
 
     for i,v in ipairs(cs.rooms.c.level.tiles) do
-      if v.solid then
-        local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
+      if v.solid or ((not cs.map[cs.croom].cleared) and v.wall) then
+        local blockhitbox = {x=v.x*levels.properties.tilesize,y=v.y*levels.properties.tilesize,width=levels.properties.tilesize,height=levels.properties.tilesize}
+        if v.t == 2 then
+          blockhitbox.x = blockhitbox.x - 4
+          blockhitbox.y = blockhitbox.y - 4
+          blockhitbox.width = 8
+          blockhitbox.height = 8
+        end
         if helpers.collide(self.hitbox,blockhitbox) then
           
           if v.t == 2 then
@@ -134,8 +140,8 @@ function Player:update(dt)
               
               
               
-              self.gunx = (v.x*8 + 4) - self.x
-              self.guny = (v.y*8 + 4) - (self.y+5)
+              self.gunx = (v.x*levels.properties.tilesize) - self.x
+              self.guny = (v.y*levels.properties.tilesize) - (self.y+5)
               
               self.throwhp = v.hp
               
@@ -151,15 +157,6 @@ function Player:update(dt)
       end
     end
     
-    if not cs.map[cs.croom].cleared and (cs.map[cs.croom].roomtype ~= 'boss') then
-      for i,v in ipairs(cs.doortiles) do
-        local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
-        if helpers.collide(self.hitbox,blockhitbox) then
-          if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
-          if helpers.collide(self.oldhitboxy,blockhitbox) then xok = false end
-        end
-      end
-    end
     
     
    
@@ -238,43 +235,41 @@ function Player:update(dt)
     end
     
     if self.holding ~= 0 then
-      local tocollide = {}
-      for i,v in ipairs(cs.rooms.c.level.tiles) do
-        if v.solid then
-          table.insert(tocollide,v)
-        end
-      end
-
-      for i,v in ipairs(cs.doortiles) do
-        table.insert(tocollide,v)
-      end
       
       local dmove = helpers.rotate(1,helpers.anglepoints(0,0,self.gunx,self.guny),0,0)
       local dx,dy = dmove[1],dmove[2]
       local maxdistance = 0
       local dobreak = false
       for distance = 0, 400 do
-        for i,v in ipairs(tocollide) do
-          local blockhitbox = {x=v.x*8,y=v.y*8,width=8,height=8}
-          if helpers.collide(blockhitbox,{x=(self.x + (dx * distance)) - 0.5,y=(self.y + (dy * distance)) - 5.5,width = 1,height = 1}) then
-            if not dobreak then
-              maxdistance = distance - 4 
-              dobreak = true
+        for i,v in ipairs(cs.rooms.c.level.tiles) do
+          if v.solid or v.wall then
+            local blockhitbox = {x=v.x*levels.properties.tilesize,y=v.y*levels.properties.tilesize,width=levels.properties.tilesize,height=levels.properties.tilesize}
+            if v.t == 2 then
+              blockhitbox.x = blockhitbox.x - 4
+              blockhitbox.y = blockhitbox.y - 4
+              blockhitbox.width = 8
+              blockhitbox.height = 8
             end
-          end
-          if dobreak then
-            break
+            if helpers.collide(blockhitbox,{x=(self.x + (dx * distance)) - 0.5,y=(self.y + (dy * distance)) - 5.5,width = 1,height = 1}) then
+              if not dobreak then
+                maxdistance = distance - 2
+                dobreak = true
+              end
+            end
+            if dobreak then
+              break
+            end
           end
         end
       end
-      self.throwx = math.floor((self.x + (dx * maxdistance)) / 8)
-      self.throwy = math.floor((self.y + (dy * maxdistance) - 5) / 8)
+      self.throwx = math.floor((self.x + (dx * maxdistance)) / 4)
+      self.throwy = math.floor((self.y + (dy * maxdistance) - 5) / 4)
     end
     
     if maininput:pressed('accept') then
       if self.holding == 1 then
         
-        local distance = helpers.distance({self.x,self.y-5},{self.throwx*8+5,self.throwy*8+5}) / 200
+        local distance = helpers.distance({self.x,self.y-5},{self.throwx*4+5,self.throwy*4+5}) / 200
         local newbox = em.init('thrownbox',{
           x=self.x+self.gunx,
           y=self.y+self.guny-5,
@@ -284,8 +279,8 @@ function Player:update(dt)
           canv = self.canv
         })
         
-        rw:ease(0,distance,'linear',self.throwx*8+5,newbox,'x')
-        rw:ease(0,distance,'linear',self.throwy*8+5,newbox,'y')
+        rw:ease(0,distance,'linear',self.throwx*levels.properties.tilesize,newbox,'x')
+        rw:ease(0,distance,'linear',self.throwy*levels.properties.tilesize,newbox,'y')
         rw:func(distance,function()
           if newbox and newbox.delete == false then
             if newbox.hp ~= 1 then
@@ -455,7 +450,7 @@ function Player:drawmain(sx,sy)
     color()
     if self.holding == 1 then
       ez.drawframe(self.blockspr,4-self.throwhp,self.x+self.gunx+sx,self.y+self.guny+sy-5,0,1,1,5,5)
-      love.graphics.draw(sprites.throwcursor,self.throwx*8+5+sx,self.throwy*8+5+sy,0,1,1,5,5)
+      love.graphics.draw(sprites.throwcursor,self.throwx*4+sx,self.throwy*4+sy,0,1,1,5,5)
     end
     
     

@@ -17,7 +17,7 @@ st:setinit(function(self)
   --backwards compat with old versions of the format
   
   if savedata.properties.version == 0 then
-    print('updating')
+    print('updating map format to version 1')
     local newlevels = {}
     newlevels.properties = {version = 1}
     newlevels.groups = {}
@@ -37,6 +37,59 @@ st:setinit(function(self)
     savedata = newlevels
     sdfunc.save()    
   end
+  
+  
+  if savedata.properties.version == 1 then
+    print('updating map format to version 2')
+    local newlevels = {}
+    newlevels.properties = {
+      version = 2,
+      halfsize = {0,3},
+      tilesize = 4
+    }
+    newlevels.groups = {}
+    for groupname, group in pairs(savedata.groups) do
+      newlevels.groups[groupname] = {}
+      for i,v in ipairs(group) do --move all level tile data to separate tile table
+        local newtiles = {}
+        local newroom = {
+          width = 32,
+          height = 32,
+          tiles = helpers.copy(v.tiles)
+        }
+        for i,v in ipairs(newroom.tiles) do
+          v.x = v.x * 2
+          v.y = v.y * 2
+          if helpers.tablematch(v.t,newlevels.properties.halfsize) then
+            table.insert(newtiles,{x=v.x+1,y=v.y+0,t=v.t})
+            table.insert(newtiles,{x=v.x+0,y=v.y+1,t=v.t})
+            table.insert(newtiles,{x=v.x+1,y=v.y+1,t=v.t})
+          else
+            v.x = v.x + 1
+            v.y = v.y + 1
+          end
+          
+          if helpers.tablematch(v.t,{15,22,23,32}) then
+            --tutorial portal, bubble, tutorial target, and spinner boss
+            v.x = v.x + 1
+            v.y = v.y + 1
+          end
+        end
+        
+        for i,v in ipairs(newtiles) do
+          table.insert(newroom.tiles,v)
+        end
+          
+        table.insert(newlevels.groups[groupname],
+          newroom
+        )
+      end
+    end
+    
+    savedata = newlevels
+    sdfunc.save()    
+  end
+  
   
   
 end)

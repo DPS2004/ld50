@@ -248,13 +248,41 @@ function love.load()
   
   
   -- load levels
-  levels = dpf.loadjson('data/levels.json',{})
   
   
   
+  if project.name == 'roomedit' then
+    levels = savedata
+  else
+    levels = dpf.loadjson('data/levels.json',{})
+  end
   
+  function loadroom(newroom,room)
+    newroom.tiles = helpers.copy(room.tiles)
+    newroom.width = room.width
+    newroom.height = room.height
+    
+    for tilei,tile in ipairs(newroom.tiles) do
+      if tile.t == 0 then -- wall tile
+        tile.solid = true
+      elseif tile.t == 2 then -- block
+        tile.solid = true
+        tile.hp = 4
+      elseif tile.t == 3 then -- bullet passable 
+        tile.solid = true
+        tile.bulletpass = true
+      elseif tile.t == 4 then -- wall tile
+        tile.wall = true
+      elseif tile.t == 5 then -- command breakable tile 
+        tile.solid = true
+        tile.cmdbreak = true
+      end
+    end
+    
+  end
   
   function modifyroom(room,mod,param)
+    
     
     if mod == 'rotate' then
       param = param or 1
@@ -263,7 +291,11 @@ function love.load()
           local oldx = tile.x
           local oldy = tile.y
           tile.x = oldy
-          tile.y = 15-oldx
+          if helpers.tablematch(tile.t,levels.properties.halfsize) then
+            tile.y = (room.width - 1)-oldx
+          else
+            tile.y = (room.width)-oldx
+          end
           
           if tile.t == 21 then --flip bouncer enemies
             tile.t = 19
@@ -285,7 +317,11 @@ function love.load()
       if param == 'y' then
         
         for tilei,tile in ipairs(room.tiles) do
-          tile.y = 15-tile.y
+          if helpers.tablematch(tile.t,levels.properties.halfsize) then
+            tile.y = (room.height - 1)-tile.y
+          else
+            tile.y = (room.height)-tile.y
+          end
           
           if tile.t == 22 or tile.t == 23 then -- bubble centering
             tile.y = tile.y - 1
@@ -296,7 +332,11 @@ function love.load()
         
       else
         for tilei,tile in ipairs(room.tiles) do
-          tile.x = 15-tile.x
+          if helpers.tablematch(tile.t,levels.properties.halfsize) then
+            tile.x = (room.width - 1)-tile.x
+          else
+            tile.x = (room.width)-tile.x
+          end
           
           if tile.t == 22 or tile.t == 23 then -- bubble centering
             tile.x = tile.x - 1
@@ -305,6 +345,17 @@ function love.load()
           room.tiles[tilei] = tile
         end
       end
+    end
+    
+    if mod == 'cmdbreak' then
+      local newtiles = {}
+      for tilei,tile in ipairs(room.tiles) do
+        if not tile.cmdbreak then
+          table.insert(newtiles,tile)
+        end
+      end
+      room.tiles = newtiles
+      
     end
     
     

@@ -17,21 +17,16 @@ function Room:update(dt)
   
 end
 
-function Room:draw()
-  color()
-  if (not cs.map[cs.croom].cleared) and (cs.map[cs.croom].roomtype ~= 'boss') then
-    love.graphics.draw(sprites.doors,0,0)
-  end
-  
-  
+function Room:drawwalls(tilecheck)
+  tilecheck = tilecheck or {0,5}
   
   love.graphics.setCanvas(self.wallcanvas)
   love.graphics.clear()
   if self.level then
     color('red')
     for i,v in ipairs(self.level.tiles) do
-      if v.t == 0 then
-        love.graphics.rectangle('fill',v.x*8,v.y*8,8,8)
+      if helpers.tablematch(v.t,tilecheck) then
+        love.graphics.rectangle('fill',v.x*levels.properties.tilesize,v.y*levels.properties.tilesize,levels.properties.tilesize,levels.properties.tilesize)
       end
     end
   end
@@ -46,6 +41,20 @@ function Room:draw()
   love.graphics.draw(self.wallcanvas,0,0)
   love.graphics.setShader()
   
+end
+
+function Room:draw()
+  color()
+  if not cs.map[cs.croom].cleared then
+    self:drawwalls({4})
+  end
+  
+  
+  
+  self:drawwalls()
+  
+  
+  
   if self.level then
     color('white')
     for i,v in ipairs(self.level.tiles) do
@@ -53,7 +62,7 @@ function Room:draw()
         if v.drawflash then
           love.graphics.setShader(shaders.whiteout)
         end
-        ez.drawframe(self.blockspr,4-v.hp,v.x*8-1,v.y*8-1)
+        ez.drawframe(self.blockspr,4-v.hp,v.x*levels.properties.tilesize-5,v.y*levels.properties.tilesize-5)
         if v.drawflash then
           love.graphics.setShader()
           v.drawflash = false

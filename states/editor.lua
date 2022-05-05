@@ -5,6 +5,7 @@ st:setinit(function(self)
   self.cy = 0
   self.cursortile = 0
   self.tilequads = {}
+  self.tilesize = savedata.properties.tilesize
   for x = 0,15 do
     for y = 0,3 do
       self.tilequads[y*16+x] = love.graphics.newQuad(x*8,y*8,8,8,128,32)
@@ -65,10 +66,19 @@ st:setupdate(function(self,dt)
     cs:init()
   end
   
-  self.cx = math.floor(mouse.x / 8)%16
-  self.cy = math.floor(mouse.y / 8)%20
+  if helpers.tablematch(self.cursortile,savedata.properties.halfsize) then
+    self.cx = math.floor(mouse.x / self.tilesize)%self.level.width
+    self.cy = math.floor(mouse.y / self.tilesize)
+  else
+    self.cx = math.floor((mouse.x+2) / self.tilesize)%self.level.width
+    self.cy = math.floor((mouse.y+2) / self.tilesize)
+  end
   
-  if self.cy < 16 then
+  
+  if self.cy < 32 then
+    
+    self.inmap = true
+    
     if mouse.pressed >= 1 then
       st:deleteat(self.cx,self.cy)
       st:addtile(self.cx,self.cy,self.cursortile)
@@ -77,6 +87,12 @@ st:setupdate(function(self,dt)
       st:deleteat(self.cx,self.cy)
     end
   else
+    
+    self.inmap = false
+    
+    self.cx = math.floor(mouse.x / 8)%16
+    self.cy = math.floor(mouse.y / 8)%20
+    
     if mouse.pressed == -1 then
       self.cursortile = self.cx + (self.cy - 16) * 16
     end
@@ -92,7 +108,11 @@ end)
 st:setfgdraw(function(self)
   color()
   for i,v in ipairs(self.level.tiles) do
-    love.graphics.draw(sprites.editortiles,self.tilequads[v.t],v.x*8,v.y*8)
+    if helpers.tablematch(v.t,savedata.properties.halfsize) then
+      love.graphics.draw(sprites.editortiles,self.tilequads[v.t],v.x*self.tilesize,v.y*self.tilesize)
+    else
+      love.graphics.draw(sprites.editortiles,self.tilequads[v.t],v.x*self.tilesize,v.y*self.tilesize,0,1,1,4,4)
+    end
   end
   
   love.graphics.setColor(0.8,0.8,0.8,1)
@@ -102,9 +122,13 @@ st:setfgdraw(function(self)
   
   love.graphics.draw(sprites.editortiles,self.tilequads[self.cursortile],(self.cursortile%16)*8,math.floor(self.cursortile/16)*8+128)
   
-  if self.cy < 16 then
+  if self.inmap then
     if mouse.altpress <= 0 then
-      love.graphics.draw(sprites.editortiles,self.tilequads[self.cursortile],self.cx*8,self.cy*8)
+      if helpers.tablematch(self.cursortile,savedata.properties.halfsize) then
+        love.graphics.draw(sprites.editortiles,self.tilequads[self.cursortile],self.cx*self.tilesize,self.cy*self.tilesize)
+      else
+        love.graphics.draw(sprites.editortiles,self.tilequads[self.cursortile],self.cx*self.tilesize-4,self.cy*self.tilesize-4)
+      end
     end
   else
     love.graphics.draw(sprites.editorcursor,self.cx*8,self.cy*8)
@@ -112,7 +136,12 @@ st:setfgdraw(function(self)
   
   love.graphics.setColor(1,1,1,0.5)
   
-  love.graphics.draw(sprites.editorcursor,mouse.x-4,mouse.y-4)
+  
+  if helpers.tablematch(self.cursortile,savedata.properties.halfsize) then
+    love.graphics.draw(sprites.editorcursorsmall,mouse.x-2,mouse.y-2)
+  else
+    love.graphics.draw(sprites.editorcursor,mouse.x-4,mouse.y-4)
+  end
 end)
 
 return st
