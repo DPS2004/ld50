@@ -1,6 +1,12 @@
 Player = class('Player',Entity)
 
 function Player:initialize(params)
+
+  self.gunTypes = { -- haha enumerators
+    pistol = 1,
+    laser = 2,
+    sword = 3
+  }
   
   self.layer = 10 -- lower layers draw first
   self.uplayer = 0 --lower uplayer updates first
@@ -13,6 +19,7 @@ function Player:initialize(params)
   self.dy = 0
   self.flip = false
   
+  self.gun = self.gunTypes.pistol
   self.shootcooldown = 0
   self.gunx = 10
   self.guny = 0
@@ -183,6 +190,15 @@ function Player:update(dt)
     if maininput:down('shootdown') and (not maininput:down('shootup')) then
       self.gunaimy = 11
     end
+
+    -- guns
+
+    if maininput:down('k1') then
+      self.gun = self.gunTypes.pistol
+    end
+    if maininput:down('k2') then
+      self.gun = self.gunTypes.laser
+    end
     
     --sprites
     
@@ -227,10 +243,20 @@ function Player:update(dt)
     self.guny = (self.guny + self.gunaimy)/2
     
     if doshoot and self.holding == 0 then
-      if self.shootcooldown <= 0 then
-        self.shootcooldown = 8
-        em.init('playerbullet',{x=self.x+(self.gunx*0.85),y=self.y+(self.guny*0.85)-4,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
-        te.play('assets/sfx/player_shoot.ogg','static',{'player_shoot','sfx'},0.7)
+      -- START GUN TYPES
+      if self.gun == self.gunTypes.pistol then
+        if self.shootcooldown <= 0 then
+          self.shootcooldown = 8
+          em.init('playerbullet',{x=self.x+(self.gunx*0.85),y=self.y+(self.guny*0.85)-4,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
+          te.play('assets/sfx/player_shoot.ogg','static',{'player_shoot','sfx'},0.7)
+        end
+      end
+      if self.gun == self.gunTypes.laser then
+        if self.shootcooldown <= 0 then
+          self.shootcooldown = 1
+          em.init('playerbullet',{x=self.x+(self.gunx*0.85),y=self.y+(self.guny*0.85)-4,dx=self.gunaimx/4,dy=self.gunaimy/4,canv='c'})
+          te.play('assets/sfx/player_shoot.ogg','static',{'player_shoot','sfx'},0.7)
+        end
       end
     end
     
