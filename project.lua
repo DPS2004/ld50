@@ -1,6 +1,6 @@
 local project = {}
 
-project.release = false
+project.release = true
 
 project.name = 'Hypercube Warrior'
 
