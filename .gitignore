@@ -6,3 +6,5 @@
 .DS_Store
 .vscode/
 /release_debug
+switchassets/love.elf
+/release_switch

@@ -24,10 +24,13 @@ function shuv.deleteCanvas(canvas)
   table.remove(shuv.screensize_canvases, canvas.index)
 end
 
-function shuv.init()
+function shuv.init(project)
   shuv.canvas = love.graphics.newCanvas(project.res.x * shuv.internal_scale, project.res.y * shuv.internal_scale)
   shuv.lastframe = love.graphics.newCanvas(project.res.x * shuv.internal_scale, project.res.y * shuv.internal_scale)
   shuv.scale = project.res.s
+  if project.intscale then
+	shuv.internal_rescale(project.intscale)
+  end
 end
 
 function shuv.internal_rescale(scale)
@@ -85,7 +88,7 @@ function shuv.check()
 
   if shuv.update then
     shuv.update = false
-    if ismobile then
+    if ismobile or project.fullscreen then
       love.window.setMode(0,0)
       love.window.setFullscreen(true)
       shuv.scale = love.graphics.getHeight() / project.res.y

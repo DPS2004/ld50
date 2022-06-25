@@ -48,7 +48,7 @@ function love.load()
   baton = require "lib/baton/baton"
 
   shuv = require "lib.shuv"
-  shuv.init()
+  shuv.init(project)
   shuv.hackyfix()
   
   -- what it says on the tin

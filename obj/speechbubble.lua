@@ -101,25 +101,27 @@ function Speechbubble:cleanup()
 end
 
 function Speechbubble:draw()
+  shuv.do_autoscaled(function()
   love.graphics.setColor(self.color)
   
   local df = function(x,y)
-    love.graphics.draw(self.tailspr,self.x+x,self.y+y,math.rad(self.tailr),self.tailwidth/5,self.tailheight/7,math.floor(self.tailwidth/2),self.tailheight)
-    --note: somehow make this have rounded edges
-    love.graphics.rectangle('fill',self.x+x + self.xbox,self.y+y + self.ybox,self.width,self.height)
+	love.graphics.draw(self.tailspr,self.x+x,self.y+y,math.rad(self.tailr),self.tailwidth/5,self.tailheight/7,math.floor(self.tailwidth/2),self.tailheight)
+	--note: somehow make this have rounded edges
+	love.graphics.rectangle('fill',self.x+x + self.xbox,self.y+y + self.ybox,self.width,self.height)
   end
   if self.outline then
-    helpers.drawbordered(df,'black',true)
+	helpers.drawbordered(df,'black',true)
   else
-    df(0,0)
+	df(0,0)
   end
   if self.textbox then
-    self.textbox:draw(self.x+self.xbox+self.border,self.y+self.ybox+1)
+	self.textbox:draw(self.x+self.xbox+self.border,self.y+self.ybox+1)
   end
   color()
   if self.doshowbutton then
-    ez.draw(self.pressbutton, self.x + self.xbox + self.width - 9,self.y + self.ybox +self.height-9)
+	ez.draw(self.pressbutton, self.x + self.xbox + self.width - 9,self.y + self.ybox +self.height-9)
   end
+  end)
   
 
 end
