@@ -36,6 +36,8 @@ function Player:initialize(params)
   
   self.throwx = 0
   self.throwy = 0
+  self.invalidthrow = false
+  
   self.throwhp = 0
   
   self.blockspr = ez.newanim(templates.block)
@@ -65,6 +67,43 @@ function Player:initialize(params)
 
 end
 
+
+function Player:checkpos(cx,cy)
+  for i,v in ipairs(cs.rooms.c.level.tiles) do
+    if v.solid or v.wall then
+      local blockhitbox = {
+        x=v.x*levels.properties.tilesize - 4,
+        y=v.y*levels.properties.tilesize - 4,
+        width=levels.properties.tilesize*2,
+        height=levels.properties.tilesize*2
+      }
+      
+      for _i,_v in ipairs(levels.properties.halfsize)  do
+        if v.t == _v then
+          blockhitbox.x = blockhitbox.x + 4
+          blockhitbox.y = blockhitbox.y + 4
+          blockhitbox.width = 4
+          blockhitbox.height = 4
+          break
+        end
+      end
+      
+      if helpers.collide(blockhitbox,{
+        x=cx-4,
+        y=cy-4,
+        width = 8,height = 8}
+      ) or cx < 8 or cx > 120 or cy < 8 or cy > 120 then
+        --color('green')
+        --love.graphics.points(cx,cy)
+        --love.graphics.rectangle("line",cx-4,cy-4,8,8)
+        --found = true
+        --lowest = i
+        return true
+      end
+    end
+  end
+  return false
+end
 
 function Player:update(dt)
   prof.push("player update")
@@ -266,38 +305,53 @@ function Player:update(dt)
     if self.holding ~= 0 then
       
       local dmove = helpers.rotate(1,helpers.anglepoints(0,0,self.gunx,self.guny),0,0)
-      local dx,dy = dmove[1],dmove[2]
-      local maxdistance = 0
-      local dobreak = false
-      for distance = 0, 400 do
-        for i,v in ipairs(cs.rooms.c.level.tiles) do
-          if v.solid or v.wall then
-            local blockhitbox = {x=v.x*levels.properties.tilesize,y=v.y*levels.properties.tilesize,width=levels.properties.tilesize,height=levels.properties.tilesize}
-            if v.t == 2 then
-              blockhitbox.x = blockhitbox.x - 4
-              blockhitbox.y = blockhitbox.y - 4
-              blockhitbox.width = 8
-              blockhitbox.height = 8
-            end
-            if helpers.collide(blockhitbox,{x=(self.x + (dx * distance)) - 0.5,y=(self.y + (dy * distance)) - 5.5,width = 1,height = 1}) then
-              if not dobreak then
-                maxdistance = distance - 2
-                dobreak = true
-              end
-            end
-            if dobreak then
-              break
-            end
-          end
+      local dx,dy = dmove[1],dmove[2] --dx and dy are from -1 to 1
+      
+      local lowest = 0
+      
+      local cx = 0
+      local cy = 0
+      
+      for i=1,32 do
+        cx = (self.x) + (dx * i * 4)
+        cy = (self.y - 5) + (dy * i * 4)
+        love.graphics.points(cx,cy)
+        
+        
+        if self:checkpos(cx,cy) then
+          lowest = i - 1
+          break
         end
       end
-      self.throwx = math.floor((self.x + (dx * maxdistance)) / 4)
-      self.throwy = math.floor((self.y + (dy * maxdistance) - 5) / 4)
+      
+      self.throwx = (self.x) + (dx * lowest * 4)
+      self.throwy = (self.y - 5) + (dy * lowest * 4)
+      
+      
+      for extra = 0,3 do
+        cx = (self.x) + (dx * (lowest+(extra/4)) * 4)
+        cy = (self.y - 5) + (dy * (lowest+(extra/4)) * 4)
+        if self:checkpos(cx,cy) then
+          break
+        end
+        self.throwx = cx
+        self.throwy = cy
+      end
+      
+      
+      self.throwx = math.floor(self.throwx/4+0.5)
+      self.throwy = math.floor(self.throwy/4+0.5)
+      
+      self.invalidthrow = helpers.collide(self.hitbox,{
+        x=self.throwx*4-4,
+        y=self.throwy*4-4,
+        width = 8,height = 8})
+      
     end
     prof.pop("player holding")
     
     if maininput:pressed('accept') then
-      if self.holding == 1 then
+      if self.holding == 1 and (not self.invalidthrow) then
         
         local distance = helpers.distance({self.x,self.y-5},{self.throwx*4+5,self.throwy*4+5}) / 200
         local newbox = em.init('thrownbox',{
@@ -481,7 +535,12 @@ function Player:drawmain(sx,sy)
     color()
     if self.holding == 1 then
       ez.drawframe(self.blockspr,4-self.throwhp,self.x+self.gunx+sx,self.y+self.guny+sy-5,0,1,1,5,5)
-      love.graphics.draw(sprites.throwcursor,self.throwx*4+sx,self.throwy*4+sy,0,1,1,5,5)
+      
+      if not self.invalidthrow then
+        love.graphics.draw(sprites.throwcursor,self.throwx*4+sx,self.throwy*4+sy,0,1,1,5,5)
+      end
+      
+      
     end
     
     
