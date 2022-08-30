@@ -142,16 +142,16 @@ function Enemy:move(dt,params)
     local xok = true
     local yok = true
     
-    local nothit = true
+    local unbounced = true
     
     for i,v in ipairs(cs.rooms.c.level.tiles) do
       if v.solid or ((not cs.map[cs.croom].cleared) and v.wall) then
         local blockhitbox = {x=v.x*levels.properties.tilesize,y=v.y*levels.properties.tilesize,width=levels.properties.tilesize,height=levels.properties.tilesize}
         if helpers.collide(self.hitbox,blockhitbox) then
-          nothit = false
-          if params.bounce and nothit then
-            print('bouncing enemy')
+          
+          if params.bounce and unbounced then
             self.angle = (self.angle + 180)%360
+            unbounced = false
           end
           
           if helpers.collide(self.oldhitboxx,blockhitbox) then yok = false end
