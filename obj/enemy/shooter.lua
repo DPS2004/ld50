@@ -8,6 +8,7 @@ end
 
 
 function Shooter:update(dt)
+  prof.push("shooter update")
   if self.shoottimer > 0 then
     self.shoottimer = self.shoottimer - dt
   else
@@ -17,10 +18,13 @@ function Shooter:update(dt)
   self:bulletcheck()
   self:move(dt)
   self:deathcheck()
+  prof.pop("shooter update")
 end
 
 function Shooter:draw()
+  prof.push("shooter draw")
   Enemy.draw(self)
+  prof.pop("shooter draw")
   
 end
 

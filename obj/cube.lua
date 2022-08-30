@@ -159,6 +159,7 @@ function Cube:drawface(k)
 end
 
 function Cube:draw()
+  prof.push("cube draw")
   love.graphics.push('all')
   love.graphics.setCanvas({self.c_canvas.canvas, depth = true})
   love.graphics.clear()
@@ -181,6 +182,7 @@ function Cube:draw()
       project.res.cy * shuv.internal_scale)
   end)
   love.graphics.setShader()
+  prof.pop("cube draw")
 end
 
 function Cube:onDelete()

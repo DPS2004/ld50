@@ -31,6 +31,7 @@ end
 
 
 function Secretary:update(dt)
+  prof.push("secretary update")
   ez.update(self.tablespr,dt)
   
   if not self.shot and cs.map[cs.croom].tutorialsecret then
@@ -70,9 +71,11 @@ function Secretary:update(dt)
   if self.shot then
     self.sprframe = 4
   end
+  prof.pop("secretary update")
 end
 
 function Secretary:draw(override)
+  prof.push("secretary draw")
   color()
   if override or cs.map[cs.croom].tutorialsecret then
     love.graphics.draw(self.monitorspr,48,0)
@@ -83,6 +86,7 @@ function Secretary:draw(override)
     end
     
   end
+  prof.pop("secretary draw")
 end
 
 return Secretary

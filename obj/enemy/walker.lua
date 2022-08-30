@@ -11,7 +11,7 @@ end
 
 
 function Walker:update(dt)
-  
+  prof.push("walker update")
   local ang = helpers.rotate(0.5,helpers.anglepoints(self.x,self.y,cs.player.x,cs.player.y - 3),0,0)
   self.dx = ang[1]
   self.dy = ang[2]
@@ -23,12 +23,15 @@ function Walker:update(dt)
     self.flippedtimer = 25
     self.flipped = self.flipped * -1
   end
+  prof.pop("walker update")
 end
 
 function Walker:draw()
+  prof.push("walker draw")
   self:setshader()
   love.graphics.draw(self.spr,self.x,self.y,0,self.flipped,1,5,5)
   self:endshader()
+  prof.pop("walker draw")
 end
 
 return Walker

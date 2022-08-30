@@ -45,11 +45,13 @@ function Spawner:update(dt)
 end
 
 function Spawner:draw()
+  prof.push("spawner draw")
   love.graphics.setColor(140/255,9/255,153/255,1)
   love.graphics.ellipse('fill',self.x,self.y,4*self.size,3*self.size)
   love.graphics.setColor(1,58/255,153/255,1)
   love.graphics.circle('fill',self.x,self.y+self.enemyy,self.enemysize)
   color()
+  prof.pop("spawner draw")
 end
 
 return Spawner

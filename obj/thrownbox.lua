@@ -57,6 +57,7 @@ end
 
 
 function Thrownbox:draw()
+  prof.push("thrownbox draw")
   if self.ishit then
     love.graphics.setShader(shaders.whiteout)
   end
@@ -66,6 +67,7 @@ function Thrownbox:draw()
     love.graphics.setShader()
     self.ishit = false
   end
+  prof.pop("thrownbox draw")
 end
 
 return Thrownbox

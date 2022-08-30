@@ -188,7 +188,7 @@ end
 
 
 function Crusher:update(dt)
-  
+  prof.push("crusher update")
   if self.state ~= 0 then
     self.statetimer = self.statetimer - dt
   end
@@ -312,7 +312,7 @@ function Crusher:update(dt)
   
   
   self.hbsize = 10
-  
+  prof.pop("crusher update")
 end
 
 function Crusher:deathcheck()
@@ -332,6 +332,7 @@ function Crusher:deathcheck()
 end
 
 function Crusher:draw()
+  prof.push("crusher draw")
   love.graphics.push('all')
   for _,c in pairs(cs.cube.canvas) do
     love.graphics.setCanvas(c)
@@ -346,6 +347,7 @@ function Crusher:drawt()
   love.graphics.draw(self.sprite,self.x+(math.random(-10,10)*self.shakecharge),self.y+(math.random(-6,6)*self.shakecharge),math.rad(self.r),1,1,12,12)
   love.graphics.draw(sprites.bossface,self.x+(math.random(-10,10)*self.shakecharge)-5,self.y-2)
   self:endshader()
+  prof.pop("crusher draw")
   
 end
 

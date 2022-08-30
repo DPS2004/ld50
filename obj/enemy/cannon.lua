@@ -9,6 +9,7 @@ end
 
 
 function Cannon:update(dt)
+  prof.push("cannon update")
   if self.shoottimer > 0 then
     self.shoottimer = self.shoottimer - dt
   else
@@ -32,13 +33,16 @@ function Cannon:update(dt)
   self:bulletcheck()
   self:move(dt)
   self:deathcheck()
+  prof.pop("cannon update")
 end
 
 function Cannon:draw()
+  prof.push("cannon draw")
   self:setshader()
   love.graphics.draw(sprites.cannon,self.x,self.y,math.rad(self.angle),1,1,5,7)
   Enemy.draw(self)
   self:endshader()
+  prof.pop("cannon draw")
   
 end
 

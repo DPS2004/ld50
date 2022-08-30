@@ -90,7 +90,7 @@ end
 
 function Spinner:update(dt)
   
-  
+  prof.push("spinner update")
   if self.shotcooldown > 0 then
     self.shotcooldown = self.shotcooldown - dt
   else
@@ -157,7 +157,7 @@ function Spinner:update(dt)
   self:bulletcheck()
   self:move(dt)
   self:deathcheck()
-  
+  prof.pop("spinner update")
 end
 
 function Spinner:deathcheck()
@@ -178,15 +178,6 @@ function Spinner:deathcheck()
   
 end
 
-function Spinner:draw()
-  love.graphics.push('all')
-  for _,c in pairs(cs.cube.canvas) do
-    love.graphics.setCanvas(c)
-    self:drawt()
-  end
-  love.graphics.pop()
-end
-
 function Spinner:drawt()
   for i,v in ipairs(self.orbiters) do
     v:draw()
@@ -199,5 +190,18 @@ function Spinner:drawt()
   self:endshader()
   
 end
+
+function Spinner:draw()
+  prof.push("spinner draw")
+  love.graphics.push('all')
+  for _,c in pairs(cs.cube.canvas) do
+    love.graphics.setCanvas(c)
+    self:drawt()
+  end
+  love.graphics.pop()
+  prof.pop("spinner draw")
+end
+
+
 
 return Spinner

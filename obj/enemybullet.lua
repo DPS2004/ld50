@@ -15,8 +15,10 @@ function Enemybullet:initialize(params)
 end
 
 function Enemybullet:update(dt)
-  self:move(dt)
-  self:checkwalls()
+  
+  prof.push("enemy bullet update")
+  Bullet.update(self,dt)
+  prof.pop("enemy bullet update")
   
 end
 
@@ -24,7 +26,7 @@ end
 function Enemybullet:drawt()
   color()
   if self.size == 2 then
-    love.graphics.draw(self.spr,self.x,self.y,0,1,1,2,2)
+    Bullet.draw(self)
   else
     love.graphics.setColor(1,58/255,153/255,1)
     love.graphics.setLineWidth(2)
@@ -35,6 +37,7 @@ function Enemybullet:drawt()
 end
 
 function Enemybullet:draw()
+  prof.push("enemy bullet draw")
   if self.all_canv then
     for _, c in pairs(cs.cube.canvas) do
       love.graphics.setCanvas(c)
@@ -44,6 +47,7 @@ function Enemybullet:draw()
     love.graphics.setCanvas(self.canv)
     self:drawt()
   end
+  prof.pop("enemy bullet draw")
 end
 
 return Enemybullet

@@ -29,6 +29,8 @@ function BlackHole:initialize(params)
 end
 
 function BlackHole:update(dt)
+    prof.push("blackhole update")
+  
     self.scale = helpers.lerp(self.scale, 1, 0.1)
     self.time = self.time + dt
     self.angle = self.angle - math.pi / 3 * dt / 60
@@ -87,6 +89,7 @@ function BlackHole:update(dt)
             table.remove(self.particles, i)
         end
     end
+    prof.pop("blackhole update")
 end
 
 
@@ -226,6 +229,7 @@ function BlackHole:drawt(canvas, ry_offset, rz_offset)
 end
 
 function BlackHole:draw()
+    prof.push("blackhole draw")
     love.graphics.push('all')
     local c = cs.cube.canvas
     self:drawt(c.c)
@@ -236,6 +240,7 @@ function BlackHole:draw()
       self:drawt(c.r, 90, 0)
     end
     love.graphics.pop()
+    prof.pop("blackhole draw")
 end
 
 return BlackHole

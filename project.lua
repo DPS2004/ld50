@@ -8,6 +8,8 @@ project.initstate = 'menu'
 
 --project.frameadvance = true
 
+project.doprofile = true
+
 project.res = {}
 
 project.res.x = 352

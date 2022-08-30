@@ -62,6 +62,17 @@ function love.load()
   te = require"lib.tesound"
 
 
+  -- jprof, profiling
+  
+  PROF_CAPTURE = project.doprofile
+  
+  prof = require "lib/profiling/jprof"
+  
+  prof.enabled(project.doprofile)
+  
+  if project.doprofile then
+    print("profiling enabled!")
+  end
 
   -- lovebird,debugging console
   if (not project.release)  then 
@@ -117,11 +128,22 @@ function love.load()
     lovebird.update()
     helpers.updatemouse()
     
+    prof.push("gamestate update")
     self:updatefunc(dt)
-    rw:update()
+    prof.pop("gamestate update")
     
+    prof.push("ricewine update")
+    rw:update()
+    prof.pop("ricewine update")
+    
+    prof.push("flux update")
     flux.update(dt)
+    prof.pop("flux update")
+    
+    prof.push("entityman update")
     em.update(dt)
+    prof.pop("entityman update")
+    
     te.cleanup()
   end
   
@@ -129,10 +151,18 @@ function love.load()
   function Gamestate:draw()
     shuv.start()
     
+    prof.push("bg draw")
     self:bgdrawfunc()
+    prof.pop("bg draw")
     
+    prof.push("entityman draw")
     em.draw()
+    prof.pop("entityman draw")
+    
+    prof.push("fg draw")
     self:fgdrawfunc()
+    prof.pop("fg draw")
+    
     love.graphics.setColor(1,1,1,1)
     shuv.finish()
   end
@@ -392,7 +422,7 @@ function love.textinput(t)
 end
 
 function love.update(d)
-  
+  prof.push("frame")
 
   if (not project.frameadvance) or maininput:pressed("k1") or maininput:down("k2") then
     debugprint = true
@@ -420,4 +450,14 @@ end
 function love.draw()
   cs:draw()
   debugprint = false
+  prof.pop("frame")
+end
+
+
+
+function love.quit()
+  if project.doprofile then
+    print('saving profile')
+    prof.write("prof.mpack")
+  end
 end

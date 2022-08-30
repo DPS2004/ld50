@@ -13,7 +13,7 @@ end
 
 
 function Target:update(dt)
-  
+  prof.push("target update")
   self.hitbox = {x=self.x-5,y=self.y-5,width=10,height=10}
   
   self.ishit = false
@@ -36,14 +36,16 @@ function Target:update(dt)
   end
   
   self:deathcheck()
-  
+  prof.pop("target update")
 end
 
 function Target:draw()
+  prof.push("target draw")
   self:setshader()
   color()
   love.graphics.draw(sprites.target,self.x,self.y,0,1,1,8,8)
   self:endshader()
+  prof.pop("target draw")
 end
 
 return Target

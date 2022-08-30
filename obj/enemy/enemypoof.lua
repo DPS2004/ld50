@@ -26,13 +26,14 @@ function EnemyPoof:update(dt)
 end
 
 function EnemyPoof:draw()
+  prof.push("enemypoof draw")
   love.graphics.setColor(1,58/255,153/255,1)
   
   love.graphics.circle('fill',self.x-self.poofease*4,self.y,self.size*(1-self.poofease))
   love.graphics.circle('fill',self.x+self.poofease*4,self.y,self.size*(1-self.poofease))
   love.graphics.circle('fill',self.x,self.y-self.poofease*4,self.size*(1-self.poofease))
   love.graphics.circle('fill',self.x,self.y+self.poofease*4,self.size*(1-self.poofease))
-  
+  prof.pop("enemypoof draw")
 end
 
 return EnemyPoof

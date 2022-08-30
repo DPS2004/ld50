@@ -15,7 +15,7 @@ end
 
 
 function Walkshoot:update(dt)
-  
+  prof.push("walkshoot update")
   self.anglechange = self.anglechange - dt
   if self.anglechange <= 0 then
     self.anglechange = math.random(30,200)
@@ -43,13 +43,16 @@ function Walkshoot:update(dt)
     self.flippedtimer = 25
     self.flipped = self.flipped * -1
   end
+  prof.pop("walkshoot update")
   
 end
 
 function Walkshoot:draw()
+  prof.push("walkshoot update")
   self:setshader()
   love.graphics.draw(self.spr,self.x,self.y,0,self.flipped,1,5,5)
   self:endshader()
+  prof.pop("walkshoot update")
 end
 
 return Walkshoot

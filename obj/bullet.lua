@@ -46,18 +46,22 @@ function Bullet:checkwalls()
 end
 
 function Bullet:update(dt)
+  prof.push("generic bullet update")
   self:move(dt)
   self:checkwalls()
+  prof.pop("generic bullet update")
 end
 
 
 
 
 function Bullet:draw()
+  prof.push("generic bullet draw")
   color()
   if self.size == 2 then
     love.graphics.draw(self.spr,self.x,self.y,0,1,1,3,3)
   end
+  prof.pop("generic bullet draw")
 end
 
 return Bullet

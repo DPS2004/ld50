@@ -102,7 +102,7 @@ end
 
 function Textbox:update(dt)
   
-  --
+  prof.push("textbox update")
   self.cprogress = math.floor((self.totalchars-1)*self.progress)+1
   
   
@@ -121,10 +121,11 @@ function Textbox:update(dt)
   self.lastcprogress = self.cprogress
   
   self.siner = (self.siner + dt/20)%(math.pi *2)
-  
+  prof.pop("textbox update")
 end
 
 function Textbox:draw(dx,dy)
+  prof.push("textbox draw")
   self.x = dx
   self.y = dy
   local function shake(x)
@@ -148,6 +149,7 @@ function Textbox:draw(dx,dy)
       love.graphics.printf(cl.txt,self.x,self.y-cl.line*self.lineshrink,self.width)
     end
   end
+  prof.pop("textbox draw")
 end
 
 return Textbox

@@ -21,6 +21,7 @@ function Floortile:update(dt)
 end
 
 function Floortile:draw()
+  prof.push("floortile draw")
   color()
   self.x = self.x % 40
   self.y = self.y % 60
@@ -40,6 +41,7 @@ function Floortile:draw()
       love.graphics.draw(drawspr,self.x+x*20,self.y+y*30)
     end
   end
+  prof.pop("floortile draw")
 end
 
 return Floortile

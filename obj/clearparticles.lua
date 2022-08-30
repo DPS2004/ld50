@@ -18,6 +18,7 @@ end
 
 
 function Clearparticles:update(dt)
+  prof.push("clearparticles update")
   for i,v in ipairs(self.particles) do
     v.size = v.size - (dt / 30)
     v.x = v.x + v.dx * v.size * dt
@@ -30,9 +31,11 @@ function Clearparticles:update(dt)
   if #self.particles == 0 then
     self.delete = true
   end
+  prof.pop("clearparticles update")
 end
 
 function Clearparticles:draw()
+  prof.push("clearparticles draw")
   for i,v in ipairs(self.particles) do
     if v.color == 0 then
       love.graphics.setColor(0,69/255,119/255)
@@ -41,6 +44,7 @@ function Clearparticles:draw()
     end
     love.graphics.circle('fill',v.x,v.y,v.size*2)
   end
+  prof.pop("clearparticles draw")
   color()
 end
 

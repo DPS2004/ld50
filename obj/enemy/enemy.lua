@@ -28,9 +28,11 @@ end
 
 
 function Enemy:update(dt)
+  prof.push("generic enemy update")
   self:bulletcheck()
   self:move()
   self:deathcheck()
+  prof.pop("generic enemy update")
 end
 
 function Enemy:deathcheck()
@@ -181,13 +183,14 @@ function Enemy:endshader()
 end
 
 function Enemy:draw()
+  prof.push("generic enemy draw")
   self:setshader()
   love.graphics.setColor(1,58/255,153/255,1)
   love.graphics.circle('fill',self.x,self.y,self.size)
   color()
   love.graphics.draw(self.spr, self.x - 4, self.y -1.5)
   self:endshader()
-  
+  prof.pop("generic enemy draw")
 end
 
 return Enemy

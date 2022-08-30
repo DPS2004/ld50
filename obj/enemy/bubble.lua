@@ -17,7 +17,7 @@ end
 
 
 function Bubble:update(dt)
-  
+  prof.push("bubble update")
   self.hitbox = {x=self.x-5,y=self.y-5,width=10,height=10}
   
   self.pulsei = self.pulsei + dt/20
@@ -43,15 +43,17 @@ function Bubble:update(dt)
   end
   
   self:deathcheck()
-  
+  prof.pop("bubble update")
 end
 
 function Bubble:draw()
+  prof.push("bubble draw")
   self:setshader()
   love.graphics.setColor(1,58/255,153/255,1)
   love.graphics.circle('line',self.x,self.y,self.size)
   color()
   self:endshader()
+  prof.pop("bubble draw")
 end
 
 return Bubble

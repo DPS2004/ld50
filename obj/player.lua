@@ -67,6 +67,7 @@ end
 
 
 function Player:update(dt)
+  prof.push("player update")
   if self.shootcooldown > 0 then
     self.shootcooldown = self.shootcooldown - dt
   end
@@ -260,6 +261,8 @@ function Player:update(dt)
       end
     end
     
+    
+    prof.push("player holding")
     if self.holding ~= 0 then
       
       local dmove = helpers.rotate(1,helpers.anglepoints(0,0,self.gunx,self.guny),0,0)
@@ -291,6 +294,7 @@ function Player:update(dt)
       self.throwx = math.floor((self.x + (dx * maxdistance)) / 4)
       self.throwy = math.floor((self.y + (dy * maxdistance) - 5) / 4)
     end
+    prof.pop("player holding")
     
     if maininput:pressed('accept') then
       if self.holding == 1 then
@@ -449,6 +453,7 @@ function Player:update(dt)
       self.animtimer = 10
     end
   end
+  prof.pop("player update")
 end
 
 function Player:drawmain(sx,sy)
@@ -488,7 +493,7 @@ function Player:drawmain(sx,sy)
 end
 
 function Player:draw()
-  
+  prof.push("player draw")
   self:drawmain(0,0)
   
   love.graphics.setCanvas(cs.cube.canvas.l)
@@ -502,6 +507,7 @@ function Player:draw()
   
   love.graphics.setCanvas(cs.cube.canvas.d)
   self:drawmain(0,-128)
+  prof.pop("player draw")
   
 end
 

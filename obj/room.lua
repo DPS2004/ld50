@@ -18,6 +18,7 @@ function Room:update(dt)
 end
 
 function Room:drawwalls(tilecheck)
+  
   tilecheck = tilecheck or {0,5}
   
   love.graphics.setCanvas(self.wallcanvas)
@@ -44,6 +45,7 @@ function Room:drawwalls(tilecheck)
 end
 
 function Room:draw()
+  prof.push("room draw")
   color()
   if not cs.map[cs.croom].cleared then
     self:drawwalls({4})
@@ -77,6 +79,7 @@ function Room:draw()
   if self.level and self.level.tutorialsecret then
     cs.secretary:draw(true)
   end
+  prof.pop("room draw")
   --love.graphics.print('test',1,1)
 end
 

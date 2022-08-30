@@ -13,17 +13,18 @@ function Playerbullet:initialize(params)
 end
 
 function Playerbullet:update(dt)
-  self:move(dt)
-  self:checkwalls()
+  
+  prof.push("player bullet update")
+  Bullet.update(self,dt)
+  prof.pop("player bullet update")
   
 end
 
 
 function Playerbullet:draw()
-  color()
-  if self.size == 2 then
-    love.graphics.draw(self.spr,self.x,self.y,0,1,1,2,2)
-  end
+  prof.push("player bullet draw")
+  Bullet.draw(self)
+  prof.pop("player bullet draw")
 end
 
 return Playerbullet

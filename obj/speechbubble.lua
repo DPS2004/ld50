@@ -84,6 +84,7 @@ function Speechbubble:start()
 end
 
 function Speechbubble:update(dt)
+  prof.push("speechbubble update")
   if self.doshowbutton then
     ez.update(self.pressbutton)
   end
@@ -93,6 +94,7 @@ function Speechbubble:update(dt)
       if self.buttoncallback then self.buttoncallback(self) end
     end
   end
+  prof.pop("speechbubble update")
 end
 
 function Speechbubble:cleanup()
@@ -101,6 +103,7 @@ function Speechbubble:cleanup()
 end
 
 function Speechbubble:draw()
+  prof.push("speechbubble draw")
   shuv.do_autoscaled(function()
   love.graphics.setColor(self.color)
   
@@ -122,7 +125,7 @@ function Speechbubble:draw()
 	ez.draw(self.pressbutton, self.x + self.xbox + self.width - 9,self.y + self.ybox +self.height-9)
   end
   end)
-  
+  prof.pop("speechbubble draw")
 
 end
 

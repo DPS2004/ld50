@@ -12,10 +12,12 @@ project.res = {}
 
 project.res.x = 352
 project.res.y = 198
-project.res.s = 3
+project.res.s = 4
 
 
-project.fullscreen = true
+project.fullscreen = false
+
+project.intscale = 2
 
 -- project.res.x = 352 * 3
 -- project.res.y = 198 * 3
