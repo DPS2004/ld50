@@ -58,6 +58,9 @@ function Player:initialize(params)
   self.speedcooldown = 0
   self.blockcooldown = 0
   self.blockanim = 0
+  self.shieldsiner = 0
+  
+  self.reflectcooldown = 0
   
   self.speedpenalty = 30
   self.blockpenalty = 60
@@ -128,6 +131,13 @@ function Player:update(dt)
     end
   end
   
+  if self.reflectcooldown > 0 then
+    self.reflectcooldown = self.reflectcooldown - dt
+    if self.reflectcooldown < 0 then
+      self.reflectcooldown = 0
+    end
+  end
+  
   if self.blockcooldown > 0 then
     self.blockcooldown = self.blockcooldown - dt
     if self.blockcooldown < 0 then
@@ -150,6 +160,7 @@ function Player:update(dt)
   
   local blockanim = false
   
+  
   if self.canmove then
     
     self.oldx = self.x 
@@ -162,14 +173,21 @@ function Player:update(dt)
     
     if maininput:down('block') and self.blockcooldown == 0 then
       if not self.blocking then
-        cs:addscore(-50,'blocking')
+        if math.random(0,500) == 69 then
+          cs:addscore(-50,'coward')
+        else
+          cs:addscore(-50,'blocking')
+        end
+          
         self.blocking = true
+        te.play('assets/sfx/shield_up.ogg','static',{'shield_up','sfx'},0.7)
       end
     else
       if self.blocking then
         self.blocking = false
         self.blockcooldown = self.blockpenalty
         self.speedcooldown = self.speedpenalty
+        te.play('assets/sfx/shield_down.ogg','static',{'shield_down','sfx'},0.7)
       end
     end
     
@@ -182,10 +200,10 @@ function Player:update(dt)
     end
     
     if self.blocking then
-      if self.blockanim < 5 then
+      if self.blockanim < 7 then
         self.blockanim = self.blockanim + dt
       else
-        self.blockanim = 5
+        self.blockanim = 7
       end
     elseif self.blockanim > 0 then
       self.blockanim = self.blockanim - dt
@@ -538,7 +556,10 @@ function Player:update(dt)
             self.animtimer = 30
             self.nextanim = 'idle'
           else
-            --play a "pling" sound?
+            if self.reflectcooldown == 0 then
+              te.play('assets/sfx/reflect.ogg','static',{'reflect','sfx'},1)
+              self.reflectcooldown = 10
+            end
           end
         end
       end
@@ -613,6 +634,8 @@ function Player:update(dt)
   end
   
   
+  self.shieldsiner = (self.shieldsiner + dt/30) % (math.pi*2)
+  
   
   prof.pop("player update")
 end
@@ -643,7 +666,7 @@ function Player:drawmain(sx,sy)
     if self.holding == 1 then
       ez.drawframe(self.boxspr,4-self.throwhp,self.x+self.gunx+sx,self.y+self.guny+sy-5,0,1,1,5,5)
       
-      if (not self.invalidthrow) or (not self.blocking) then
+      if (not self.invalidthrow) and (not self.blocking) then
         love.graphics.draw(sprites.throwcursor,self.throwx*4+sx,self.throwy*4+sy,0,1,1,5,5)
       end
       
@@ -658,9 +681,9 @@ function Player:drawmain(sx,sy)
   
   if math.floor(self.blockanim+0.5) % 2 == 1 then
     love.graphics.setColor(1,58/255,153/255,1)
-    love.graphics.circle('line',self.x,self.y-6,11)
+    love.graphics.circle('line',self.x+sx,self.y-6+sy,11+math.sin(self.shieldsiner))
     love.graphics.setColor(54/255,46/255,183/255,1)
-    love.graphics.circle('line',self.x,self.y-6,10)
+    love.graphics.circle('line',self.x+sx,self.y-6+sy,10+math.sin(self.shieldsiner))
   end
 end
 
