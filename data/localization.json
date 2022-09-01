@@ -144,5 +144,8 @@
   "destroyedbox": {
     "en": "SMAAAASH!!"
   },
+  "blocking": {
+    "en": "Blocking"
+  },
   
 }

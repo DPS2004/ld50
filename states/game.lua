@@ -822,6 +822,9 @@ st:setupdate(function(self,dt)
     if self.musbpm ~= 0 then
       self.scorecountdown = self.scorecountdown + (3600 / self.musbpm)
       self.score = self.score - 1
+      if self.player.blocking then
+        self.score = self.score - 1
+      end
     end
   end
   

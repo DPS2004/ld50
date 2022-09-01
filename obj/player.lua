@@ -162,13 +162,12 @@ function Player:update(dt)
     
     if maininput:down('block') and self.blockcooldown == 0 then
       if not self.blocking then
-        print("first frame of block penalty")
+        cs:addscore(-50,'blocking')
         self.blocking = true
       end
     else
       if self.blocking then
         self.blocking = false
-        print("block released")
         self.blockcooldown = self.blockpenalty
         self.speedcooldown = self.speedpenalty
       end
@@ -251,7 +250,7 @@ function Player:update(dt)
           
           if v.t == 2 then
             
-            if self.holding == 0 and (maininput:down('shootleft') or maininput:down('shootright') or maininput:down('shootup') or maininput:down('shootdown')) then
+            if self.holding == 0 and (maininput:down('shootleft') or maininput:down('shootright') or maininput:down('shootup') or maininput:down('shootdown')) and (not self.blocking) then
               self.holding = 1
               
               
@@ -419,7 +418,7 @@ function Player:update(dt)
     end
     prof.pop("player holding")
     
-    if maininput:pressed('accept') then
+    if maininput:pressed('accept') and (not self.blocking) then
       if self.holding == 1 and (not self.invalidthrow) then
         
         local distance = helpers.distance({self.x,self.y-5},{self.throwx*4+5,self.throwy*4+5}) / 200
@@ -531,12 +530,16 @@ function Player:update(dt)
     for i,v in ipairs(entities) do
       if v.isenemy then
         if helpers.collide(self.hitbox,v.hitbox) and self.hitcooldown == 0 then
-          self.hitcooldown = 89
-          cs:addscore(-200,'gothit')
-          te.play('assets/sfx/player_hit.ogg','static',{'player_hit','sfx'},1)
-          self.anim = 'hit'
-          self.animtimer = 30
-          self.nextanim = 'idle'
+          if not self.blocking then
+            self.hitcooldown = 89
+            cs:addscore(-200,'gothit')
+            te.play('assets/sfx/player_hit.ogg','static',{'player_hit','sfx'},1)
+            self.anim = 'hit'
+            self.animtimer = 30
+            self.nextanim = 'idle'
+          else
+            --play a "pling" sound?
+          end
         end
       end
     end
@@ -640,7 +643,7 @@ function Player:drawmain(sx,sy)
     if self.holding == 1 then
       ez.drawframe(self.boxspr,4-self.throwhp,self.x+self.gunx+sx,self.y+self.guny+sy-5,0,1,1,5,5)
       
-      if not self.invalidthrow then
+      if (not self.invalidthrow) or (not self.blocking) then
         love.graphics.draw(sprites.throwcursor,self.throwx*4+sx,self.throwy*4+sy,0,1,1,5,5)
       end
       
