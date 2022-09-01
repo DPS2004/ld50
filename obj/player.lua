@@ -40,7 +40,7 @@ function Player:initialize(params)
   
   self.throwhp = 0
   
-  self.blockspr = ez.newanim(templates.block)
+  self.boxspr = ez.newanim(templates.box)
   
   self.hitcooldown = 0
   
@@ -53,6 +53,13 @@ function Player:initialize(params)
   self.hitbox = {x=self.x,y=self.y,width=5,height=6}
   self.oldhitboxx = {x=self.x,y=self.y,width=5,height=6}
   self.oldhitboxy = {x=self.x,y=self.y,width=5,height=6}
+  
+  self.blocking = false
+  self.speedcooldown = 0
+  self.blockcooldown = 0
+  
+  self.speedpenalty = 60
+  self.blockpenalty = 120
   
   self.doortiles = {
     {x=6,y=0},{x=7,y=0},{x=8,y=0},{x=9,y=0},
@@ -71,7 +78,7 @@ end
 function Player:checkpos(cx,cy)
   for i,v in ipairs(cs.rooms.c.level.tiles) do
     if v.solid or v.wall then
-      local blockhitbox = {
+      local tilehitbox = {
         x=v.x*levels.properties.tilesize - 4,
         y=v.y*levels.properties.tilesize - 4,
         width=levels.properties.tilesize*2,
@@ -80,15 +87,15 @@ function Player:checkpos(cx,cy)
       
       for _i,_v in ipairs(levels.properties.halfsize)  do
         if v.t == _v then
-          blockhitbox.x = blockhitbox.x + 4
-          blockhitbox.y = blockhitbox.y + 4
-          blockhitbox.width = 4
-          blockhitbox.height = 4
+          tilehitbox.x = tilehitbox.x + 4
+          tilehitbox.y = tilehitbox.y + 4
+          tilehitbox.width = 4
+          tilehitbox.height = 4
           break
         end
       end
       
-      if helpers.collide(blockhitbox,{
+      if helpers.collide(tilehitbox,{
         x=cx-4,
         y=cy-4,
         width = 8,height = 8}
@@ -107,17 +114,31 @@ end
 
 function Player:update(dt)
   prof.push("player update")
+  
+  -- lower all cooldowns
   if self.shootcooldown > 0 then
     self.shootcooldown = self.shootcooldown - dt
   end
   
   if self.hitcooldown > 0 then
     self.hitcooldown = self.hitcooldown - dt*1.5
+    if self.hitcooldown < 0 then
+      self.hitcooldown = 0
+    end
   end
-  if self.hitcooldown < 0 then
-    self.hitcooldown = 0
+  
+  if self.blockcooldown > 0 then
+    self.blockcooldown = self.blockcooldown - dt
+    if self.blockcooldown < 0 then
+      self.blockcooldown = 0
+    end
   end
+  
   local moving = false
+  
+  
+  
+  
   
   if self.canmove then
     
@@ -171,14 +192,14 @@ function Player:update(dt)
 
     for i,v in ipairs(cs.rooms.c.level.tiles) do
       if v.solid or ((not cs.map[cs.croom].cleared) and v.wall) then
-        local blockhitbox = {x=v.x*levels.properties.tilesize,y=v.y*levels.properties.tilesize,width=levels.properties.tilesize,height=levels.properties.tilesize}
+        local tilehitbox = {x=v.x*levels.properties.tilesize,y=v.y*levels.properties.tilesize,width=levels.properties.tilesize,height=levels.properties.tilesize}
         if v.t == 2 then
-          blockhitbox.x = blockhitbox.x - 4
-          blockhitbox.y = blockhitbox.y - 4
-          blockhitbox.width = 8
-          blockhitbox.height = 8
+          tilehitbox.x = tilehitbox.x - 4
+          tilehitbox.y = tilehitbox.y - 4
+          tilehitbox.width = 8
+          tilehitbox.height = 8
         end
-        if helpers.collide(self.hitbox,blockhitbox) then
+        if helpers.collide(self.hitbox,tilehitbox) then
           
           if v.t == 2 then
             
@@ -194,12 +215,12 @@ function Player:update(dt)
               
               table.remove(cs.rooms.c.level.tiles,i)
               
-              print('picked up block, hp '..self.throwhp)
+              print('picked up box, hp '..self.throwhp)
             end
           end
           
-          if helpers.collide(self.oldhitboxx,blockhitbox) and sign(self.hitbox.y - blockhitbox.y) ~= sign(self.cdy)  then yok = false end
-          if helpers.collide(self.oldhitboxy,blockhitbox) and sign(self.hitbox.x - blockhitbox.x) ~= sign(self.cdx) then xok = false end
+          if helpers.collide(self.oldhitboxx,tilehitbox) and sign(self.hitbox.y - tilehitbox.y) ~= sign(self.cdy)  then yok = false end
+          if helpers.collide(self.oldhitboxy,tilehitbox) and sign(self.hitbox.x - tilehitbox.x) ~= sign(self.cdx) then xok = false end
         end
       end
     end
@@ -534,7 +555,7 @@ function Player:drawmain(sx,sy)
     
     color()
     if self.holding == 1 then
-      ez.drawframe(self.blockspr,4-self.throwhp,self.x+self.gunx+sx,self.y+self.guny+sy-5,0,1,1,5,5)
+      ez.drawframe(self.boxspr,4-self.throwhp,self.x+self.gunx+sx,self.y+self.guny+sy-5,0,1,1,5,5)
       
       if not self.invalidthrow then
         love.graphics.draw(sprites.throwcursor,self.throwx*4+sx,self.throwy*4+sy,0,1,1,5,5)

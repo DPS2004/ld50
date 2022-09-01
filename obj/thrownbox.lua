@@ -11,7 +11,7 @@ function Thrownbox:initialize(params)
   self.hp = 4
   self.name = 'thrownbox'
   
-  self.spr = ez.newanim(templates.block)
+  self.spr = ez.newanim(templates.box)
   
   self.hitbox = {x=0,y=0,width=8,height=8}
   

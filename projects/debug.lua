@@ -30,6 +30,7 @@ project.ctrls = {
   shootup = {"key:up", "axis:righty-", "button:dpup"},
   shootdown = {"key:down", "axis:righty+", "button:dpdown"},
   accept = {"key:space", "key:return", "button:a", "button:rightshoulder", "axis:righttrigger"},
+  block = {"key:lshift", "key:rshift", "button:b", "button:leftshoulder", "axis:lefttrigger"},
   back = {"key:escape", "button:b"},
   f5 = {"key:f5"},
   k1 = {"key:1"},

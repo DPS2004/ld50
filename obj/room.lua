@@ -8,7 +8,7 @@ function Room:initialize(params)
   
   Entity.initialize(self,params)
   
-  self.blockspr = ez.newanim(templates.block)
+  self.boxspr = ez.newanim(templates.box)
 
 end
 
@@ -64,7 +64,7 @@ function Room:draw()
         if v.drawflash then
           love.graphics.setShader(shaders.whiteout)
         end
-        ez.drawframe(self.blockspr,4-v.hp,v.x*levels.properties.tilesize-5,v.y*levels.properties.tilesize-5)
+        ez.drawframe(self.boxspr,4-v.hp,v.x*levels.properties.tilesize-5,v.y*levels.properties.tilesize-5)
         if v.drawflash then
           love.graphics.setShader()
           v.drawflash = false

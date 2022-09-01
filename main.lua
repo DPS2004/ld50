@@ -295,7 +295,7 @@ function love.load()
     for tilei,tile in ipairs(newroom.tiles) do
       if tile.t == 0 then -- wall tile
         tile.solid = true
-      elseif tile.t == 2 then -- block
+      elseif tile.t == 2 then -- box
         tile.solid = true
         tile.hp = 4
       elseif tile.t == 3 then -- bullet passable 
