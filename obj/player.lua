@@ -57,9 +57,10 @@ function Player:initialize(params)
   self.blocking = false
   self.speedcooldown = 0
   self.blockcooldown = 0
+  self.blockanim = 0
   
-  self.speedpenalty = 60
-  self.blockpenalty = 120
+  self.speedpenalty = 30
+  self.blockpenalty = 60
   
   self.doortiles = {
     {x=6,y=0},{x=7,y=0},{x=8,y=0},{x=9,y=0},
@@ -131,6 +132,15 @@ function Player:update(dt)
     self.blockcooldown = self.blockcooldown - dt
     if self.blockcooldown < 0 then
       self.blockcooldown = 0
+      print("blockcooldown over")
+    end
+  end
+  
+  if self.speedcooldown > 0 then
+    self.speedcooldown = self.speedcooldown - dt
+    if self.speedcooldown < 0 then
+      self.speedcooldown = 0
+      print("speedcooldown over")
     end
   end
   
@@ -138,7 +148,7 @@ function Player:update(dt)
   
   
   
-  
+  local blockanim = false
   
   if self.canmove then
     
@@ -148,24 +158,62 @@ function Player:update(dt)
     self.dx = 0
     self.dy = 0
     
+    local speedmult = 1
+    
+    if maininput:down('block') and self.blockcooldown == 0 then
+      if not self.blocking then
+        print("first frame of block penalty")
+        self.blocking = true
+      end
+    else
+      if self.blocking then
+        self.blocking = false
+        print("block released")
+        self.blockcooldown = self.blockpenalty
+        self.speedcooldown = self.speedpenalty
+      end
+    end
+    
+    
+    
+    if self.blocking or self.speedcooldown > 0 then
+      speedmult = 0.5
+      blockanim = true
+      
+    end
+    
+    if self.blocking then
+      if self.blockanim < 5 then
+        self.blockanim = self.blockanim + dt
+      else
+        self.blockanim = 5
+      end
+    elseif self.blockanim > 0 then
+      self.blockanim = self.blockanim - dt
+    end
+    if self.blockanim < 0 then
+      self.blockanim = 0
+    end
+    
+    
     if maininput:down('left') and (not maininput:down('right')) then
       self.flip = true
-      self.dx = -self.speed
+      self.dx = -self.speed * speedmult
       moving = true
       
     end
     if maininput:down('right') and (not maininput:down('left')) then
       self.flip = false
-      self.dx = self.speed
+      self.dx = self.speed * speedmult
       moving = true
     end
     
     if maininput:down('up') and (not maininput:down('down')) then
-      self.dy = -self.speed
+      self.dy = -self.speed * speedmult
       moving = true
     end
     if maininput:down('down') and (not maininput:down('up')) then
-      self.dy = self.speed
+      self.dy = self.speed * speedmult
       moving = true
     end
     local friction = 0.5
@@ -303,7 +351,7 @@ function Player:update(dt)
     self.gunx = (self.gunx + self.gunaimx)/2
     self.guny = (self.guny + self.gunaimy)/2
     
-    if doshoot and self.holding == 0 then
+    if doshoot and self.holding == 0 and (not self.blocking) then
       -- START GUN TYPES
       if self.gun == self.gunTypes.pistol then
         if self.shootcooldown <= 0 then
@@ -501,10 +549,22 @@ function Player:update(dt)
   if self.anim == 'hit' then
     self.frame = 2
   elseif self.anim == 'idle' then
-    self.frame = 0
+    
+    if blockanim then 
+      self.frame = 4
+    else
+      self.frame = 0
+    end
+    
     if moving then
       self.anim = 'moving'
-      self.frame = 1
+      
+      if blockanim then 
+        self.frame = 5
+      else
+        self.frame = 1
+      end
+      
       self.nextanim = 'moving'
       self.animtimer = 10
     end
@@ -516,18 +576,41 @@ function Player:update(dt)
       self.nextanim = 'idle'
       self.frame = 0
     end
+    
+    if blockanim then
+      if self.frame == 0 or self.frame == 1 then
+        self.frame = self.frame + 4
+      end
+    else
+      if self.frame == 4 or self.frame == 5 then
+        self.frame = self.frame - 4
+      end
+    end
   end
   
   self.animtimer = self.animtimer - dt
   if self.animtimer <= 0 then
     if self.nextanim == 'idle' then
-      self.frame = 0
+      if blockanim then
+        self.frame = 4
+      else
+        self.frame = 0
+      end
       self.anim = 'idle'
     elseif self.nextanim == 'moving' then
-      self.frame = (self.frame + 1)%2
+      
+      if blockanim then
+        self.frame = ((self.frame -3)%2)+4
+      else
+        self.frame = (self.frame + 1)%2
+      end
+      
       self.animtimer = 10
     end
   end
+  
+  
+  
   prof.pop("player update")
 end
 
@@ -570,6 +653,12 @@ function Player:drawmain(sx,sy)
     color()
   end
   
+  if math.floor(self.blockanim+0.5) % 2 == 1 then
+    love.graphics.setColor(1,58/255,153/255,1)
+    love.graphics.circle('line',self.x,self.y-6,11)
+    love.graphics.setColor(54/255,46/255,183/255,1)
+    love.graphics.circle('line',self.x,self.y-6,10)
+  end
 end
 
 function Player:draw()

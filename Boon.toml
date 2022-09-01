@@ -63,6 +63,8 @@ ignore_list = [
     "release_pc",
     "release_editor",
     "release_web",
+	"release_switch",
+	"switchassets",
     "webassets",
 ]
 
