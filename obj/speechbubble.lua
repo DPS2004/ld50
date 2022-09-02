@@ -25,6 +25,11 @@ function Speechbubble:initialize(params)
   self.tailspr = sprites.speechtail
   
   Entity.initialize(self,params)
+  
+  if self.allowskipping == nil then
+    self.allowskipping = true
+  end
+  
   self.pressbutton = ez.newanim(templates.pressbutton)
   
   self.tailoffset = self.tailoffset or self.height/2
@@ -79,7 +84,8 @@ function Speechbubble:start()
     callback=self.newcallback,
     length=self.length,
     sound=self.sound,
-    skiprender = true
+    skiprender = true,
+    allowskipping = self.allowskipping
   })
 end
 

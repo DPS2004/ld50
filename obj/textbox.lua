@@ -14,6 +14,10 @@ function Textbox:initialize(params)
   
   self.progress = 0
   
+  self.progressframes = 0
+  
+  self.callbackstate = 0
+  
   self.length = 200
   
   self.color = colors.black
@@ -30,11 +34,12 @@ function Textbox:initialize(params)
   if self.length == 0 then
     self.sound = nil
     self.progress = 1
+    self.callbackstate = 1
   else
-    local talkease = rw:to(self, self.length, {progress = 1}):ease('linear')
-    if self.callback then
-      talkease:oncomplete(self.callback)
-    end
+    --local talkease = rw:to(self, self.length, {progress = 1}):ease('linear')
+    --if self.callback then
+      --talkease:oncomplete(self.callback)
+    --end
   end
   
   
@@ -103,6 +108,33 @@ end
 function Textbox:update(dt)
   
   prof.push("textbox update")
+  
+  if self.progressframes < self.length then
+    if self.allowskipping and maininput:down("accept") then
+      self.progressframes = self.progressframes + dt * 5
+    else
+      self.progressframes = self.progressframes + dt
+    end
+    if self.progressframes == self.length and self.callbackstate == 0 then
+      self.callbackstate = 1
+    end
+  end
+  if self.progressframes > self.length then
+    self.progressframes = self.length
+    if self.callbackstate == 0 then
+      self.callbackstate = 1
+    end
+  end
+  
+  if self.callbackstate == 1 then
+    if self.callback then
+      self.callback()
+    end
+    self.callbackstate = 2
+  end
+  
+  self.progress = self.progressframes/self.length
+  
   self.cprogress = math.floor((self.totalchars-1)*self.progress)+1
   
   
