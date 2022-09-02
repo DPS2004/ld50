@@ -18,15 +18,23 @@ function Textbox:initialize(params)
   
   self.callbackstate = 0
   
-  self.length = 200
+  self.length = -3
   
   self.color = colors.black
+  
+  self.align = "left"
+  
+  self.outline = false
   
   self.text = 'A wizard\'s job is\nto &vex& chumps ^quiickly^ in fogs. &Interesting,& right?'
   --self.text = 'abcdefghijklmnopqrstuvqxyz'
   self.sound = 'assets/sfx/text.ogg'
   
   Entity.initialize(self,params)
+  
+  
+  
+  self.canvas = love.graphics.newCanvas(352, 198)
   
   self.totalchars = string.len(self.text)
   self.cprogress = self.progress + 1
@@ -51,11 +59,12 @@ function Textbox:initialize(params)
   local effects = {}
   effects['^'] = false
   effects['&'] = false
+  effects['`'] = false
   
   for i=1,self.totalchars do
     local cc = string.sub(self.text,i,i)
     
-    if cc == '^' or cc == '&' then
+    if cc == '^' or cc == '&' or cc == '`' then
       removedoffset = removedoffset + 1
       effects[cc] = not effects[cc]
     else
@@ -74,6 +83,12 @@ function Textbox:initialize(params)
   
   self.text = fulltext
   self.totalchars = self.totalchars - removedoffset
+  
+  
+  
+  if self.length < 0 then
+    self.length = self.totalchars * self.length * -1
+  end
   
   
   --error()
@@ -158,29 +173,54 @@ end
 
 function Textbox:draw(dx,dy)
   prof.push("textbox draw")
-  self.x = dx
-  self.y = dy
+  self.x = dx or self.x
+  self.y = dy or self.y
   local function shake(x)
     return helpers.round(math.random(-100,100)*(x/100),true)
   end
   love.graphics.setFont(self.font)
-  --love.graphics.setColor(colors.red)
+  love.graphics.setColor(colors.red)
   --love.graphics.setLineWidth(1)
   --love.graphics.rectangle('line',self.x,self.y,self.width,self.height)
   
-  love.graphics.setColor(self.color)
+  
   --love.graphics.printf(self.ctext,self.x,self.y,self.width)
-  for i=1,self.cprogress do
-    local cl = self.letters[i]
-    if cl['^'] then
-      
-      love.graphics.printf(cl.txt,self.x,self.y+math.sin(self.siner+i)*2-cl.line*self.lineshrink,self.width)
-    elseif cl['&'] then
-      love.graphics.printf(cl.txt,self.x+shake(0.55),self.y+shake(0.55)-cl.line*self.lineshrink,self.width)
-    else
-      love.graphics.printf(cl.txt,self.x,self.y-cl.line*self.lineshrink,self.width)
+  love.graphics.setCanvas(self.canvas)
+    love.graphics.clear()
+    
+    love.graphics.setColor(self.color)
+    
+    for i=1,self.cprogress do
+      local cl = self.letters[i]
+      if cl['^'] then
+        
+        love.graphics.printf(cl.txt,self.x,self.y+math.sin(self.siner+i)*2-cl.line*self.lineshrink,self.width,self.align) --non-left does not work for now
+      elseif cl['&'] then
+        love.graphics.printf(cl.txt,self.x+shake(0.55),self.y+shake(0.55)-cl.line*self.lineshrink,self.width,self.align)
+      elseif cl['`'] then
+        cl.txt[4] = string.char(math.random(32,126))
+        love.graphics.printf(cl.txt,self.x+shake(0.55),self.y+shake(0.55)-cl.line*self.lineshrink,self.width,self.align)
+      else
+        love.graphics.printf(cl.txt,self.x,self.y-cl.line*self.lineshrink,self.width,self.align)
+      end
+    end
+  love.graphics.setCanvas(shuv.canvas)
+  
+  if self.outline then
+    color('black')
+    for x=-1,1 do
+      for y=-1,1 do
+        if x~=0 or y~= 0 then
+          love.graphics.draw(self.canvas,x,y)
+        end
+      end
     end
   end
+  color()
+  love.graphics.draw(self.canvas)
+  
+  
+  
   prof.pop("textbox draw")
 end
 

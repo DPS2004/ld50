@@ -4,7 +4,8 @@ local colors = {
   grey = {212/255,212/255,212/255},
   white = {1,1,1},
   pink = {1,0,1},
-  green = {0,1,0}
+  green = {0,1,0},
+  yellow = {1,209/255,77/255}
 }
 
 return colors

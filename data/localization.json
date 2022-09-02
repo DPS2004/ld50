@@ -53,6 +53,51 @@
     "en": "new high score!!"
   },
   
+  "****************intro*******************":{},
+  "intro1": {
+    "en": "^LADIES, GENTLEMEN, AND ALL IN-BETWEEN^"
+  },
+  "intro2": {
+    "en": "^YOU ARE ABOUT TO EXPERIENCE^"
+  },
+  "intro3": {
+    "en": "^A SHOW LIKE NO OTHER^"
+  },
+  "intro4": {
+    "en": "^WITH TWISTS AND TURNS, DEATH AND DRAMA^"
+  },
+  "intro5": {
+    "en": "^WE HAVE GATHERED THE GREATEST IN THE UNIVERSE^"
+  },
+  "intro6": {
+    "en": "^BUT ONLY ONE WILL BE GRANTED THE TITLE OF:^"
+  },
+  "intro7": {
+    "en": "&HYPERCUBE WARRIOR!&"
+  },
+  "intro8": {
+    "en": "I'M YOUR HOST, `AAAAAAAA` \"LIVE\" FROM THE BEAUTIFUL HYPERDOME."
+  },
+  "intro9": {
+    "en": "FOR THOSE NEW TO OUR PROGRAM, LET'S DO A QUICK RECAP OF THE RULES."
+  },
+  "intro10": {
+    "en": "1. &NO SCREAMING.&"
+  },
+  "intro11": {
+    "en": "2. &NO CHEATING.&"
+  },
+  "intro12": {
+    "en": "3. &NO ESCAPING.&"
+  },
+  "intro13": {
+    "en": "SURVIVE TO THE END, AND ^GREAT PROSPERITY AWAITS!^"
+  },
+  "intro14": {
+    "en": "READY? HERE WE GO!"
+  },
+  
+  
   "****************Tutorial*******************":{},
   
   "tutorial1": {

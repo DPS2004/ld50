@@ -28,6 +28,8 @@ sprites.numbers = love.graphics.newImage('assets/ui/numbers.png')
 sprites.stadium = love.graphics.newImage('assets/bg/stadium.png')
 sprites.stage = love.graphics.newImage('assets/bg/stage.png')
 
+sprites.intromask = love.graphics.newImage('assets/bg/intromask.png')
+
 sprites.logo = love.graphics.newImage('assets/menu/logo.png')
 
 sprites.editortiles = love.graphics.newImage('assets/editor/tiles.png')

@@ -10,7 +10,7 @@ function Speechbubble:initialize(params)
   self.width = 40
   self.height = 40
   self.border = 1
-  self.length = 200
+  self.length = -3
   self.showbutton = true
   self.text = '^hello^, world&!&'
   

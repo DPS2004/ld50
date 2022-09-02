@@ -4,7 +4,7 @@ project.release = false
 
 project.name = 'Hypercube Warrior'
 
-project.initstate = 'menu'
+project.initstate = 'intro'
 
 --project.frameadvance = true
 
