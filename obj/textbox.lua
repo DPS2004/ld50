@@ -124,8 +124,21 @@ function Textbox:update(dt)
   
   prof.push("textbox update")
   
+  if self.allowskipping and self.skipstate == nil then
+    if maininput:down("accept") then
+      self.skipstate = 1
+    else
+      self.skipstate = 0
+    end
+  end
+  if self.skipstate == 1 then
+    if maininput:released("accept") then
+      self.skipstate = 0
+    end
+  end
+  
   if self.progressframes < self.length then
-    if self.allowskipping and maininput:down("accept") then
+    if self.allowskipping and maininput:down("accept") and self.skipstate == 0 then
       self.progressframes = self.progressframes + dt * 5
     else
       self.progressframes = self.progressframes + dt

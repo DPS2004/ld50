@@ -40,4 +40,6 @@ sprites.speechtail = love.graphics.newImage('assets/ui/speechtail.png')
 
 sprites.monitor = love.graphics.newImage('assets/room/monitor.png')
 
+sprites.hostdialog = love.graphics.newImage('assets/host/host.png')
+
 return sprites
